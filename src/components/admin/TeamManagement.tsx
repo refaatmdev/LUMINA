@@ -59,7 +59,7 @@ export default function TeamManagement({ orgId }: TeamManagementProps) {
         }
 
         try {
-            const { data, error } = await supabase.functions.invoke('invite-user', {
+            const { error } = await supabase.functions.invoke('invite-user', {
                 body: {
                     email: inviteEmail,
                     role: inviteRole,

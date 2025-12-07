@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 import { useUserRole } from '../../hooks/useUserRole';
-import { Calendar, Clock, Trash2, Plus, Save, X, AlertCircle } from 'lucide-react';
+import { Calendar, Clock, Trash2, Plus, Save, X } from 'lucide-react';
 import LoadingSpinner from '../ui/LoadingSpinner';
 
 interface Schedule {
@@ -220,8 +220,8 @@ export default function ScheduleManager({ targetType, targetId }: ScheduleManage
                                         key={day.id}
                                         onClick={() => toggleDay(day.id)}
                                         className={`w-8 h-8 rounded-full text-xs font-medium transition-all ${selectedDays.includes(day.id)
-                                                ? 'bg-indigo-600 text-white shadow-sm'
-                                                : 'bg-white border border-gray-200 text-gray-500 hover:border-gray-300'
+                                            ? 'bg-indigo-600 text-white shadow-sm'
+                                            : 'bg-white border border-gray-200 text-gray-500 hover:border-gray-300'
                                             }`}
                                     >
                                         {day.label[0]}
@@ -267,8 +267,8 @@ export default function ScheduleManager({ targetType, targetId }: ScheduleManage
                                         <span
                                             key={day.id}
                                             className={`text-[10px] uppercase font-bold ${schedule.days_of_week.includes(day.id)
-                                                    ? 'text-indigo-600'
-                                                    : 'text-gray-300'
+                                                ? 'text-indigo-600'
+                                                : 'text-gray-300'
                                                 }`}
                                         >
                                             {day.label[0]}

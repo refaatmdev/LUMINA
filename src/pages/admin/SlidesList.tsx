@@ -166,7 +166,6 @@ export default function SlidesList() {
 
             {assignModalSlide && (
                 <AssignSlideModal
-                    isOpen={!!assignModalSlide}
                     onClose={() => setAssignModalSlide(null)}
                     slideId={assignModalSlide.id}
                     slideName={assignModalSlide.name}

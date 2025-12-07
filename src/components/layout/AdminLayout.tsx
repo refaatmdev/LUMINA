@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Layout, Monitor, Settings, LogOut, Users } from 'lucide-react';
+import { Layout, Monitor, Settings, LogOut } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useUserRole } from '../../hooks/useUserRole';
 
@@ -55,8 +55,8 @@ export default function AdminLayout({ children, title, actions }: AdminLayoutPro
                                 key={item.path}
                                 onClick={() => navigate(item.path)}
                                 className={`w-full flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group ${isActive
-                                        ? 'bg-indigo-50 text-indigo-700 shadow-sm ring-1 ring-indigo-200'
-                                        : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+                                    ? 'bg-indigo-50 text-indigo-700 shadow-sm ring-1 ring-indigo-200'
+                                    : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
                                     }`}
                             >
                                 <item.icon

@@ -28,7 +28,7 @@ export default function Connect() {
             // Poll for pairing status
             const interval = setInterval(async () => {
                 try {
-                    const { data, error } = await supabase.rpc('get_screen_by_pairing_code', {
+                    const { data } = await supabase.rpc('get_screen_by_pairing_code', {
                         check_code: code
                     });
 

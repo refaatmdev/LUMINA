@@ -12,6 +12,7 @@ interface PlayerState {
     loading: boolean;
     error: string | null;
     isOffline?: boolean;
+    planTier?: string;
 }
 
 export function usePlayerState(screenId: string | undefined) {
@@ -25,6 +26,7 @@ export function usePlayerState(screenId: string | undefined) {
         loading: true,
         error: null,
         isOffline: false,
+        planTier: undefined,
     });
 
     // Refs for subscriptions to access current state
@@ -67,6 +69,7 @@ export function usePlayerState(screenId: string | undefined) {
                     loading: false,
                     error: null,
                     isOffline: false, // Online
+                    planTier: rpcData.plan_tier,
                 };
 
                 if (rpcData.type === 'slide') {

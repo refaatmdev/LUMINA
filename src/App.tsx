@@ -8,19 +8,37 @@ import Settings from './pages/admin/Settings';
 import UpdatePassword from './pages/admin/UpdatePassword';
 import SlidesList from './pages/admin/SlidesList';
 import PlaylistEditor from './pages/admin/PlaylistEditor';
+import Billing from './pages/admin/Billing';
+import TenantsManager from './pages/admin/TenantsManager';
+import PlanManager from './pages/admin/PlanManager';
+import MarketingDashboard from './pages/admin/MarketingDashboard';
+import FinanceAnalytics from './pages/admin/FinanceAnalytics';
+import SystemStats from './pages/admin/SystemStats';
 import Connect from './pages/public/Connect';
 import Player from './pages/public/Player';
 import SuperAdminDashboard from './components/admin/SuperAdminDashboard';
+import AdminLayout from './components/layout/AdminLayout';
+
+import { useUserRole } from './hooks/useUserRole';
+import Suspended from './pages/public/Suspended';
+import Pricing from './pages/public/Pricing';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { session, loading } = useAuth();
+  const { session, loading: authLoading } = useAuth();
+  const { orgStatus, loading: roleLoading } = useUserRole();
 
-  if (loading) {
+  if (authLoading || roleLoading) {
     return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
   }
 
   if (!session) {
     return <Navigate to="/admin/login" replace />;
+  }
+
+  // If org is suspended, redirect to suspended page
+  // But allow super_admin to bypass (though useUserRole logic handles this by setting status to active for super_admin)
+  if (orgStatus === 'suspended') {
+    return <Navigate to="/suspended" replace />;
   }
 
   return <>{children}</>;
@@ -54,6 +72,9 @@ function App() {
           {/* Public Routes */}
           <Route path="/connect" element={<Connect />} />
           <Route path="/player/:id" element={<Player />} />
+          <Route path="/player/:id" element={<Player />} />
+          <Route path="/suspended" element={<Suspended />} />
+          <Route path="/pricing" element={<Pricing />} />
 
           {/* Admin Routes */}
           <Route path="/admin/login" element={<Login />} />
@@ -70,6 +91,16 @@ function App() {
             element={
               <ProtectedRoute>
                 <SlideEditor />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/billing"
+            element={
+              <ProtectedRoute>
+                <AdminLayout title="Billing & Subscription">
+                  <Billing />
+                </AdminLayout>
               </ProtectedRoute>
             }
           />
@@ -102,6 +133,56 @@ function App() {
             element={
               <ProtectedRoute>
                 <UpdatePassword />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/tenants"
+            element={
+              <ProtectedRoute>
+                <AdminLayout title="Tenants Manager">
+                  <TenantsManager />
+                </AdminLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/plans"
+            element={
+              <ProtectedRoute>
+                <AdminLayout title="Subscription Plans">
+                  <PlanManager />
+                </AdminLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/marketing"
+            element={
+              <ProtectedRoute>
+                <AdminLayout title="Marketing & Promotions">
+                  <MarketingDashboard />
+                </AdminLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/finance"
+            element={
+              <ProtectedRoute>
+                <AdminLayout title="Financial Analytics">
+                  <FinanceAnalytics />
+                </AdminLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/stats"
+            element={
+              <ProtectedRoute>
+                <AdminLayout title="System Statistics">
+                  <SystemStats />
+                </AdminLayout>
               </ProtectedRoute>
             }
           />

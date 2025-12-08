@@ -6,6 +6,7 @@ import { supabase } from '../../lib/supabase';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import TemplateGallery from '../../components/editor/TemplateGallery';
 import { useUserRole } from '../../hooks/useUserRole';
+import { usePlanLimits } from '../../hooks/usePlanLimits';
 
 export default function SlideEditor() {
     const [searchParams] = useSearchParams();
@@ -151,7 +152,46 @@ export default function SlideEditor() {
         }
     };
 
-    if (loading) return <div className="flex items-center justify-center h-screen bg-gray-900 text-white">Loading editor...</div>;
+    const { planTier, loading: limitsLoading } = usePlanLimits();
+
+    // Enforce watermark logic when data changes or loads
+    useEffect(() => {
+        if (!limitsLoading) {
+            const newData = { ...initialData };
+
+            // Ensure root and props exist
+            if (!newData.root) {
+                newData.root = { props: { title: 'Untitled Slide' } };
+            }
+            if (!newData.root.props) {
+                newData.root.props = { title: 'Untitled Slide' };
+            }
+
+            const props = newData.root.props as any;
+
+            // If free plan, force showWatermark to true
+            if (planTier === 'free') {
+                props.showWatermark = true;
+            }
+            // If pro plan, respect existing value or default to true if undefined
+            else if (props.showWatermark === undefined) {
+                props.showWatermark = true;
+            }
+
+            setInitialData(newData);
+            setCurrentData(newData);
+        }
+    }, [limitsLoading, planTier]);
+
+    const handleDataChange = (data: Data) => {
+        // Enforce watermark on change for free plan
+        if (planTier === 'free' && data.root.props) {
+            (data.root.props as any).showWatermark = true;
+        }
+        setCurrentData(data);
+    };
+
+    if (loading || limitsLoading) return <div className="flex items-center justify-center h-screen bg-gray-900 text-white">Loading editor...</div>;
 
 
 
@@ -162,6 +202,12 @@ export default function SlideEditor() {
             {showTemplateGallery && (
                 <TemplateGallery
                     onSelect={(data) => {
+                        // Apply watermark logic to template data
+                        if (planTier === 'free') {
+                            if (!data.root) data.root = { props: {} };
+                            if (!data.root.props) data.root.props = {};
+                            (data.root.props as any).showWatermark = true;
+                        }
                         setInitialData(data);
                         setCurrentData(data);
                         setPuckKey(prev => prev + 1);
@@ -213,7 +259,7 @@ export default function SlideEditor() {
                     </button>
                     {/* Tooltip */}
                     <div className="absolute right-0 top-full mt-2 w-64 bg-gray-900 text-white text-xs p-3 rounded shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                        To edit the <strong>Logo</strong>, <strong>Ticker</strong>, or <strong>Theme</strong>, click on the empty background area of the slide canvas.
+                        To edit the <strong>Logo</strong>, <strong>Ticker</strong>, <strong>Theme</strong>, or <strong>Watermark</strong>, click on the empty background area of the slide canvas.
                         <div className="absolute -top-1 right-6 w-2 h-2 bg-gray-900 transform rotate-45"></div>
                     </div>
                 </div>
@@ -224,7 +270,7 @@ export default function SlideEditor() {
                 config={config}
                 data={initialData}
                 onPublish={handlePublish}
-                onChange={(data) => setCurrentData(data)}
+                onChange={handleDataChange}
             />
         </div>
     );

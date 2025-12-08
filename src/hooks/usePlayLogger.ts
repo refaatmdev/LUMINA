@@ -7,6 +7,7 @@ interface LogEntry {
     slide_id: string | null;
     played_at: string;
     duration_played: number;
+    user_agent?: string;
 }
 
 interface UsePlayLoggerProps {
@@ -58,7 +59,8 @@ export function usePlayLogger({ screenId, orgId, slideId }: UsePlayLoggerProps) 
             screen_id: screenId,
             slide_id: currentSlideIdRef.current,
             played_at: new Date().toISOString(),
-            duration_played: Math.round(duration)
+            duration_played: Math.round(duration),
+            user_agent: navigator.userAgent
         };
 
         // Add to local buffer

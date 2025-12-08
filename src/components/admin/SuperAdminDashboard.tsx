@@ -40,18 +40,21 @@ export default function SuperAdminDashboard() {
         try {
             const { data, error } = await supabase
                 .from('organizations')
-                .select('*')
+                .select(`
+                    *,
+                    screens: screens(count)
+                `)
                 .order('created_at', { ascending: false });
 
             if (error) throw error;
 
-            // Transform data to include mock fields if they don't exist in DB yet
+            // Transform data
             const transformedData = (data || []).map((org: any) => ({
                 ...org,
                 status: org.status || 'active',
                 plan: org.plan || 'Free',
-                screen_count: Math.floor(Math.random() * 10), // Mock data
-                storage_used: `${Math.floor(Math.random() * 5)}GB`, // Mock data
+                screen_count: org.screens?.[0]?.count || 0,
+                storage_used: org.storage_used ? `${Math.round(org.storage_used / (1024 * 1024 * 1024))}GB` : '0GB', // Convert bytes to GB if exists, else 0
                 logo_url: org.logo_url || null
             }));
 

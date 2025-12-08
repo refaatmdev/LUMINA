@@ -1,6 +1,7 @@
 import type { Config } from "@measured/puck";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, EffectFade, Pagination, EffectCube, EffectCoverflow } from 'swiper/modules';
+import ViralOverlay from './components/player/ViralOverlay';
 
 import 'swiper/css';
 import 'swiper/css/effect-fade';
@@ -237,6 +238,13 @@ export const config: Config<Props> = {
                     { label: "Dark Gradient", value: "dark-gradient" },
                     { label: "Holiday Frame", value: "holiday-frame" },
                 ]
+            },
+            showWatermark: {
+                type: "radio", // Use radio or select to allow toggling if pro
+                options: [
+                    { label: "Show", value: true },
+                    { label: "Hide", value: false }
+                ]
             }
         },
         defaultProps: {
@@ -245,8 +253,9 @@ export const config: Config<Props> = {
             tickerText: "Welcome to Lumina Digital Signage",
             tickerBackground: "#000000",
             overlayTheme: "none",
+            showWatermark: true,
         },
-        render: ({ children, institutionLogo, showTicker, tickerText, tickerBackground, overlayTheme }) => (
+        render: ({ children, institutionLogo, showTicker, tickerText, tickerBackground, overlayTheme, ...props }) => (
             <div
                 id="puck-root-canvas"
                 className="mx-auto shadow-2xl bg-white overflow-hidden relative"
@@ -303,6 +312,40 @@ export const config: Config<Props> = {
                 )}
                 {overlayTheme === 'holiday-frame' && (
                     <div className="absolute inset-0 border-[20px] border-red-600 pointer-events-none z-40 opacity-80" />
+                )}
+                {/* Watermark */}
+                {/* We will control showWatermark via props passed from the parent or default to true if not set */}
+                {/* Since we can't easily inject dynamic props here without changing the config structure, we rely on the field value */}
+                {/* The SlideEditor will be responsible for setting this field based on the plan */}
+                {/* For now, we assume if it's not explicitly false, we show it (or we can default to true in fields) */}
+
+                {/* Actually, let's just check a prop if we can. But Puck config is static. */}
+                {/* We will add a 'showWatermark' field to root.fields. */}
+
+                {/* Viral QR Code Overlay */}
+                {/* Render if plan_tier is free or basic. We access this via props injected by Player.tsx */}
+                {/* @ts-ignore - planTier and orgId are injected props */}
+                {['free', 'basic'].includes(props.planTier) && props.orgId && (
+                    <ViralOverlay orgId={props.orgId} screenId={props.screenId} />
+                )}
+
+                {/* Watermark - Only show if NOT showing Viral Overlay (to avoid clutter) OR if explicitly enabled and not covered by Viral */}
+                {/* Actually, the user asked for "Powered by Lumina" QR code overlay. This might replace the simple watermark for free/basic users. */}
+                {/* But let's keep the logic separate. If Viral Overlay is shown, maybe we hide the simple watermark? */}
+                {/* The user didn't explicitly say to remove the other watermark, but "Powered by Lumina" is in the QR overlay too. */}
+                {/* Let's show both for now or maybe hide the simple one if Viral is present to avoid double branding. */}
+                {/* Let's hide the simple watermark if plan is free/basic (since they get the big QR one). */}
+
+                {/* @ts-ignore */}
+                {(props.showWatermark !== false && !['free', 'basic'].includes(props.planTier)) && (
+                    <div className="absolute bottom-4 right-4 z-[9999] pointer-events-none">
+                        <div className="bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-lg border border-gray-200 flex items-center gap-2">
+                            <div className="w-4 h-4 bg-indigo-600 rounded-full flex items-center justify-center">
+                                <span className="text-[10px] font-bold text-white">L</span>
+                            </div>
+                            <span className="text-xs font-bold text-gray-900">Powered by Lumina</span>
+                        </div>
+                    </div>
                 )}
             </div>
         ),

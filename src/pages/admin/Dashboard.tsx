@@ -1,9 +1,12 @@
+
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { useUserRole } from '../../hooks/useUserRole';
+import { usePlanLimits } from '../../hooks/usePlanLimits';
+import { getPlanLimits } from '../../constants/plans';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import { useAuth } from '../../contexts/AuthContext';
-import { Plus, Monitor, Wifi, WifiOff, FolderInput, Layers, Layout, AlertTriangle, Calendar, Trash2 } from 'lucide-react';
+import { Plus, Monitor, Wifi, WifiOff, FolderInput, Layers, Layout, AlertTriangle, Calendar, Trash2, Megaphone, X } from 'lucide-react';
 import AdminLayout from '../../components/layout/AdminLayout';
 import ScreenGroupsTab from '../../components/admin/ScreenGroupsTab';
 import UrgentAdModal from '../../components/admin/UrgentAdModal';
@@ -43,6 +46,7 @@ export default function Dashboard() {
     const [screens, setScreens] = useState<Screen[]>([]);
     const [groups, setGroups] = useState<ScreenGroup[]>([]);
     const [loading, setLoading] = useState(true);
+    const [announcement, setAnnouncement] = useState<{ message: string, bg_color: string } | null>(null);
 
     // Modals
     const [showPairModal, setShowPairModal] = useState(false);
@@ -60,10 +64,13 @@ export default function Dashboard() {
     const [pairingCode, setPairingCode] = useState('');
     const [pairingError, setPairingError] = useState<string | null>(null);
 
+    const { checkScreenLimit, planTier } = usePlanLimits();
+
     useEffect(() => {
-        if (user && orgId) {
+        if (orgId) {
             fetchScreens();
             fetchGroups();
+            fetchAnnouncement();
         }
 
         const channel = supabase.channel('dashboard-screens')
@@ -126,9 +133,57 @@ export default function Dashboard() {
         }
     };
 
+    const fetchAnnouncement = async () => {
+        try {
+            // Fetch active announcements targeting this plan or all
+            const { data, error } = await supabase
+                .from('system_announcements')
+                .select('message, bg_color, target_plan')
+                .eq('is_active', true)
+                .order('created_at', { ascending: false });
+
+            if (error) throw error;
+
+            if (data && data.length > 0) {
+                // Filter client-side for plan targeting if needed (though RLS/Query is better, but target_plan is text)
+                // Logic: if target_plan is null (all) OR matches current planTier
+                // Logic: if target_plan is null (all) OR matches current planTier
+                // Better: just show the first one that matches or is global
+                const match = data.find(a => !a.target_plan || a.target_plan === planTier || (a.target_plan === 'pro' && (planTier as any) === 'enterprise'));
+                if (match) setAnnouncement(match);
+            }
+        } catch (error) {
+            console.error('Error fetching announcements:', error);
+        }
+    };
+
+
+
     const handleAddScreen = async (e: React.FormEvent) => {
         e.preventDefault();
         setPairingError(null);
+
+        // Check screen limit
+        const canAdd = await checkScreenLimit();
+        if (!canAdd) {
+            const limits = getPlanLimits(planTier || 'free');
+
+            if (planTier === 'pro' && limits.maxScreens >= 100) {
+                setPairingError(
+                    <span>
+                        Need more than 100 screens?{' '}
+                        <a href="mailto:enterprise@lumina.app" className="underline font-bold">
+                            Contact our Enterprise Team
+                        </a>
+                    </span> as any
+                );
+            } else {
+                setPairingError(
+                    `You reached the limit of ${limits.maxScreens} screens. Upgrade plan to add more.`
+                );
+            }
+            return;
+        }
 
         try {
             const { data: userData, error: userError } = await supabase
@@ -222,15 +277,35 @@ export default function Dashboard() {
                         </button>
                         <button
                             onClick={() => setShowPairModal(true)}
-                            className="flex items-center bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 shadow-sm transition-all duration-200 font-medium text-sm"
+                            className="bg-indigo-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-indigo-700 transition-colors shadow-sm shadow-indigo-200"
                         >
-                            <Plus size={18} className="mr-2" />
+                            <Plus size={20} />
                             Add Screen
                         </button>
                     </div>
                 ) : null
             }
         >
+            {announcement && (
+                <div className={`mb-6 p-4 rounded-xl flex items-start gap-3 bg-${announcement.bg_color}-50 border border-${announcement.bg_color}-100`}>
+                    <div className={`p-2 rounded-lg bg-${announcement.bg_color}-100 text-${announcement.bg_color}-600`}>
+                        <Megaphone size={20} />
+                    </div>
+                    <div className="flex-1">
+                        <h3 className={`font-bold text-${announcement.bg_color}-900`}>Announcement</h3>
+                        <p className={`text-${announcement.bg_color}-800 text-sm mt-0.5`}>{announcement.message}</p>
+                    </div>
+                    <button
+                        onClick={() => setAnnouncement(null)}
+                        className={`text-${announcement.bg_color}-400 hover:text-${announcement.bg_color}-600`}
+                    >
+                        <X size={20} />
+                    </button>
+                </div>
+            )}
+
+
+
             <div className="flex border-b border-gray-200 mb-6">
                 <button
                     className={`pb-3 px-4 font-medium text-sm transition-colors relative ${activeTab === 'screens' ? 'text-indigo-600' : 'text-gray-500 hover:text-gray-700'}`}

@@ -20,7 +20,8 @@ export default function Player() {
         orgId,
         loading: stateLoading,
         error: stateError,
-        isOffline
+        isOffline,
+        planTier
     } = usePlayerState(id);
 
     // 2. Playlist Engine (Only active if mode is 'playlist')
@@ -75,6 +76,24 @@ export default function Player() {
         dataToRender = playlistSlide;
         nextDataToRender = playlistNextSlide;
         uniqueKey = playlistSlide ? JSON.stringify(playlistSlide).substring(0, 50) : 'empty';
+    }
+
+    // Inject Plan Info for Viral Overlay
+    if (dataToRender && dataToRender.root) {
+        if (!dataToRender.root.props) dataToRender.root.props = {};
+        // We use a type assertion or just direct assignment if TS allows, or spread
+        dataToRender = {
+            ...dataToRender,
+            root: {
+                ...dataToRender.root,
+                props: {
+                    ...dataToRender.root.props,
+                    planTier,
+                    orgId,
+                    screenId: id
+                }
+            }
+        };
     }
 
     if (!dataToRender) {

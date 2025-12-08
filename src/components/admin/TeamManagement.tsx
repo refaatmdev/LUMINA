@@ -15,10 +15,16 @@ interface TeamManagementProps {
 }
 
 export default function TeamManagement({ orgId }: TeamManagementProps) {
-    const { orgId: userOrgId } = useUserRole();
+    const { orgId: userOrgId, role: currentUserRole } = useUserRole();
     const targetOrgId = orgId || userOrgId;
 
     const [members, setMembers] = useState<Profile[]>([]);
+    // Wait, I can't skip lines in replace_file_content like that if I want to change two places far apart.
+    // I need to use multi_replace_file_content or two separate calls.
+    // Let's use multi_replace_file_content.
+
+
+
     const [loading, setLoading] = useState(true);
     const [showInviteModal, setShowInviteModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
@@ -291,7 +297,10 @@ export default function TeamManagement({ orgId }: TeamManagementProps) {
                                     >
                                         <option value="org_admin">Organization Admin</option>
                                         <option value="editor">Editor</option>
-                                        <option value="super_admin">Super Admin</option>
+                                        {/* Only Super Admins can promote others to Super Admin */}
+                                        {currentUserRole === 'super_admin' && (
+                                            <option value="super_admin">Super Admin</option>
+                                        )}
                                     </select>
                                 </div>
                             </div>

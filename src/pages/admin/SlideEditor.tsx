@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Puck, type Data } from "@measured/puck";
 import "@measured/puck/puck.css";
-import config from '../../puck.config';
+import { getEditorConfig } from '../../puck.config';
 import { supabase } from '../../lib/supabase';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import TemplateGallery from '../../components/editor/TemplateGallery';
 import { useUserRole } from '../../hooks/useUserRole';
 import { usePlanLimits } from '../../hooks/usePlanLimits';
@@ -11,8 +11,18 @@ import { usePlanLimits } from '../../hooks/usePlanLimits';
 export default function SlideEditor() {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
+    const location = useLocation();
     const slideId = searchParams.get('id');
-    const [initialData, setInitialData] = useState<Data>({ content: [], root: { props: { title: 'Untitled Slide' } } });
+
+    // Get initial values from navigation state (from CreateSlideModal)
+    const initialName = location.state?.name || 'Untitled Slide';
+    const initialOrientation = location.state?.orientation || 'landscape';
+
+    const [initialData, setInitialData] = useState<Data>({
+        content: [],
+        root: { props: { title: initialName } }
+    });
+    const [orientation, setOrientation] = useState<'landscape' | 'portrait'>(initialOrientation);
     const [loading, setLoading] = useState(!!slideId);
     const [showTemplateGallery, setShowTemplateGallery] = useState(false);
     const { role } = useUserRole();
@@ -37,11 +47,17 @@ export default function SlideEditor() {
                 .single();
 
             if (error) throw error;
-            if (data && data.content) {
-                // Check if content is valid Puck data, otherwise use default
-                const content = data.content as any;
-                if (content.content || content.root) {
-                    setInitialData(content);
+            if (data) {
+                if (data.orientation) {
+                    setOrientation(data.orientation);
+                }
+
+                if (data.content) {
+                    // Check if content is valid Puck data, otherwise use default
+                    const content = data.content as any;
+                    if (content.content || content.root) {
+                        setInitialData(content);
+                    }
                 }
             }
         } catch (error) {
@@ -83,6 +99,7 @@ export default function SlideEditor() {
             org_id: userData.org_id,
             name: data.root.props?.title || 'Puck Slide',
             content: data,
+            orientation: orientation,
         };
 
         let error;
@@ -267,7 +284,7 @@ export default function SlideEditor() {
 
             <Puck
                 key={puckKey}
-                config={config}
+                config={getEditorConfig(planTier, orientation)}
                 data={initialData}
                 onPublish={handlePublish}
                 onChange={handleDataChange}

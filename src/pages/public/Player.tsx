@@ -3,10 +3,13 @@ import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import { WifiOff } from 'lucide-react';
 import { Render } from "@measured/puck";
 import config from '../../puck.config';
+import ViralOverlay from '../../components/player/ViralOverlay';
 import { usePlaylistEngine } from '../../hooks/usePlaylistEngine';
 import { AnimatePresence, motion } from 'framer-motion';
 import { usePlayLogger } from '../../hooks/usePlayLogger';
 import { usePlayerState } from '../../hooks/usePlayerState';
+import { supabase } from '../../lib/supabase';
+import { useEffect, useState } from 'react';
 
 export default function Player() {
     const { id } = useParams();
@@ -21,7 +24,8 @@ export default function Player() {
         loading: stateLoading,
         error: stateError,
         isOffline,
-        planTier
+        planTier,
+        orientation
     } = usePlayerState(id);
 
     // 2. Playlist Engine (Only active if mode is 'playlist')
@@ -43,6 +47,30 @@ export default function Player() {
         orgId: orgId,
         slideId: currentPlayingSlideId
     });
+
+    // Trial Check Logic
+    const [isTrialExpired, setIsTrialExpired] = useState(false);
+
+    useEffect(() => {
+        if (orgId) {
+            checkTrial(orgId);
+        }
+    }, [orgId]);
+
+    const checkTrial = async (organizationId: string) => {
+        const { data } = await supabase
+            .from('organizations')
+            .select('plan_tier, trial_ends_at')
+            .eq('id', organizationId)
+            .single();
+
+        if (data && data.plan_tier === 'free' && data.trial_ends_at) {
+            const trialEnd = new Date(data.trial_ends_at);
+            if (new Date() > trialEnd) {
+                setIsTrialExpired(true);
+            }
+        }
+    };
 
     // 4. Loading & Error States
     if (stateLoading) {
@@ -129,16 +157,63 @@ export default function Player() {
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.5 }}
-                    className="absolute inset-0 z-10 w-full h-full"
+                    className="absolute inset-0 z-10 w-full h-full flex items-center justify-center bg-black"
                 >
-                    <Render config={config} data={dataToRender} />
+                    <div
+                        style={{
+                            width: '100%',
+                            height: '100%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}
+                    >
+                        {/* 
+                            Container to enforce aspect ratio.
+                            If orientation is portrait, we want to fit a 9/16 box.
+                            If landscape, 16/9.
+                            We use max-width/height and aspect-ratio to contain it.
+                        */}
+                        <div
+                            className="relative shadow-2xl overflow-hidden bg-black"
+                            style={{
+                                aspectRatio: orientation === 'portrait' ? '9/16' : '16/9',
+                                height: orientation === 'portrait' ? '100%' : 'auto',
+                                width: orientation === 'portrait' ? 'auto' : '100%',
+                                maxHeight: '100vh',
+                                maxWidth: '100vw',
+                            }}
+                        >
+                            <Render config={config} data={dataToRender} />
+                        </div>
+                    </div>
                 </motion.div>
             </AnimatePresence>
 
-            {/* Buffer Layer - Hidden but rendering to preload images */}
+            {/* Buffer Layer */}
             {nextDataToRender && (
                 <div className="absolute inset-0 z-0 opacity-0 pointer-events-none w-full h-full" aria-hidden="true">
                     <Render config={config} data={nextDataToRender} />
+                </div>
+            )}
+
+            {/* Explicitly Render Viral Overlay for Free/Basic Plans ONLY (Exclude Custom) */}
+            {planTier && ['free', 'basic'].includes(planTier) && orgId && (
+                <div className="absolute inset-0 z-[100] pointer-events-none">
+                    <ViralOverlay orgId={orgId} screenId={id} />
+                </div>
+            )}
+
+            {/* Trial Expired Overlay */}
+            {isTrialExpired && (
+                <div className="absolute inset-0 z-[9999] bg-black/90 flex flex-col items-center justify-center text-white p-8 text-center">
+                    <div className="w-24 h-24 bg-red-600/20 rounded-full flex items-center justify-center mb-6 backdrop-blur-sm border border-red-500/50">
+                        <WifiOff size={48} className="text-red-500" />
+                    </div>
+                    <h1 className="text-4xl font-bold mb-4">Trial Expired</h1>
+                    <p className="text-xl text-gray-300 max-w-md">
+                        The trial period for this screen has ended. Please contact your administrator to upgrade the plan.
+                    </p>
                 </div>
             )}
         </div>

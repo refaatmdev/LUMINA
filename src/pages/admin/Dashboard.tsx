@@ -64,7 +64,7 @@ export default function Dashboard() {
     const [pairingCode, setPairingCode] = useState('');
     const [pairingError, setPairingError] = useState<string | null>(null);
 
-    const { checkScreenLimit, planTier } = usePlanLimits();
+    const { checkScreenLimit, planTier, maxScreens } = usePlanLimits();
 
     useEffect(() => {
         if (orgId) {
@@ -179,7 +179,7 @@ export default function Dashboard() {
                 );
             } else {
                 setPairingError(
-                    `You reached the limit of ${limits.maxScreens} screens. Upgrade plan to add more.`
+                    `You reached the limit of ${maxScreens} screens. Upgrade plan to add more.`
                 );
             }
             return;
@@ -349,7 +349,32 @@ export default function Dashboard() {
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {screens.map((screen) => (
-                                <div key={screen.id} className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200 p-6 group">
+                                <div className="relative bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200 p-6 group">
+                                    {/* Delete Button - Top Right */}
+                                    <button
+                                        onClick={async (e) => {
+                                            e.stopPropagation();
+                                            if (window.confirm('Are you sure you want to delete this screen? This action cannot be undone.')) {
+                                                try {
+                                                    const { error } = await supabase
+                                                        .from('screens')
+                                                        .delete()
+                                                        .eq('id', screen.id);
+
+                                                    if (error) throw error;
+                                                    fetchScreens();
+                                                } catch (err) {
+                                                    console.error('Error deleting screen:', err);
+                                                    alert('Failed to delete screen');
+                                                }
+                                            }
+                                        }}
+                                        className="absolute -right-3 -top-3 bg-white text-gray-400 hover:text-red-600 hover:bg-red-50 p-2 rounded-full shadow-sm border border-gray-200 z-10 transition-all duration-200"
+                                        title="Delete Screen"
+                                    >
+                                        <Trash2 size={16} />
+                                    </button>
+
                                     <div className="flex items-center justify-between mb-4">
                                         <div className="p-3 bg-indigo-500/10 rounded-xl">
                                             <Monitor className="w-6 h-6 text-indigo-400" />
@@ -400,11 +425,11 @@ export default function Dashboard() {
                                         )}
                                     </div>
 
-                                    <div className="flex items-center gap-2 pt-4 border-t border-gray-100">
+                                    <div className="flex flex-col gap-3 pt-4 border-t border-gray-100">
                                         <div className="text-xs font-mono text-zinc-600 uppercase tracking-wider">
                                             ID: {screen.pairing_code}
                                         </div>
-                                        <div className="ml-auto flex items-center gap-2">
+                                        <div className="flex flex-wrap items-center gap-2">
                                             {screen.urgent_slide_id && (
                                                 <button
                                                     onClick={async (e) => {
@@ -424,10 +449,10 @@ export default function Dashboard() {
                                                             console.error('Error stopping urgent ad:', err);
                                                         }
                                                     }}
-                                                    className="text-xs font-bold text-white bg-red-600 hover:bg-red-700 transition-colors px-2 py-1 rounded shadow-sm flex items-center gap-1"
+                                                    className="flex-1 text-xs font-bold text-white bg-red-600 hover:bg-red-700 transition-colors px-3 py-2 rounded-lg shadow-sm flex items-center justify-center gap-1.5"
                                                     title="Stop Urgent Ad"
                                                 >
-                                                    <AlertTriangle size={10} />
+                                                    <AlertTriangle size={12} />
                                                     STOP URGENT
                                                 </button>
                                             )}
@@ -437,7 +462,7 @@ export default function Dashboard() {
                                                         e.stopPropagation();
                                                         handleAssignSlide(screen.id, null, 'screen');
                                                     }}
-                                                    className="text-xs font-medium text-indigo-500 hover:text-indigo-700 transition-colors px-2 py-1 rounded hover:bg-indigo-50"
+                                                    className="flex-1 text-xs font-medium text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 transition-colors px-3 py-2 rounded-lg flex items-center justify-center gap-1.5"
                                                     title="Stop Manual Override"
                                                 >
                                                     Stop Override
@@ -448,9 +473,9 @@ export default function Dashboard() {
                                                     e.stopPropagation();
                                                     openScheduleModal(screen.id, screen.name, 'screen');
                                                 }}
-                                                className="flex items-center gap-1.5 text-xs font-medium text-zinc-400 hover:text-indigo-600 transition-colors px-2 py-1 rounded hover:bg-indigo-50"
+                                                className="flex-1 flex items-center justify-center gap-1.5 text-xs font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 transition-colors px-3 py-2 rounded-lg"
                                             >
-                                                <Calendar size={12} />
+                                                <Calendar size={14} />
                                                 Schedule
                                             </button>
                                             <button
@@ -458,7 +483,7 @@ export default function Dashboard() {
                                                     e.stopPropagation();
                                                     openMoveModal(screen.id, screen.group_id);
                                                 }}
-                                                className="flex items-center gap-1.5 text-xs font-medium text-zinc-400 hover:text-indigo-600 transition-colors px-2 py-1 rounded hover:bg-indigo-50"
+                                                className="flex-1 flex items-center justify-center gap-1.5 text-xs font-medium text-orange-700 bg-orange-50 hover:bg-orange-100 border border-orange-200 transition-colors px-3 py-2 rounded-lg"
                                             >
                                                 <FolderInput className="w-3 h-3" />
                                                 Move
@@ -468,32 +493,9 @@ export default function Dashboard() {
                                                     e.stopPropagation();
                                                     window.open(`/player/${screen.id}`, '_blank');
                                                 }}
-                                                className="flex items-center gap-1.5 text-xs font-medium text-zinc-400 hover:text-indigo-600 transition-colors px-2 py-1 rounded hover:bg-indigo-50"
+                                                className="flex-1 flex items-center justify-center gap-1.5 text-xs font-medium text-gray-700 bg-gray-50 hover:bg-gray-100 border border-gray-200 transition-colors px-3 py-2 rounded-lg"
                                             >
                                                 Manage
-                                            </button>
-                                            <button
-                                                onClick={async (e) => {
-                                                    e.stopPropagation();
-                                                    if (window.confirm('Are you sure you want to delete this screen? This action cannot be undone.')) {
-                                                        try {
-                                                            const { error } = await supabase
-                                                                .from('screens')
-                                                                .delete()
-                                                                .eq('id', screen.id);
-
-                                                            if (error) throw error;
-                                                            fetchScreens();
-                                                        } catch (err) {
-                                                            console.error('Error deleting screen:', err);
-                                                            alert('Failed to delete screen');
-                                                        }
-                                                    }
-                                                }}
-                                                className="flex items-center gap-1.5 text-xs font-medium text-zinc-400 hover:text-red-600 transition-colors px-2 py-1 rounded hover:bg-red-50"
-                                                title="Delete Screen"
-                                            >
-                                                <Trash2 size={14} />
                                             </button>
                                         </div>
                                     </div>

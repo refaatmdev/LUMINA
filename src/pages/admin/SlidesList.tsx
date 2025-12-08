@@ -8,6 +8,7 @@ import config from '../../puck.config';
 import "@measured/puck/puck.css";
 import AdminLayout from '../../components/layout/AdminLayout';
 import AssignSlideModal from '../../components/admin/AssignSlideModal';
+import CreateSlideModal from '../../components/admin/CreateSlideModal';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 
 interface Slide {
@@ -23,6 +24,7 @@ export default function SlidesList() {
     const [slides, setSlides] = useState<Slide[]>([]);
     const [loading, setLoading] = useState(true);
     const [assignModalSlide, setAssignModalSlide] = useState<{ id: string, name: string } | null>(null);
+    const [showCreateModal, setShowCreateModal] = useState(false);
 
     useEffect(() => {
         if (roleLoading) return;
@@ -73,7 +75,7 @@ export default function SlidesList() {
             title="Slides Library"
             actions={
                 <button
-                    onClick={() => navigate('/admin/editor')}
+                    onClick={() => setShowCreateModal(true)}
                     className="flex items-center bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 shadow-sm transition-all duration-200 font-medium text-sm"
                 >
                     <Plus size={18} className="mr-2" />
@@ -93,7 +95,7 @@ export default function SlidesList() {
                     <h3 className="text-lg font-medium text-gray-900">No slides yet</h3>
                     <p className="text-gray-500 mt-1 mb-6">Create your first digital signage slide.</p>
                     <button
-                        onClick={() => navigate('/admin/editor')}
+                        onClick={() => setShowCreateModal(true)}
                         className="inline-flex items-center text-indigo-600 hover:text-indigo-700 font-medium"
                     >
                         <Plus size={18} className="mr-1" />
@@ -169,6 +171,16 @@ export default function SlidesList() {
                     onClose={() => setAssignModalSlide(null)}
                     slideId={assignModalSlide.id}
                     slideName={assignModalSlide.name}
+                />
+            )}
+
+            {showCreateModal && (
+                <CreateSlideModal
+                    onClose={() => setShowCreateModal(false)}
+                    onCreate={(name, orientation) => {
+                        setShowCreateModal(false);
+                        navigate('/admin/editor', { state: { name, orientation } });
+                    }}
                 />
             )}
         </AdminLayout>

@@ -15,6 +15,7 @@ interface Organization {
     screen_count?: number;
     storage_used?: string;
     logo_url?: string;
+    trial_ends_at?: string;
 }
 
 export default function SuperAdminDashboard() {
@@ -24,6 +25,7 @@ export default function SuperAdminDashboard() {
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [selectedOrgId, setSelectedOrgId] = useState<string | null>(null);
     const [newOrgName, setNewOrgName] = useState('');
+    const [editingOrg, setEditingOrg] = useState<Organization | null>(null);
 
     // Mock Metrics Data
     const metrics = {
@@ -55,7 +57,8 @@ export default function SuperAdminDashboard() {
                 plan: org.plan || 'Free',
                 screen_count: org.screens?.[0]?.count || 0,
                 storage_used: org.storage_used ? `${Math.round(org.storage_used / (1024 * 1024 * 1024))}GB` : '0GB', // Convert bytes to GB if exists, else 0
-                logo_url: org.logo_url || null
+                logo_url: org.logo_url || null,
+                trial_ends_at: org.trial_ends_at
             }));
 
             setOrgs(transformedData);
@@ -240,6 +243,13 @@ export default function SuperAdminDashboard() {
                                                         <Users size={18} />
                                                     </button>
                                                     <button
+                                                        onClick={() => setEditingOrg(org)}
+                                                        className="p-2 text-gray-500 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                                                        title="Edit Organization"
+                                                    >
+                                                        <Activity size={18} />
+                                                    </button>
+                                                    <button
                                                         onClick={() => handleSuspend(org.id, org.status)}
                                                         className={`p-2 rounded-lg transition-colors ${org.status === 'active'
                                                             ? 'text-gray-500 hover:text-red-600 hover:bg-red-50'
@@ -331,6 +341,69 @@ export default function SuperAdminDashboard() {
                                 <div className="p-6 overflow-y-auto bg-gray-50/30 flex-1">
                                     <TeamManagement orgId={selectedOrgId} />
                                 </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {editingOrg && (
+                        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-[60] p-4 animate-in fade-in duration-200">
+                            <div className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md transform transition-all scale-100 border border-gray-100">
+                                <div className="flex justify-between items-center mb-6">
+                                    <div>
+                                        <h3 className="text-xl font-bold text-gray-900">Edit Organization</h3>
+                                        <p className="text-sm text-gray-500 mt-1">Update details for {editingOrg.name}</p>
+                                    </div>
+                                    <button
+                                        onClick={() => setEditingOrg(null)}
+                                        className="text-gray-400 hover:text-gray-600 p-1 hover:bg-gray-100 rounded-lg transition-colors"
+                                    >
+                                        <X size={20} />
+                                    </button>
+                                </div>
+                                <form onSubmit={async (e) => {
+                                    e.preventDefault();
+                                    try {
+                                        const { error } = await supabase
+                                            .from('organizations')
+                                            .update({
+                                                trial_ends_at: editingOrg.trial_ends_at
+                                            })
+                                            .eq('id', editingOrg.id);
+
+                                        if (error) throw error;
+                                        setEditingOrg(null);
+                                        fetchOrgs();
+                                    } catch (err) {
+                                        console.error(err);
+                                        alert('Error updating organization');
+                                    }
+                                }} className="space-y-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1.5">Trial Ends At</label>
+                                        <input
+                                            type="datetime-local"
+                                            value={editingOrg.trial_ends_at ? new Date(editingOrg.trial_ends_at).toISOString().slice(0, 16) : ''}
+                                            onChange={(e) => setEditingOrg({ ...editingOrg, trial_ends_at: e.target.value ? new Date(e.target.value).toISOString() : undefined })}
+                                            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-gray-900"
+                                        />
+                                        <p className="text-xs text-gray-500 mt-1">Leave empty for no trial expiration.</p>
+                                    </div>
+                                    <div className="flex justify-end gap-3 pt-4">
+                                        <button
+                                            type="button"
+                                            onClick={() => setEditingOrg(null)}
+                                            className="px-4 py-2.5 text-gray-600 hover:bg-gray-50 rounded-xl font-medium transition-colors"
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button
+                                            type="submit"
+                                            className="px-4 py-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 font-medium shadow-sm hover:shadow transition-all"
+                                        >
+                                            Save Changes
+                                        </button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     )}

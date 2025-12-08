@@ -10,8 +10,10 @@ import {
     List,
     Megaphone,
     TrendingUp,
-    Activity
+    Activity,
+    HardDrive
 } from 'lucide-react';
+import TrialGuard from '../auth/TrialGuard';
 import { useAuth } from '../../contexts/AuthContext';
 import { useUserRole } from '../../hooks/useUserRole';
 import ImpersonationBanner from '../admin/ImpersonationBanner';
@@ -37,6 +39,7 @@ export default function AdminLayout({ children, title, actions }: AdminLayoutPro
         { icon: Monitor, label: 'Screens', path: '/admin' },
 
         { icon: ImageIcon, label: 'Slides Library', path: '/admin/slides' },
+        { icon: HardDrive, label: 'Media Library', path: '/admin/media' },
         { icon: CreditCard, label: 'Billing', path: '/admin/billing' },
         { icon: Shield, label: 'Tenants', path: '/admin/tenants' }, // Super Admin only (ideally hidden)
         { icon: List, label: 'Plans', path: '/admin/plans' },
@@ -132,7 +135,9 @@ export default function AdminLayout({ children, title, actions }: AdminLayoutPro
                         </div>
                     </header>
                     <div className="p-8 max-w-7xl mx-auto">
-                        {children}
+                        <TrialGuard>
+                            {children}
+                        </TrialGuard>
                     </div>
                 </main>
             </div>

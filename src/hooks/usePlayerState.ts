@@ -13,6 +13,7 @@ interface PlayerState {
     error: string | null;
     isOffline?: boolean;
     planTier?: string;
+    orientation?: 'landscape' | 'portrait';
 }
 
 export function usePlayerState(screenId: string | undefined) {
@@ -70,6 +71,7 @@ export function usePlayerState(screenId: string | undefined) {
                     error: null,
                     isOffline: false, // Online
                     planTier: rpcData.plan_tier,
+                    orientation: rpcData.orientation || 'landscape',
                 };
 
                 if (rpcData.type === 'slide') {

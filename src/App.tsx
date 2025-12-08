@@ -14,6 +14,7 @@ import PlanManager from './pages/admin/PlanManager';
 import MarketingDashboard from './pages/admin/MarketingDashboard';
 import FinanceAnalytics from './pages/admin/FinanceAnalytics';
 import SystemStats from './pages/admin/SystemStats';
+import MediaLibrary from './pages/admin/MediaLibrary';
 import Connect from './pages/public/Connect';
 import Player from './pages/public/Player';
 import SuperAdminDashboard from './components/admin/SuperAdminDashboard';
@@ -117,6 +118,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <SlidesList />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/media"
+            element={
+              <ProtectedRoute>
+                <MediaLibrary />
               </ProtectedRoute>
             }
           />

@@ -12,10 +12,22 @@ export const ANIMATION_OPTIONS = [
 ];
 
 export const COMMON_STYLE_FIELDS: Record<string, Field<any>> = {
-    backgroundColor: { type: "text", label: "Background Color" }, // Could use a color picker custom field
+    backgroundColor: { type: "text", label: "Background Color (Hex/Name)" }, // type: "color" is not natively supported in all Puck versions, using text for flexibility
     textColor: { type: "text", label: "Text Color" },
-    padding: { type: "text", label: "Padding (e.g. 20px)" },
-    borderRadius: { type: "text", label: "Border Radius (e.g. 8px)" },
+    padding: { type: "text", label: "Padding (e.g. 20px or 2rem)" },
+    borderRadius: { type: "number", label: "Border Radius (px)" },
+    border: { type: "text", label: "Border (e.g. 1px solid black)" },
+    boxShadow: {
+        type: "select",
+        label: "Shadow",
+        options: [
+            { label: "None", value: "none" },
+            { label: "Small", value: "0 1px 2px 0 rgb(0 0 0 / 0.05)" },
+            { label: "Medium", value: "0 4px 6px -1px rgb(0 0 0 / 0.1)" },
+            { label: "Large", value: "0 10px 15px -3px rgb(0 0 0 / 0.1)" },
+            { label: "X-Large", value: "0 20px 25px -5px rgb(0 0 0 / 0.1)" },
+        ]
+    },
     animation: {
         type: "select",
         options: ANIMATION_OPTIONS,

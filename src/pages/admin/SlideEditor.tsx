@@ -67,7 +67,7 @@ export default function SlideEditor() {
         }
     };
 
-    const handlePublish = async (data: Data) => {
+    const handlePublish = async (data: Data, status: 'draft' | 'published' = 'published') => {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) {
             alert('You must be logged in to save.');
@@ -85,21 +85,12 @@ export default function SlideEditor() {
             return;
         }
 
-        // Use the title from the root props if available, or default
-        // Note: We need to ensure we have a way to set the title in Puck or keep the external input.
-        // Puck doesn't have a built-in "Document Title" field visible easily unless we add it to root props.
-        // For now, let's just use "Untitled Slide" or keep the existing name if updating.
-        // Better: Add a "title" field to the root component in config? 
-        // Or just prompt user? 
-        // Let's assume the user can edit the title in the header if we wrap it, 
-        // but Puck takes over the full screen usually.
-        // Let's just save it.
-
         const slideData = {
             org_id: userData.org_id,
             name: data.root.props?.title || 'Puck Slide',
             content: data,
             orientation: orientation,
+            status: status
         };
 
         let error;
@@ -108,7 +99,11 @@ export default function SlideEditor() {
         if (slideId) {
             const { error: updateError } = await supabase
                 .from('slides')
-                .update({ content: data, name: slideData.name })
+                .update({
+                    content: data,
+                    name: slideData.name,
+                    status: status
+                })
                 .eq('id', slideId);
             error = updateError;
         } else {
@@ -128,20 +123,23 @@ export default function SlideEditor() {
         if (error) {
             console.error(error);
             alert('Error saving slide.');
+            return null;
         } else {
-            // Broadcast update
-            const channel = supabase.channel('system-updates');
-            channel.subscribe(async (status) => {
-                if (status === 'SUBSCRIBED') {
-                    await channel.send({
-                        type: 'broadcast',
-                        event: 'slide_updated',
-                        payload: { id: newSlideId },
-                    });
-                    supabase.removeChannel(channel);
-                }
-            });
-            alert('Slide published successfully!');
+            // Broadcast update only if published
+            if (status === 'published') {
+                const channel = supabase.channel('system-updates');
+                channel.subscribe(async (status) => {
+                    if (status === 'SUBSCRIBED') {
+                        await channel.send({
+                            type: 'broadcast',
+                            event: 'slide_updated',
+                            payload: { id: newSlideId },
+                        });
+                        supabase.removeChannel(channel);
+                    }
+                });
+            }
+            return newSlideId;
         }
     };
 
@@ -240,8 +238,8 @@ export default function SlideEditor() {
 
             {/* ... */}
 
-            {/* Global Settings Helper */}
-            <div className="absolute top-3 left-1/2 transform -translate-x-1/2 z-[100] flex gap-2">
+            {/* Global Settings Helper & Actions */}
+            <div className="absolute top-3 left-1/2 transform -translate-x-1/2 z-[100] flex gap-2 items-center">
                 {role === 'super_admin' && (
                     <button
                         onClick={saveTemplateToDB}
@@ -250,6 +248,51 @@ export default function SlideEditor() {
                         Save as Template
                     </button>
                 )}
+
+                {/* New Actions */}
+                <button
+                    onClick={async () => {
+                        const id = await handlePublish(currentData, 'draft');
+                        if (id) alert('Saved as Draft!');
+                    }}
+                    className="bg-gray-600 text-white px-4 py-2 rounded shadow hover:bg-gray-700 text-sm font-medium transition-colors"
+                >
+                    Save (Draft)
+                </button>
+
+                <button
+                    onClick={async () => {
+                        const id = await handlePublish(currentData, 'draft');
+                        if (id) {
+                            window.open(`/player/preview?previewSlideId=${id}`, '_blank');
+                        }
+                    }}
+                    className="bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700 text-sm font-medium transition-colors flex items-center gap-2"
+                >
+                    <span>👁️ Live Preview</span>
+                </button>
+
+                <button
+                    onClick={async () => {
+                        const id = await handlePublish(currentData, 'published');
+                        if (id) alert('Published successfully!');
+                    }}
+                    className="bg-green-600 text-white px-4 py-2 rounded shadow hover:bg-green-700 text-sm font-medium transition-colors"
+                >
+                    Ready for Publish
+                </button>
+
+                <div className="h-6 w-px bg-gray-300 mx-2"></div>
+
+                <div className="h-6 w-px bg-gray-300 mx-2"></div>
+
+                <button
+                    onClick={() => setOrientation(prev => prev === 'landscape' ? 'portrait' : 'landscape')}
+                    className="bg-white text-gray-700 border border-gray-300 px-4 py-2 rounded shadow hover:bg-gray-50 text-sm font-medium transition-colors flex items-center gap-2"
+                >
+                    <span>{orientation === 'landscape' ? '⬒ Landscape' : '⬓ Portrait'}</span>
+                </button>
+
                 <div className="relative group">
                     <button
                         onClick={() => {

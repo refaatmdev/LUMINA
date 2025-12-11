@@ -16,6 +16,8 @@ interface Organization {
     storage_used?: string;
     logo_url?: string;
     trial_ends_at?: string;
+    is_manual_override?: boolean;
+    plan_tier?: string;
 }
 
 export default function SuperAdminDashboard() {
@@ -34,9 +36,54 @@ export default function SuperAdminDashboard() {
         systemStatus: 'Operational'
     };
 
+    const [trialPeriodDays, setTrialPeriodDays] = useState<number>(14);
+    const [settingsLoading, setSettingsLoading] = useState(false);
+
     useEffect(() => {
         fetchOrgs();
+        fetchSystemSettings();
     }, []);
+
+    const fetchSystemSettings = async () => {
+        try {
+            const { data, error } = await supabase
+                .from('system_settings')
+                .select('value')
+                .eq('key', 'trial_period_days')
+                .single();
+
+            if (error) {
+                if (error.code !== 'PGRST116') { // Ignore not found, use default
+                    console.error('Error fetching settings:', error);
+                }
+            } else if (data) {
+                setTrialPeriodDays(Number(data.value));
+            }
+        } catch (err) {
+            console.error('Unexpected error fetching settings:', err);
+        }
+    };
+
+    const handleUpdateSettings = async () => {
+        setSettingsLoading(true);
+        try {
+            const { error } = await supabase
+                .from('system_settings')
+                .upsert({
+                    key: 'trial_period_days',
+                    value: trialPeriodDays,
+                    description: 'Default duration of the trial period in days'
+                });
+
+            if (error) throw error;
+            alert('Settings updated successfully');
+        } catch (err) {
+            console.error('Error updating settings:', err);
+            alert('Failed to update settings');
+        } finally {
+            setSettingsLoading(false);
+        }
+    };
 
     const fetchOrgs = async () => {
         try {
@@ -54,11 +101,13 @@ export default function SuperAdminDashboard() {
             const transformedData = (data || []).map((org: any) => ({
                 ...org,
                 status: org.status || 'active',
-                plan: org.plan || 'Free',
+                plan: org.plan_tier || org.plan || 'Free',
+                plan_tier: org.plan_tier || org.plan || 'free',
                 screen_count: org.screens?.[0]?.count || 0,
                 storage_used: org.storage_used ? `${Math.round(org.storage_used / (1024 * 1024 * 1024))}GB` : '0GB', // Convert bytes to GB if exists, else 0
                 logo_url: org.logo_url || null,
-                trial_ends_at: org.trial_ends_at
+                trial_ends_at: org.trial_ends_at,
+                is_manual_override: org.is_manual_override
             }));
 
             setOrgs(transformedData);
@@ -169,6 +218,33 @@ export default function SuperAdminDashboard() {
                                 </span>
                             </div>
                             <div className="text-xs text-gray-500 mt-1">All systems operational</div>
+                        </div>
+                    </div>
+
+                    {/* System Configuration */}
+                    <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm mb-8">
+                        <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                            <Activity size={20} className="text-indigo-600" />
+                            System Configuration
+                        </h3>
+                        <div className="flex items-end gap-4 max-w-md">
+                            <div className="flex-1">
+                                <label className="block text-sm font-medium text-gray-700 mb-1.5">Default Trial Period (Days)</label>
+                                <input
+                                    type="number"
+                                    min="1"
+                                    value={trialPeriodDays}
+                                    onChange={(e) => setTrialPeriodDays(parseInt(e.target.value) || 0)}
+                                    className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-gray-900"
+                                />
+                            </div>
+                            <button
+                                onClick={handleUpdateSettings}
+                                disabled={settingsLoading}
+                                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium shadow-sm hover:shadow transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {settingsLoading ? 'Saving...' : 'Save Settings'}
+                            </button>
                         </div>
                     </div>
 
@@ -366,7 +442,9 @@ export default function SuperAdminDashboard() {
                                         const { error } = await supabase
                                             .from('organizations')
                                             .update({
-                                                trial_ends_at: editingOrg.trial_ends_at
+                                                trial_ends_at: editingOrg.trial_ends_at,
+                                                is_manual_override: editingOrg.is_manual_override,
+                                                plan_tier: editingOrg.plan_tier
                                             })
                                             .eq('id', editingOrg.id);
 
@@ -379,15 +457,59 @@ export default function SuperAdminDashboard() {
                                     }
                                 }} className="space-y-4">
                                     <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1.5">Plan</label>
+                                        <select
+                                            value={editingOrg.plan_tier || 'free'}
+                                            onChange={(e) => setEditingOrg({ ...editingOrg, plan_tier: e.target.value })}
+                                            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-gray-900 bg-white"
+                                        >
+                                            <option value="free">Free</option>
+                                            <option value="basic">Basic</option>
+                                            <option value="pro">Pro</option>
+                                            <option value="enterprise">Enterprise</option>
+                                            <option value="custom">Custom</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1.5">Trial Ends At</label>
                                         <input
                                             type="datetime-local"
-                                            value={editingOrg.trial_ends_at ? new Date(editingOrg.trial_ends_at).toISOString().slice(0, 16) : ''}
-                                            onChange={(e) => setEditingOrg({ ...editingOrg, trial_ends_at: e.target.value ? new Date(e.target.value).toISOString() : undefined })}
+                                            value={editingOrg.trial_ends_at ? (() => {
+                                                const date = new Date(editingOrg.trial_ends_at);
+                                                const offset = date.getTimezoneOffset() * 60000;
+                                                const localISOTime = (new Date(date.getTime() - offset)).toISOString().slice(0, 16);
+                                                return localISOTime;
+                                            })() : ''}
+                                            onChange={(e) => {
+                                                const val = e.target.value;
+                                                if (!val) {
+                                                    setEditingOrg({ ...editingOrg, trial_ends_at: undefined });
+                                                } else {
+                                                    const date = new Date(val);
+                                                    setEditingOrg({ ...editingOrg, trial_ends_at: date.toISOString() });
+                                                }
+                                            }}
                                             className="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-gray-900"
                                         />
                                         <p className="text-xs text-gray-500 mt-1">Leave empty for no trial expiration.</p>
                                     </div>
+
+                                    <div className="flex items-center">
+                                        <input
+                                            type="checkbox"
+                                            id="is_manual_override"
+                                            checked={editingOrg.is_manual_override || false}
+                                            onChange={(e) => setEditingOrg({ ...editingOrg, is_manual_override: e.target.checked })}
+                                            className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                                        />
+                                        <label htmlFor="is_manual_override" className="ml-2 block text-sm text-gray-900">
+                                            Manual Override (Custom Client)
+                                        </label>
+                                    </div>
+                                    <p className="text-xs text-gray-500 ml-6">
+                                        If checked, this client will be treated as "Custom" regardless of plan tier (hides watermark, etc).
+                                    </p>
                                     <div className="flex justify-end gap-3 pt-4">
                                         <button
                                             type="button"

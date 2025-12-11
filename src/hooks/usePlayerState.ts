@@ -14,6 +14,7 @@ interface PlayerState {
     isOffline?: boolean;
     planTier?: string;
     orientation?: 'landscape' | 'portrait';
+    isManualOverride?: boolean;
 }
 
 export function usePlayerState(screenId: string | undefined) {
@@ -28,6 +29,7 @@ export function usePlayerState(screenId: string | undefined) {
         error: null,
         isOffline: false,
         planTier: undefined,
+        isManualOverride: false,
     });
 
     // Refs for subscriptions to access current state
@@ -72,6 +74,7 @@ export function usePlayerState(screenId: string | undefined) {
                     isOffline: false, // Online
                     planTier: rpcData.plan_tier,
                     orientation: rpcData.orientation || 'landscape',
+                    isManualOverride: rpcData.is_manual_override || false,
                 };
 
                 if (rpcData.type === 'slide') {

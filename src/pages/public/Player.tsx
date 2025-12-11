@@ -1,18 +1,43 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import { WifiOff } from 'lucide-react';
 import { Render } from "@measured/puck";
-import config from '../../puck.config';
+import { getEditorConfig } from '../../puck.config';
 import ViralOverlay from '../../components/player/ViralOverlay';
 import { usePlaylistEngine } from '../../hooks/usePlaylistEngine';
 import { AnimatePresence, motion } from 'framer-motion';
 import { usePlayLogger } from '../../hooks/usePlayLogger';
 import { usePlayerState } from '../../hooks/usePlayerState';
 import { supabase } from '../../lib/supabase';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 
 export default function Player() {
     const { id } = useParams();
+    const [searchParams] = useSearchParams();
+    const previewSlideId = searchParams.get('previewSlideId');
+    const [previewData, setPreviewData] = useState<any>(null);
+    const [previewLoading, setPreviewLoading] = useState(!!previewSlideId);
+
+    useEffect(() => {
+        if (previewSlideId) {
+            const fetchPreview = async () => {
+                const { data } = await supabase
+                    .from('slides')
+                    .select('*')
+                    .eq('id', previewSlideId)
+                    .single();
+
+                if (data) {
+                    setPreviewData({
+                        ...data.content,
+                        orientation: data.orientation
+                    });
+                }
+                setPreviewLoading(false);
+            };
+            fetchPreview();
+        }
+    }, [previewSlideId]);
 
     // 1. Get Player State (Mode, Content, IDs)
     const {
@@ -25,7 +50,8 @@ export default function Player() {
         error: stateError,
         isOffline,
         planTier,
-        orientation
+        orientation,
+        isManualOverride
     } = usePlayerState(id);
 
     // 2. Playlist Engine (Only active if mode is 'playlist')
@@ -33,7 +59,8 @@ export default function Player() {
         currentSlide: playlistSlide,
         nextSlide: playlistNextSlide,
         currentSlideId: playlistSlideId,
-        loading: playlistLoading
+        loading: playlistLoading,
+        currentOrientation: playlistOrientation
     } = usePlaylistEngine({
         playlistId: mode === 'playlist' ? playlistId : null
     });
@@ -41,6 +68,17 @@ export default function Player() {
     // 3. Analytics Logger
     // Determine the actual slide ID being played
     const currentPlayingSlideId = mode === 'manual' ? manualSlideId : playlistSlideId;
+
+    // Determine effective orientation
+    const effectiveOrientation = previewSlideId
+        ? (previewData?.orientation || 'landscape')
+        : (mode === 'playlist' ? playlistOrientation : (orientation || 'landscape'));
+
+    // Generate Dynamic Config based on Orientation
+    // MUST be called before any early returns to satisfy Rules of Hooks
+    const config = useMemo(() => {
+        return getEditorConfig(planTier || 'free', effectiveOrientation);
+    }, [planTier, effectiveOrientation]);
 
     usePlayLogger({
         screenId: id,
@@ -90,7 +128,17 @@ export default function Player() {
     let nextDataToRender = null;
     let uniqueKey = '';
 
-    if (mode === 'manual') {
+    if (previewSlideId) {
+        if (previewLoading) {
+            return (
+                <div className="min-h-screen bg-black flex items-center justify-center">
+                    <LoadingSpinner className="text-white" />
+                </div>
+            );
+        }
+        dataToRender = previewData;
+        uniqueKey = `preview-${previewSlideId}`;
+    } else if (mode === 'manual') {
         dataToRender = manualSlideData;
         uniqueKey = `manual-${manualSlideId}`;
     } else if (mode === 'playlist') {
@@ -177,11 +225,18 @@ export default function Player() {
                         <div
                             className="relative shadow-2xl overflow-hidden bg-black"
                             style={{
-                                aspectRatio: orientation === 'portrait' ? '9/16' : '16/9',
-                                height: orientation === 'portrait' ? '100%' : 'auto',
-                                width: orientation === 'portrait' ? 'auto' : '100%',
-                                maxHeight: '100vh',
-                                maxWidth: '100vw',
+                                // Use CSS min() to ensure the box is contained within the viewport
+                                // while maintaining the aspect ratio.
+                                // For Portrait (9/16):
+                                // Width = min(100vw, 100vh * 9/16)
+                                // Height = min(100vh, 100vw * 16/9)
+                                width: effectiveOrientation === 'portrait'
+                                    ? 'min(100vw, calc(100vh * 9 / 16))'
+                                    : 'min(100vw, calc(100vh * 16 / 9))',
+                                height: effectiveOrientation === 'portrait'
+                                    ? 'min(100vh, calc(100vw * 16 / 9))'
+                                    : 'min(100vh, calc(100vw * 9 / 16))',
+                                margin: 'auto'
                             }}
                         >
                             <Render config={config} data={dataToRender} />
@@ -197,8 +252,8 @@ export default function Player() {
                 </div>
             )}
 
-            {/* Explicitly Render Viral Overlay for Free/Basic Plans ONLY (Exclude Custom) */}
-            {planTier && ['free', 'basic'].includes(planTier) && orgId && (
+            {/* Explicitly Render Viral Overlay for Free/Basic Plans ONLY (Exclude Custom & Manual Override) */}
+            {planTier && ['free', 'basic'].includes(planTier) && !isManualOverride && orgId && (
                 <div className="absolute inset-0 z-[100] pointer-events-none">
                     <ViralOverlay orgId={orgId} screenId={id} />
                 </div>

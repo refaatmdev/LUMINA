@@ -13,6 +13,7 @@ interface PlaylistItem {
     } | null;
     slides: {
         content: any;
+        orientation?: 'landscape' | 'portrait';
     };
 }
 
@@ -138,7 +139,7 @@ export function usePlaylistEngine({ playlistId }: UsePlaylistEngineProps) {
                     .from('playlist_items')
                     .select(`
                         *,
-                        slides (content)
+                        slides (content, orientation)
                     `)
                     .eq('playlist_id', playlistId)
                     .order('order', { ascending: true });
@@ -164,5 +165,8 @@ export function usePlaylistEngine({ playlistId }: UsePlaylistEngineProps) {
         };
     }, [playlistId, playNextItem]);
 
-    return { currentSlide, nextSlide, currentSlideId, loading, error };
+    // Extract current orientation
+    const currentOrientation = itemsRef.current.find(i => i.slide_id === currentSlideId)?.slides?.orientation || 'landscape';
+
+    return { currentSlide, nextSlide, currentSlideId, loading, error, currentOrientation };
 }

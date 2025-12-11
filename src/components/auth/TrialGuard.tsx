@@ -26,6 +26,7 @@ export default function TrialGuard({ children, fallback }: Props) {
 
         if (orgId) {
             checkTrialStatus();
+            console.log('Checking trial status for org:', orgId);
         } else {
             // No org usually means loading or error, but let's assume active for now until org is loaded
             // Or if user has no org, they can't do much anyway.
@@ -42,7 +43,7 @@ export default function TrialGuard({ children, fallback }: Props) {
                 .single();
 
             if (error) throw error;
-
+            console.log('Trial status:', data);
             if (data.plan_tier === 'free' && data.trial_ends_at) {
                 const trialEnd = new Date(data.trial_ends_at);
                 const now = new Date();
@@ -85,7 +86,7 @@ export default function TrialGuard({ children, fallback }: Props) {
                     </div>
                     <h1 className="text-2xl font-bold text-gray-900 mb-2">Trial Expired</h1>
                     <p className="text-gray-500 mb-8">
-                        Your 24-hour free trial has ended. To continue using Lumina and access all features, please upgrade your plan.
+                        Your free trial has ended. To continue using Lumina and access all features, please upgrade your plan.
                     </p>
 
                     <div className="space-y-3">

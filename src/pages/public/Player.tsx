@@ -10,6 +10,7 @@ import { usePlayLogger } from '../../hooks/usePlayLogger';
 import { usePlayerState } from '../../hooks/usePlayerState';
 import { supabase } from '../../lib/supabase';
 import { useEffect, useState, useMemo } from 'react';
+import { useSystemCommands } from '../../hooks/useSystemCommands';
 
 export default function Player() {
     const { id } = useParams();
@@ -80,11 +81,18 @@ export default function Player() {
         return getEditorConfig(planTier || 'free', effectiveOrientation);
     }, [planTier, effectiveOrientation]);
 
+
+
+    // ...
+
     usePlayLogger({
         screenId: id,
         orgId: orgId,
         slideId: currentPlayingSlideId
     });
+
+    // 4. System Commands Listener (Force Refresh)
+    useSystemCommands();
 
     // Trial Check Logic
     const [isTrialExpired, setIsTrialExpired] = useState(false);

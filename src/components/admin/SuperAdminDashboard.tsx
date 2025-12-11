@@ -5,6 +5,7 @@ import { Building, Plus, Users, Activity, HardDrive, LogIn, AlertTriangle, Check
 import AdminLayout from '../layout/AdminLayout';
 import TeamManagement from './TeamManagement';
 import LoadingSpinner from '../ui/LoadingSpinner';
+import { ForceRefreshButton } from './ForceRefreshButton';
 
 interface Organization {
     id: string;
@@ -164,13 +165,16 @@ export default function SuperAdminDashboard() {
         <AdminLayout
             title="Super Admin Dashboard"
             actions={
-                <button
-                    onClick={() => setShowCreateModal(true)}
-                    className="flex items-center bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 shadow-sm transition-all duration-200 font-medium text-sm"
-                >
-                    <Plus size={18} className="mr-2" />
-                    New Organization
-                </button>
+                <div className="flex items-center gap-3">
+                    <ForceRefreshButton />
+                    <button
+                        onClick={() => setShowCreateModal(true)}
+                        className="flex items-center bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 shadow-sm transition-all duration-200 font-medium text-sm"
+                    >
+                        <Plus size={18} className="mr-2" />
+                        New Organization
+                    </button>
+                </div>
             }
         >
             {loading ? (

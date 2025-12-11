@@ -11,6 +11,7 @@ import { usePlayerState } from '../../hooks/usePlayerState';
 import { supabase } from '../../lib/supabase';
 import { useEffect, useState, useMemo } from 'react';
 import { useSystemCommands } from '../../hooks/useSystemCommands';
+import { useVersionCheck } from '../../hooks/useVersionCheck';
 
 export default function Player() {
     const { id } = useParams();
@@ -81,10 +82,6 @@ export default function Player() {
         return getEditorConfig(planTier || 'free', effectiveOrientation);
     }, [planTier, effectiveOrientation]);
 
-
-
-    // ...
-
     usePlayLogger({
         screenId: id,
         orgId: orgId,
@@ -93,6 +90,9 @@ export default function Player() {
 
     // 4. System Commands Listener (Force Refresh)
     useSystemCommands();
+
+    // 5. Automatic Version Check
+    const updateAvailable = useVersionCheck();
 
     // Trial Check Logic
     const [isTrialExpired, setIsTrialExpired] = useState(false);
@@ -161,6 +161,14 @@ export default function Player() {
         nextDataToRender = playlistNextSlide;
         uniqueKey = playlistSlide ? JSON.stringify(playlistSlide).substring(0, 50) : 'empty';
     }
+
+    // Handle Version Update Reload
+    useEffect(() => {
+        if (updateAvailable) {
+            console.log('Update available, reloading on slide transition...');
+            window.location.reload();
+        }
+    }, [uniqueKey]); // Only reload when the slide changes (uniqueKey changes)
 
     // Inject Plan Info for Viral Overlay
     if (dataToRender && dataToRender.root) {

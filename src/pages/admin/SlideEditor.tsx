@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Puck, type Data } from "@measured/puck";
+import { Puck, type Data, Render } from "@measured/puck";
 import "@measured/puck/puck.css";
 import { getEditorConfig } from '../../puck.config';
 import { supabase } from '../../lib/supabase';
@@ -27,6 +27,8 @@ export default function SlideEditor() {
     const [showTemplateGallery, setShowTemplateGallery] = useState(false);
     const { role } = useUserRole();
     const [puckKey, setPuckKey] = useState(0);
+    const [isPreview, setIsPreview] = useState(false);
+    const [viewMode, setViewMode] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
 
     useEffect(() => {
         if (slideId) {
@@ -213,7 +215,7 @@ export default function SlideEditor() {
     // ...
 
     return (
-        <div className="h-screen w-screen bg-white relative">
+        <div className="h-screen w-screen bg-white relative flex flex-col">
             {showTemplateGallery && (
                 <TemplateGallery
                     onSelect={(data) => {
@@ -229,109 +231,148 @@ export default function SlideEditor() {
                         setShowTemplateGallery(false);
                     }}
                     onCancel={() => {
-                        // If cancelling on new slide, maybe go back? 
-                        // Or just show blank.
                         setShowTemplateGallery(false);
                     }}
                 />
             )}
 
-            {/* ... */}
+            {/* Editor Toolbar / Header */}
+            {!isPreview && (
+                <div className="absolute top-3 left-1/2 transform -translate-x-1/2 z-[100] flex gap-2 items-center bg-white/90 backdrop-blur-sm p-2 rounded-xl shadow-lg border border-gray-200">
+                    {role === 'super_admin' && (
+                        <button
+                            onClick={saveTemplateToDB}
+                            className="bg-purple-100 text-purple-700 px-3 py-1.5 rounded-lg hover:bg-purple-200 text-sm font-medium transition-colors"
+                            title="Save as Template"
+                        >
+                            Save Tpl
+                        </button>
+                    )}
 
-            {/* Global Settings Helper & Actions */}
-            <div className="absolute top-3 left-1/2 transform -translate-x-1/2 z-[100] flex gap-2 items-center">
-                {role === 'super_admin' && (
                     <button
-                        onClick={saveTemplateToDB}
-                        className="bg-purple-600 text-white px-4 py-2 rounded shadow hover:bg-purple-700 text-sm font-medium transition-colors"
-                    >
-                        Save as Template
-                    </button>
-                )}
-
-                {/* New Actions */}
-                <button
-                    onClick={async () => {
-                        const id = await handlePublish(currentData, 'draft');
-                        if (id) alert('Saved as Draft!');
-                    }}
-                    className="bg-gray-600 text-white px-4 py-2 rounded shadow hover:bg-gray-700 text-sm font-medium transition-colors"
-                >
-                    Save (Draft)
-                </button>
-
-                <button
-                    onClick={async () => {
-                        const id = await handlePublish(currentData, 'draft');
-                        if (id) {
-                            window.open(`/player/preview?previewSlideId=${id}`, '_blank');
-                        }
-                    }}
-                    className="bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700 text-sm font-medium transition-colors flex items-center gap-2"
-                >
-                    <span>👁️ Live Preview</span>
-                </button>
-
-                <button
-                    onClick={async () => {
-                        const id = await handlePublish(currentData, 'published');
-                        if (id) alert('Published successfully!');
-                    }}
-                    className="bg-green-600 text-white px-4 py-2 rounded shadow hover:bg-green-700 text-sm font-medium transition-colors"
-                >
-                    Ready for Publish
-                </button>
-
-                <div className="h-6 w-px bg-gray-300 mx-2"></div>
-
-                <div className="h-6 w-px bg-gray-300 mx-2"></div>
-
-                <button
-                    onClick={() => setOrientation(prev => prev === 'landscape' ? 'portrait' : 'landscape')}
-                    className="bg-white text-gray-700 border border-gray-300 px-4 py-2 rounded shadow hover:bg-gray-50 text-sm font-medium transition-colors flex items-center gap-2"
-                >
-                    <span>{orientation === 'landscape' ? '⬒ Landscape' : '⬓ Portrait'}</span>
-                </button>
-
-                <div className="relative group">
-                    <button
-                        onClick={() => {
-                            // Try to find it in the main document first
-                            let rootElement = document.getElementById('puck-root-canvas');
-
-                            // If not found, look inside the Puck iframe
-                            if (!rootElement) {
-                                const iframe = document.querySelector('iframe');
-                                if (iframe && iframe.contentDocument) {
-                                    rootElement = iframe.contentDocument.getElementById('puck-root-canvas');
-                                }
-                            }
-
-                            if (rootElement) {
-                                rootElement.click();
-                            } else {
-                                alert('Could not find the slide canvas. Please click on the background manually.');
-                            }
+                        onClick={async () => {
+                            const id = await handlePublish(currentData, 'draft');
+                            if (id) alert('Saved as Draft!');
                         }}
-                        className="bg-gray-800 text-white px-4 py-2 rounded shadow hover:bg-gray-700 text-sm font-medium flex items-center gap-2 transition-colors"
+                        className="bg-gray-100 text-gray-700 px-3 py-1.5 rounded-lg hover:bg-gray-200 text-sm font-medium transition-colors"
                     >
-                        <span>⚙️ Global Settings</span>
+                        Save Draft
                     </button>
-                    {/* Tooltip */}
-                    <div className="absolute right-0 top-full mt-2 w-64 bg-gray-900 text-white text-xs p-3 rounded shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                        To edit the <strong>Logo</strong>, <strong>Ticker</strong>, <strong>Theme</strong>, or <strong>Watermark</strong>, click on the empty background area of the slide canvas.
-                        <div className="absolute -top-1 right-6 w-2 h-2 bg-gray-900 transform rotate-45"></div>
+
+                    <button
+                        onClick={() => setIsPreview(true)}
+                        className="bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg hover:bg-blue-100 text-sm font-medium transition-colors flex items-center gap-2"
+                    >
+                        <span>👁️ Preview</span>
+                    </button>
+
+                    <button
+                        onClick={async () => {
+                            const id = await handlePublish(currentData, 'published');
+                            if (id) alert('Published successfully!');
+                        }}
+                        className="bg-green-600 text-white px-3 py-1.5 rounded-lg hover:bg-green-700 text-sm font-medium transition-colors shadow-sm"
+                    >
+                        Publish
+                    </button>
+
+                    <div className="h-5 w-px bg-gray-300 mx-1"></div>
+
+                    <button
+                        onClick={() => setOrientation(prev => prev === 'landscape' ? 'portrait' : 'landscape')}
+                        className="bg-gray-50 text-gray-700 border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-100 text-sm font-medium transition-colors flex items-center gap-2"
+                    >
+                        <span>{orientation === 'landscape' ? '⬒ Landscape' : '⬓ Portrait'}</span>
+                    </button>
+
+                    <div className="relative group">
+                        <button
+                            onClick={() => {
+                                let rootElement = document.getElementById('puck-root-canvas');
+                                if (!rootElement) {
+                                    const iframe = document.querySelector('iframe');
+                                    if (iframe && iframe.contentDocument) {
+                                        rootElement = iframe.contentDocument.getElementById('puck-root-canvas');
+                                    }
+                                }
+                                if (rootElement) {
+                                    rootElement.click();
+                                } else {
+                                    alert('Could not find the slide canvas. Please click on the background manually.');
+                                }
+                            }}
+                            className="bg-gray-800 text-white px-3 py-1.5 rounded-lg hover:bg-gray-700 text-sm font-medium flex items-center gap-2 transition-colors"
+                        >
+                            <span>⚙️ Settings</span>
+                        </button>
                     </div>
                 </div>
-            </div>
+            )}
 
-            <Puck
-                key={puckKey}
-                config={getEditorConfig(planTier, orientation)}
-                data={initialData}
-                onPublish={handlePublish}
-                onChange={handleDataChange}
-            />
+            {/* Preview Mode UI */}
+            {isPreview ? (
+                <div className="flex-1 bg-gray-100 flex flex-col relative overflow-hidden">
+                    {/* Preview Toolbar */}
+                    <div className="bg-white border-b border-gray-200 px-6 py-3 flex justify-between items-center shadow-sm z-10">
+                        <div className="flex items-center gap-4">
+                            <h2 className="text-lg font-bold text-gray-800">Preview Mode</h2>
+                            <div className="flex bg-gray-100 p-1 rounded-lg">
+                                <button
+                                    onClick={() => setViewMode('desktop')}
+                                    className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${viewMode === 'desktop' ? 'bg-white shadow text-indigo-600' : 'text-gray-500 hover:text-gray-700'}`}
+                                >
+                                    Desktop
+                                </button>
+                                <button
+                                    onClick={() => setViewMode('tablet')}
+                                    className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${viewMode === 'tablet' ? 'bg-white shadow text-indigo-600' : 'text-gray-500 hover:text-gray-700'}`}
+                                >
+                                    Tablet
+                                </button>
+                                <button
+                                    onClick={() => setViewMode('mobile')}
+                                    className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${viewMode === 'mobile' ? 'bg-white shadow text-indigo-600' : 'text-gray-500 hover:text-gray-700'}`}
+                                >
+                                    Mobile
+                                </button>
+                            </div>
+                        </div>
+                        <button
+                            onClick={() => setIsPreview(false)}
+                            className="text-gray-600 hover:text-gray-900 font-medium px-4 py-2 hover:bg-gray-100 rounded-lg transition-colors"
+                        >
+                            Exit Preview
+                        </button>
+                    </div>
+
+                    {/* Preview Canvas */}
+                    <div className="flex-1 overflow-auto flex items-center justify-center p-8">
+                        <div
+                            className="bg-white shadow-2xl transition-all duration-300 overflow-hidden relative"
+                            style={{
+                                width: viewMode === 'mobile' ? '375px' : viewMode === 'tablet' ? '768px' : '100%',
+                                height: viewMode === 'mobile' ? '667px' : viewMode === 'tablet' ? '1024px' : '100%',
+                                maxWidth: '100%',
+                                maxHeight: '100%',
+                                aspectRatio: orientation === 'portrait' ? '9/16' : '16/9',
+                                transform: viewMode === 'desktop' ? 'scale(0.9)' : 'none'
+                            }}
+                        >
+                            <Render config={getEditorConfig(planTier, orientation)} data={currentData} />
+                        </div>
+                    </div>
+                </div>
+            ) : (
+                <div className="flex-1 relative">
+                    <Puck
+                        key={puckKey}
+                        config={getEditorConfig(planTier, orientation)}
+                        data={initialData}
+                        onPublish={handlePublish}
+                        onChange={handleDataChange}
+                    />
+                </div>
+            )}
         </div>
     );
 }

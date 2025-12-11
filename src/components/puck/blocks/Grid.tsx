@@ -29,8 +29,8 @@ export const Grid: ComponentConfig<GridProps> = {
     },
     defaultProps: {
         columns: 2,
-        gap: 20,
-        padding: '20px',
+        gap: 0,
+        padding: '0px',
     },
     render: ({ columns, gap, ...props }) => {
         return (
@@ -43,10 +43,11 @@ export const Grid: ComponentConfig<GridProps> = {
                     style={{
                         gridTemplateColumns: `repeat(${columns}, 1fr)`,
                         gap: `${gap}px`,
+                        margin: '0px',
                     }}
                 >
                     {Array.from({ length: columns }).map((_, index) => (
-                        <div key={index} className="flex flex-col min-h-[100px] border border-dashed border-gray-300 rounded p-2 bg-gray-50/50">
+                        <div key={index} className="flex flex-col min-h-[100px] border border-dashed border-gray-300 rounded  bg-gray-50/50">
                             <DropZone zone={`column-${index}`} />
                         </div>
                     ))}

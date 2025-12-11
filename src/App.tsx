@@ -23,6 +23,8 @@ import AdminLayout from './components/layout/AdminLayout';
 import { useUserRole } from './hooks/useUserRole';
 import Suspended from './pages/public/Suspended';
 import Pricing from './pages/public/Pricing';
+import Register from './pages/public/Register';
+import LandingPage from './pages/public/LandingPage';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { session, loading: authLoading } = useAuth();
@@ -76,6 +78,8 @@ function App() {
           <Route path="/player/:id" element={<Player />} />
           <Route path="/suspended" element={<Suspended />} />
           <Route path="/pricing" element={<Pricing />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
           {/* Admin Routes */}
           <Route path="/admin/login" element={<Login />} />
@@ -205,7 +209,8 @@ function App() {
           />
 
           {/* Redirect root to connect for now, or admin login */}
-          <Route path="/" element={<Navigate to="/connect" replace />} />
+          {/* Main Landing Page */}
+          <Route path="/" element={<LandingPage />} />
         </Routes>
       </Router>
     </AuthProvider>

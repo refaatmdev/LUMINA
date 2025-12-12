@@ -42,9 +42,11 @@ export function usePlayerState(screenId: string | undefined) {
         if (!screenId) return;
 
         try {
+            console.log('Fetching player content for:', screenId);
             const { data: rpcData, error } = await supabase.rpc('get_player_slide_content', {
                 screen_id: screenId
             });
+            console.log('RPC Response:', { rpcData, error });
 
             if (error) throw error;
 

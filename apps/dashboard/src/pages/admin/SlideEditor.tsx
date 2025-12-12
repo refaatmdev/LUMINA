@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Puck, type Data, Render } from "@measured/puck";
-// import "@measured/puck/puck.css";
+import "@measured/puck/dist/index.css";
 import { getEditorConfig } from '../../puck.config';
 import { supabase } from '../../lib/supabase';
 import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
@@ -208,6 +208,10 @@ export default function SlideEditor() {
         setCurrentData(data);
     };
 
+    const config = useMemo(() => {
+        return getEditorConfig(planTier, orientation);
+    }, [planTier, orientation]);
+
     if (loading || limitsLoading) return <div className="flex items-center justify-center h-screen bg-gray-900 text-white">Loading editor...</div>;
 
 
@@ -358,7 +362,7 @@ export default function SlideEditor() {
                                 transform: viewMode === 'desktop' ? 'scale(0.9)' : 'none'
                             }}
                         >
-                            <Render config={getEditorConfig(planTier, orientation)} data={currentData} />
+                            <Render config={config} data={currentData} />
                         </div>
                     </div>
                 </div>
@@ -366,7 +370,7 @@ export default function SlideEditor() {
                 <div className="flex-1 relative">
                     <Puck
                         key={puckKey}
-                        config={getEditorConfig(planTier, orientation)}
+                        config={config}
                         data={initialData}
                         onPublish={handlePublish}
                         onChange={handleDataChange}

@@ -13,8 +13,10 @@ import { useEffect, useState, useMemo } from 'react';
 import { useSystemCommands } from '../hooks/useSystemCommands';
 import { useVersionCheck } from '../hooks/useVersionCheck';
 
+
 export default function Player() {
-    const { id } = useParams();
+    console.log("!!! PLAYER CODE VERSION: FIXED HOOKS ORDER !!!");
+    const { screenId: id } = useParams();
     const [searchParams] = useSearchParams();
     const previewSlideId = searchParams.get('previewSlideId');
     const [previewData, setPreviewData] = useState<any>(null);
@@ -118,175 +120,178 @@ export default function Player() {
         }
     };
 
-    // 4. Loading & Error States
-    if (stateLoading) {
+    // 4. Loading & Error States (Deferred Return)
+    const renderContent = () => {
+        if (stateLoading) {
+            return (
+                <div className="min-h-screen bg-black flex items-center justify-center">
+                    <LoadingSpinner className="text-white" />
+                </div>
+            );
+        }
+
+        if (stateError) {
+            return <div className="min-h-screen bg-black flex items-center justify-center text-red-500">Error: {stateError}</div>;
+        }
+
+        // 5. Determine Content to Render
+        let dataToRender = null;
+        let nextDataToRender = null;
+        let uniqueKey = '';
+
+        if (previewSlideId) {
+            if (previewLoading) {
+                return (
+                    <div className="min-h-screen bg-black flex items-center justify-center">
+                        <LoadingSpinner className="text-white" />
+                    </div>
+                );
+            }
+            dataToRender = previewData;
+            uniqueKey = `preview-${previewSlideId}`;
+        } else if (mode === 'manual') {
+            dataToRender = manualSlideData;
+            uniqueKey = `manual-${manualSlideId}`;
+        } else if (mode === 'playlist') {
+            if (playlistLoading && !playlistSlide) {
+                return (
+                    <div className="min-h-screen bg-black flex items-center justify-center">
+                        <LoadingSpinner className="text-white" />
+                    </div>
+                );
+            }
+            dataToRender = playlistSlide;
+            nextDataToRender = playlistNextSlide;
+            uniqueKey = playlistSlide ? JSON.stringify(playlistSlide).substring(0, 50) : 'empty';
+        }
+
+        if (!dataToRender) {
+            return (
+                <div className="min-h-screen bg-black flex items-center justify-center flex-col gap-4">
+                    <div className="w-24 h-24 bg-white/10 rounded-full flex items-center justify-center animate-pulse">
+                        <img src="/logo.svg" alt="Logo" className="w-12 h-12 opacity-50" onError={(e) => e.currentTarget.style.display = 'none'} />
+                    </div>
+                    <p className="text-gray-500 font-medium">No content scheduled</p>
+                </div>
+            );
+        }
+
+        // Inject Plan Info for Viral Overlay
+        if (dataToRender && dataToRender.root) {
+            if (!dataToRender.root.props) dataToRender.root.props = {};
+            dataToRender = {
+                ...dataToRender,
+                root: {
+                    ...dataToRender.root,
+                    props: {
+                        ...dataToRender.root.props,
+                        planTier,
+                        orgId,
+                        screenId: id
+                    }
+                }
+            };
+        }
+
         return (
-            <div className="min-h-screen bg-black flex items-center justify-center">
-                <LoadingSpinner className="text-white" />
+            <div className="w-screen h-screen bg-black relative overflow-hidden">
+                {/* Manual Mode Indicator */}
+                {mode === 'manual' && (
+                    <div className="absolute top-4 right-4 z-50 w-3 h-3 bg-red-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(239,68,68,0.5)]" title="Manual Override Active" />
+                )}
+
+                {/* Offline Indicator */}
+                {isOffline && (
+                    <div className="absolute bottom-4 left-4 z-50 flex items-center gap-2 bg-black/50 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 text-white/70">
+                        <WifiOff size={14} className="text-red-400" />
+                        <span className="text-xs font-medium">Offline Mode</span>
+                    </div>
+                )}
+
+                <AnimatePresence mode='popLayout'>
+                    <motion.div
+                        key={uniqueKey}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.5 }}
+                        className="absolute inset-0 z-10 w-full h-full flex items-center justify-center bg-black"
+                    >
+                        <div
+                            style={{
+                                width: '100%',
+                                height: '100%',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                            }}
+                        >
+                            <div
+                                className="relative shadow-2xl overflow-hidden bg-black"
+                                style={{
+                                    width: effectiveOrientation === 'portrait'
+                                        ? 'min(100vw, calc(100vh * 9 / 16))'
+                                        : 'min(100vw, calc(100vh * 16 / 9))',
+                                    height: effectiveOrientation === 'portrait'
+                                        ? 'min(100vh, calc(100vw * 16 / 9))'
+                                        : 'min(100vh, calc(100vw * 9 / 16))',
+                                    margin: 'auto'
+                                }}
+                            >
+                                <Render config={config} data={dataToRender} />
+                            </div>
+                        </div>
+                    </motion.div>
+                </AnimatePresence>
+
+                {/* Buffer Layer */}
+                {nextDataToRender && (
+                    <div className="absolute inset-0 z-0 opacity-0 pointer-events-none w-full h-full" aria-hidden="true">
+                        <Render config={config} data={nextDataToRender} />
+                    </div>
+                )}
+
+                {/* Explicitly Render Viral Overlay for Free/Basic Plans ONLY (Exclude Custom & Manual Override) */}
+                {planTier && ['free', 'basic'].includes(planTier) && !isManualOverride && orgId && (
+                    <div className="absolute inset-0 z-[100] pointer-events-none">
+                        <ViralOverlay orgId={orgId} screenId={id} />
+                    </div>
+                )}
+
+                {/* Trial Expired Overlay */}
+                {isTrialExpired && (
+                    <div className="absolute inset-0 z-[9999] bg-black/90 flex flex-col items-center justify-center text-white p-8 text-center">
+                        <div className="w-24 h-24 bg-red-600/20 rounded-full flex items-center justify-center mb-6 backdrop-blur-sm border border-red-500/50">
+                            <WifiOff size={48} className="text-red-500" />
+                        </div>
+                        <h1 className="text-4xl font-bold mb-4">Trial Expired</h1>
+                        <p className="text-xl text-gray-300 max-w-md">
+                            The trial period for this screen has ended. Please contact your administrator to upgrade the plan.
+                        </p>
+                    </div>
+                )}
             </div>
         );
-    }
+    };
 
-    if (stateError) {
-        return <div className="min-h-screen bg-black flex items-center justify-center text-red-500">Error: {stateError}</div>;
-    }
+    // Calculate generic uniqueKey for effect dependency even if loading
+    // This is a rough approximation to satisfy the hook.
+    // Ideally we'd move this calculation up, but for now we lift the effect call.
+    // Wait, the effect depends on uniqueKey which is calculated inside renderContent.
+    // To solve this properly, calculate simplified uniqueKey HERE at top level.
 
-    // 5. Determine Content to Render
-    let dataToRender = null;
-    let nextDataToRender = null;
-    let uniqueKey = '';
+    let effectUniqueKey = '';
+    if (previewSlideId) effectUniqueKey = `preview-${previewSlideId}`;
+    else if (mode === 'manual' && manualSlideId) effectUniqueKey = `manual-${manualSlideId}`;
+    else if (mode === 'playlist' && playlistSlide) effectUniqueKey = playlistSlide ? JSON.stringify(playlistSlide).substring(0, 50) : 'empty';
 
-    if (previewSlideId) {
-        if (previewLoading) {
-            return (
-                <div className="min-h-screen bg-black flex items-center justify-center">
-                    <LoadingSpinner className="text-white" />
-                </div>
-            );
-        }
-        dataToRender = previewData;
-        uniqueKey = `preview-${previewSlideId}`;
-    } else if (mode === 'manual') {
-        dataToRender = manualSlideData;
-        uniqueKey = `manual-${manualSlideId}`;
-    } else if (mode === 'playlist') {
-        if (playlistLoading && !playlistSlide) {
-            return (
-                <div className="min-h-screen bg-black flex items-center justify-center">
-                    <LoadingSpinner className="text-white" />
-                </div>
-            );
-        }
-        dataToRender = playlistSlide;
-        nextDataToRender = playlistNextSlide;
-        uniqueKey = playlistSlide ? JSON.stringify(playlistSlide).substring(0, 50) : 'empty';
-    }
-
-    // Handle Version Update Reload
+    // Handle Version Update Reload - MOVED UP
     useEffect(() => {
         if (updateAvailable) {
             console.log('Update available, reloading on slide transition...');
             window.location.reload();
         }
-    }, [uniqueKey]); // Only reload when the slide changes (uniqueKey changes)
+    }, [effectUniqueKey]); // Use the derived key
 
-    // Inject Plan Info for Viral Overlay
-    if (dataToRender && dataToRender.root) {
-        if (!dataToRender.root.props) dataToRender.root.props = {};
-        // We use a type assertion or just direct assignment if TS allows, or spread
-        dataToRender = {
-            ...dataToRender,
-            root: {
-                ...dataToRender.root,
-                props: {
-                    ...dataToRender.root.props,
-                    planTier,
-                    orgId,
-                    screenId: id
-                }
-            }
-        };
-    }
-
-    if (!dataToRender) {
-        return (
-            <div className="min-h-screen bg-black flex items-center justify-center flex-col gap-4">
-                <div className="w-24 h-24 bg-white/10 rounded-full flex items-center justify-center animate-pulse">
-                    <img src="/logo.svg" alt="Logo" className="w-12 h-12 opacity-50" onError={(e) => e.currentTarget.style.display = 'none'} />
-                </div>
-                <p className="text-gray-500 font-medium">No content scheduled</p>
-            </div>
-        );
-    }
-
-    return (
-        <div className="w-screen h-screen bg-black relative overflow-hidden">
-            {/* Manual Mode Indicator */}
-            {mode === 'manual' && (
-                <div className="absolute top-4 right-4 z-50 w-3 h-3 bg-red-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(239,68,68,0.5)]" title="Manual Override Active" />
-            )}
-
-            {/* Offline Indicator */}
-            {isOffline && (
-                <div className="absolute bottom-4 left-4 z-50 flex items-center gap-2 bg-black/50 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 text-white/70">
-                    <WifiOff size={14} className="text-red-400" />
-                    <span className="text-xs font-medium">Offline Mode</span>
-                </div>
-            )}
-
-            <AnimatePresence mode='popLayout'>
-                <motion.div
-                    key={uniqueKey}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.5 }}
-                    className="absolute inset-0 z-10 w-full h-full flex items-center justify-center bg-black"
-                >
-                    <div
-                        style={{
-                            width: '100%',
-                            height: '100%',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                        }}
-                    >
-                        {/* 
-                            Container to enforce aspect ratio.
-                            If orientation is portrait, we want to fit a 9/16 box.
-                            If landscape, 16/9.
-                            We use max-width/height and aspect-ratio to contain it.
-                        */}
-                        <div
-                            className="relative shadow-2xl overflow-hidden bg-black"
-                            style={{
-                                // Use CSS min() to ensure the box is contained within the viewport
-                                // while maintaining the aspect ratio.
-                                // For Portrait (9/16):
-                                // Width = min(100vw, 100vh * 9/16)
-                                // Height = min(100vh, 100vw * 16/9)
-                                width: effectiveOrientation === 'portrait'
-                                    ? 'min(100vw, calc(100vh * 9 / 16))'
-                                    : 'min(100vw, calc(100vh * 16 / 9))',
-                                height: effectiveOrientation === 'portrait'
-                                    ? 'min(100vh, calc(100vw * 16 / 9))'
-                                    : 'min(100vh, calc(100vw * 9 / 16))',
-                                margin: 'auto'
-                            }}
-                        >
-                            <Render config={config} data={dataToRender} />
-                        </div>
-                    </div>
-                </motion.div>
-            </AnimatePresence>
-
-            {/* Buffer Layer */}
-            {nextDataToRender && (
-                <div className="absolute inset-0 z-0 opacity-0 pointer-events-none w-full h-full" aria-hidden="true">
-                    <Render config={config} data={nextDataToRender} />
-                </div>
-            )}
-
-            {/* Explicitly Render Viral Overlay for Free/Basic Plans ONLY (Exclude Custom & Manual Override) */}
-            {planTier && ['free', 'basic'].includes(planTier) && !isManualOverride && orgId && (
-                <div className="absolute inset-0 z-[100] pointer-events-none">
-                    <ViralOverlay orgId={orgId} screenId={id} />
-                </div>
-            )}
-
-            {/* Trial Expired Overlay */}
-            {isTrialExpired && (
-                <div className="absolute inset-0 z-[9999] bg-black/90 flex flex-col items-center justify-center text-white p-8 text-center">
-                    <div className="w-24 h-24 bg-red-600/20 rounded-full flex items-center justify-center mb-6 backdrop-blur-sm border border-red-500/50">
-                        <WifiOff size={48} className="text-red-500" />
-                    </div>
-                    <h1 className="text-4xl font-bold mb-4">Trial Expired</h1>
-                    <p className="text-xl text-gray-300 max-w-md">
-                        The trial period for this screen has ended. Please contact your administrator to upgrade the plan.
-                    </p>
-                </div>
-            )}
-        </div>
-    );
+    return renderContent();
 }

@@ -20,7 +20,6 @@ import MarketingDashboard from './pages/admin/MarketingDashboard';
 import FinanceAnalytics from './pages/admin/FinanceAnalytics';
 import SystemStats from './pages/admin/SystemStats';
 import MediaLibrary from './pages/admin/MediaLibrary';
-import Connect from './pages/public/Connect';
 import SuperAdminDashboard from './components/admin/SuperAdminDashboard';
 import AdminLayout from './components/layout/AdminLayout';
 
@@ -61,7 +60,7 @@ function App() {
       <Router>
         <Routes>
           {/* Public Routes */}
-          <Route path="/connect" element={<Connect />} />
+          {/* <Route path="/connect" element={<Connect />} /> */}
           <Route path="/suspended" element={<Suspended />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/login" element={<Login />} />

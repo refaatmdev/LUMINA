@@ -1,0 +1,27 @@
+{
+    "name": "@lumina/shared",
+    "version": "0.0.0",
+    "type": "module",
+    "main": "./src/idx.ts",
+    "exports": {
+        "./types": "./src/types/index.ts",
+        "./ui": "./src/ui/index.ts",
+        "./lib": "./src/lib/index.ts",
+        "./hooks": "./src/hooks/index.ts"
+    },
+    "scripts": {
+        "lint": "eslint ."
+    },
+    "dependencies": {
+        "react": "^19.2.0",
+        "react-dom": "^19.2.0",
+        "lucide-react": "^0.555.0",
+        "clsx": "^2.1.1",
+        "tailwind-merge": "^3.4.0",
+        "@supabase/supabase-js": "^2.86.2"
+    },
+    "devDependencies": {
+        "typescript": "~5.9.3",
+        "tailwindcss": "^4.1.17"
+    }
+}

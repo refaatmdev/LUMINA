@@ -34,7 +34,7 @@ export const baseOptions = {
     backgroundColor: {
         type: "custom",
         label: "Background Color",
-        render: ({ value, onChange, field }) => (
+        render: ({ value, onChange, field }: { value: string, onChange: (val: string) => void, field: Field<string> }) => (
             <ColorPickerField value={value} onChange={onChange} label={field.label} />
         ),
     } as Field<string>,
@@ -42,7 +42,7 @@ export const baseOptions = {
     padding: {
         type: "custom",
         label: "Padding",
-        render: ({ value, onChange, field }) => (
+        render: ({ value, onChange, field }: { value: any, onChange: (val: any) => void, field: Field<any> }) => (
             <SpacingControl value={value} onChange={onChange} label={field.label} />
         ),
     } as Field<string>,

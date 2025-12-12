@@ -210,7 +210,7 @@ function App() {
 
           {/* Redirect root to connect for now, or admin login */}
           {/* Main Landing Page */}
-          <Route path="/" element={<LandingPage />} />
+          <Route path="/" element={<Login />} />
         </Routes>
       </Router>
     </AuthProvider>

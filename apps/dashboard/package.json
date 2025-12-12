@@ -14,7 +14,7 @@
     "@dnd-kit/modifiers": "^9.0.0",
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
-    "@measured/puck": "^0.20.2",
+    "@measured/puck": "^0.16.0",
     "@radix-ui/react-popover": "^1.1.15",
     "@supabase/supabase-js": "^2.86.2",
     "classnames": "^2.5.1",
@@ -51,6 +51,7 @@
     "tailwindcss": "^4.1.17",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.4",
-    "vite": "^7.2.4"
+    "vite": "^7.2.4",
+    "vite-tsconfig-paths": "^5.1.4"
   }
 }

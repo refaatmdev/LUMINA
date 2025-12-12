@@ -2,6 +2,11 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Login from './pages/admin/Login';
+import Register from './pages/public/Register';
+
+import Suspended from './pages/public/Suspended';
+import Pricing from './pages/public/Pricing';
+
 import Dashboard from './pages/admin/Dashboard';
 import SlideEditor from './pages/admin/SlideEditor';
 import Settings from './pages/admin/Settings';
@@ -16,15 +21,11 @@ import FinanceAnalytics from './pages/admin/FinanceAnalytics';
 import SystemStats from './pages/admin/SystemStats';
 import MediaLibrary from './pages/admin/MediaLibrary';
 import Connect from './pages/public/Connect';
-import Player from './pages/public/Player';
 import SuperAdminDashboard from './components/admin/SuperAdminDashboard';
 import AdminLayout from './components/layout/AdminLayout';
 
 import { useUserRole } from './hooks/useUserRole';
-import Suspended from './pages/public/Suspended';
-import Pricing from './pages/public/Pricing';
-import Register from './pages/public/Register';
-import LandingPage from './pages/public/LandingPage';
+
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { session, loading: authLoading } = useAuth();
@@ -38,8 +39,6 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
     return <Navigate to="/admin/login" replace />;
   }
 
-  // If org is suspended, redirect to suspended page
-  // But allow super_admin to bypass (though useUserRole logic handles this by setting status to active for super_admin)
   if (orgStatus === 'suspended') {
     return <Navigate to="/suspended" replace />;
   }
@@ -53,18 +52,7 @@ function App() {
 
   if (!supabaseUrl || !supabaseAnonKey) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
-        <div className="bg-white p-8 rounded-lg shadow-md max-w-md w-full text-center">
-          <h1 className="text-2xl font-bold mb-4 text-red-600">Configuration Missing</h1>
-          <p className="text-gray-700 mb-4">
-            Please create a <code className="bg-gray-200 px-1 rounded">.env.local</code> file in the project root with your Supabase credentials.
-          </p>
-          <pre className="bg-gray-900 text-white p-4 rounded text-left text-sm overflow-x-auto">
-            VITE_SUPABASE_URL=your_url{'\n'}
-            VITE_SUPABASE_ANON_KEY=your_key
-          </pre>
-        </div>
-      </div>
+      <div>Config Missing</div>
     );
   }
 
@@ -74,15 +62,13 @@ function App() {
         <Routes>
           {/* Public Routes */}
           <Route path="/connect" element={<Connect />} />
-          <Route path="/player/:id" element={<Player />} />
-          <Route path="/player/:id" element={<Player />} />
           <Route path="/suspended" element={<Suspended />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/admin/login" element={<Login />} />
 
           {/* Admin Routes */}
-          <Route path="/admin/login" element={<Login />} />
           <Route
             path="/admin"
             element={
@@ -207,9 +193,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-
-          {/* Redirect root to connect for now, or admin login */}
-          {/* Main Landing Page */}
           <Route path="/" element={<Login />} />
         </Routes>
       </Router>

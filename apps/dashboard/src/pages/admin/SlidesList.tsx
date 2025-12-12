@@ -5,7 +5,7 @@ import { useUserRole } from '../../hooks/useUserRole';
 import { Plus, Layout, Trash2, Monitor } from 'lucide-react';
 import { Render } from "@measured/puck";
 import config from '../../puck.config';
-import "@measured/puck/puck.css";
+// import "@measured/puck/puck.css";
 import AdminLayout from '../../components/layout/AdminLayout';
 import AssignSlideModal from '../../components/admin/AssignSlideModal';
 import CreateSlideModal from '../../components/admin/CreateSlideModal';

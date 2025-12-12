@@ -6,7 +6,7 @@ import { ColorPickerField } from "../fields/ColorPickerField";
 import { baseOptions } from "../baseOptions";
 
 // Import Swiper styles
-import 'swiper/swiper-bundle.css';
+// import './swiper-bundle.css';
 
 export interface UniversalSliderProps {
     height: '400px' | '600px' | '100vh';

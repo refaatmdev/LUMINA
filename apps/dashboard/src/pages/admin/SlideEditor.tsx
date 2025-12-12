@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Puck, type Data, Render } from "@measured/puck";
-import "@measured/puck/puck.css";
+// import "@measured/puck/puck.css";
 import { getEditorConfig } from '../../puck.config';
 import { supabase } from '../../lib/supabase';
 import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';

@@ -6,7 +6,13 @@ import { ColorPickerField } from "../fields/ColorPickerField";
 import { baseOptions } from "../baseOptions";
 
 // Import Swiper styles
-// import './swiper-bundle.css';
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
+import 'swiper/css/effect-fade';
+import 'swiper/css/effect-cube';
+import 'swiper/css/effect-coverflow';
 
 export interface UniversalSliderProps {
     height: '400px' | '600px' | '100vh';
@@ -65,12 +71,29 @@ export const UniversalSlider: ComponentConfig<UniversalSliderProps> = {
             label: "Slides",
             arrayFields: {
                 backgroundType: {
-                    type: "radio",
+                    type: "custom",
                     label: "Background Type",
-                    options: [
-                        { label: "Image", value: "image" },
-                        { label: "Color", value: "color" },
-                    ],
+                    render: ({ value, onChange, field }) => {
+                        return (
+                            <div className="flex flex-col gap-2 mb-4">
+                                <label className="text-sm font-medium text-gray-700">{field.label}</label>
+                                <div className="flex bg-gray-100 p-1 rounded-lg">
+                                    <button
+                                        className={`flex-1 py-1.5 text-sm font-medium rounded-md transition-all ${value === 'image' ? 'bg-white shadow text-indigo-600' : 'text-gray-500 hover:text-gray-700'}`}
+                                        onClick={() => onChange('image')}
+                                    >
+                                        Image
+                                    </button>
+                                    <button
+                                        className={`flex-1 py-1.5 text-sm font-medium rounded-md transition-all ${value === 'color' ? 'bg-white shadow text-indigo-600' : 'text-gray-500 hover:text-gray-700'}`}
+                                        onClick={() => onChange('color')}
+                                    >
+                                        Color
+                                    </button>
+                                </div>
+                            </div>
+                        );
+                    }
                 },
                 backgroundImage: {
                     type: "custom",
@@ -157,6 +180,9 @@ export const UniversalSlider: ComponentConfig<UniversalSliderProps> = {
                     navigation={true}
                     loop={true}
                     className="w-full h-full"
+                    fadeEffect={{ crossFade: true }}
+                    cubeEffect={{ shadow: true, slideShadows: true, shadowOffset: 20, shadowScale: 0.94 }}
+                    coverflowEffect={{ rotate: 50, stretch: 0, depth: 100, modifier: 1, slideShadows: true }}
                 >
                     {slides.map((slide, index) => {
                         // Alignment Logic

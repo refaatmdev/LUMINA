@@ -4,61 +4,126 @@
 
 @layer base {
   :root {
+    /* Light Mode Variables - Polished "Premium" Look */
+    --background: 210 40% 96%;
+    /* Slightly darker cool gray to make white glass pop */
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 262.1 83.3% 57.8%;
+    /* Violet 600 */
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 93%;
+    /* Darker muted for better separation */
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 85%;
+    /* Darker border for distinct edges */
+    --input: 214.3 31.8% 91.4%;
+    --ring: 262.1 83.3% 57.8%;
+
+    --radius: 0.75rem;
+  }
+
+  .dark {
     /* Dark Neon Theme - Deep Space Blue Base (`#0B0F19`) */
     --background: 224 39% 7%;
-    --foreground: 0 0% 100%;
+    --foreground: 210 40% 98%;
 
     --card: 224 39% 10%;
-    --card-foreground: 0 0% 100%;
+    --card-foreground: 210 40% 98%;
 
     --popover: 224 39% 10%;
-    --popover-foreground: 0 0% 100%;
+    --popover-foreground: 210 40% 98%;
 
     --primary: 263 70% 50%;
-    /* Violet 600/500 mix */
-    --primary-foreground: 0 0% 100%;
+    --primary-foreground: 210 40% 98%;
 
     --secondary: 217 19% 27%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary-foreground: 210 40% 98%;
 
     --muted: 217 19% 27%;
     --muted-foreground: 215 20% 65%;
 
     --accent: 217 19% 27%;
-    --accent-foreground: 0 0% 100%;
+    --accent-foreground: 210 40% 98%;
 
     --destructive: 0 62% 30%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive-foreground: 210 40% 98%;
 
     --border: 217 19% 27%;
     --input: 217 19% 27%;
     --ring: 263 70% 50%;
-
-    --radius: 0.5rem;
   }
 }
 
 @layer base {
-  .glass-panel {
-    @apply bg-white/5 backdrop-blur-md border border-white/20 shadow-xl;
-  }
-
-  .glass-input {
-    @apply bg-white/10 border-white/30 text-white placeholder:text-gray-400 focus:border-violet-500 focus:ring-violet-500/30 transition-all duration-200;
-  }
-
   * {
-    /* border-color: hsl(var(--border)); */
-    /* border-width: 1px; */
-    /* Ensure border width is set default if needed, or remove if relying on explicit classes */
+    border-color: hsl(var(--border));
   }
 
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
-    /* @apply bg-background text-foreground; */
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms;
     font-family: 'Inter', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+
+  .glass-panel {
+    background-color: hsl(var(--card) / 0.5);
+    backdrop-filter: blur(12px);
+    border: 1px solid hsl(var(--border));
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  }
+
+  /* In dark mode, we want the specific glass look */
+  .dark .glass-panel {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .glass-input {
+    background-color: hsl(var(--input) / 0.5);
+    border: 1px solid hsl(var(--input));
+    color: hsl(var(--foreground));
+    transition: all 200ms;
+  }
+
+  .glass-input::placeholder {
+    color: hsl(var(--muted-foreground));
+  }
+
+  .glass-input:focus {
+    border-color: hsl(var(--ring));
+    box-shadow: 0 0 0 1px hsl(var(--ring) / 0.3);
+  }
+
+  .dark .glass-input {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: white;
+  }
+
+  .dark .glass-input::placeholder {
+    color: #9ca3af;
   }
 }

@@ -150,33 +150,33 @@ export default function UrgentAdModal({ onClose, onSuccess }: UrgentAdModalProps
 
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg flex flex-col overflow-hidden border border-red-100">
+            <div className="bg-background border border-destructive/20 rounded-2xl shadow-2xl w-full max-w-lg flex flex-col overflow-hidden relative">
                 {/* Header */}
-                <div className="p-5 border-b border-red-100 bg-red-50 flex items-center justify-between">
+                <div className="p-5 border-b border-destructive/20 bg-destructive/5 flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <div className="p-2 bg-red-100 rounded-lg text-red-600">
+                        <div className="p-2 bg-destructive/10 rounded-lg text-destructive">
                             <Megaphone size={24} />
                         </div>
                         <div>
-                            <h2 className="text-lg font-bold text-red-900">Create Urgent Ad</h2>
-                            <p className="text-sm text-red-600/80">Deploy emergency content immediately</p>
+                            <h2 className="text-lg font-bold text-foreground">Create Urgent Ad</h2>
+                            <p className="text-sm text-destructive">Deploy emergency content immediately</p>
                         </div>
                     </div>
-                    <button onClick={onClose} className="text-red-400 hover:text-red-600 transition-colors">
+                    <button onClick={onClose} className="text-muted-foreground hover:text-destructive transition-colors">
                         <X size={24} />
                     </button>
                 </div>
 
-                <div className="p-6 space-y-6">
+                <div className="p-6 space-y-6 bg-background">
                     {step === 1 ? (
                         <>
                             {/* Message Input */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Urgent Message</label>
+                                <label className="block text-sm font-medium text-muted-foreground mb-2">Urgent Message</label>
                                 <textarea
                                     value={message}
                                     onChange={(e) => setMessage(e.target.value)}
-                                    className="w-full border border-gray-200 rounded-xl p-4 focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none transition-all text-lg font-medium"
+                                    className="w-full bg-background border border-border rounded-xl p-4 focus:ring-2 focus:ring-destructive/20 focus:border-destructive outline-none transition-all text-lg font-medium text-foreground placeholder-muted-foreground"
                                     placeholder="e.g. Store closing in 15 minutes..."
                                     rows={3}
                                     autoFocus
@@ -185,19 +185,19 @@ export default function UrgentAdModal({ onClose, onSuccess }: UrgentAdModalProps
 
                             {/* Alert Type */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Alert Style</label>
+                                <label className="block text-sm font-medium text-muted-foreground mb-2">Alert Style</label>
                                 <div className="grid grid-cols-3 gap-3">
                                     {[
-                                        { id: 'warning', label: 'Warning', color: 'bg-red-100 text-red-700 border-red-200' },
-                                        { id: 'info', label: 'Info', color: 'bg-blue-100 text-blue-700 border-blue-200' },
-                                        { id: 'success', label: 'Success', color: 'bg-green-100 text-green-700 border-green-200' },
+                                        { id: 'warning', label: 'Warning', activeClass: 'ring-destructive bg-destructive/10 text-destructive border-destructive/20' },
+                                        { id: 'info', label: 'Info', activeClass: 'ring-blue-500 bg-blue-500/10 text-blue-500 border-blue-500/20' },
+                                        { id: 'success', label: 'Success', activeClass: 'ring-green-500 bg-green-500/10 text-green-500 border-green-500/20' },
                                     ].map((type) => (
                                         <button
                                             key={type.id}
                                             onClick={() => setAlertType(type.id as any)}
                                             className={`py-3 px-4 rounded-xl border font-medium transition-all ${alertType === type.id
-                                                ? `ring-2 ring-offset-1 ring-${type.id === 'warning' ? 'red' : type.id === 'info' ? 'blue' : 'green'}-500 ${type.color}`
-                                                : 'border-gray-200 text-gray-600 hover:bg-gray-50'
+                                                ? `ring-2 ring-offset-1 ring-offset-background ${type.activeClass}`
+                                                : 'border-border text-muted-foreground hover:bg-muted/50'
                                                 }`}
                                         >
                                             {type.label}
@@ -208,15 +208,15 @@ export default function UrgentAdModal({ onClose, onSuccess }: UrgentAdModalProps
 
                             {/* Duration */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Duration</label>
+                                <label className="block text-sm font-medium text-muted-foreground mb-2">Duration</label>
                                 <div className="grid grid-cols-4 gap-2">
                                     {[1, 15, 30, 60, 120].map((mins) => (
                                         <button
                                             key={mins}
                                             onClick={() => setDurationMinutes(mins)}
                                             className={`py-2 px-3 rounded-lg text-sm font-medium transition-all border ${durationMinutes === mins
-                                                ? 'bg-gray-900 text-white border-gray-900'
-                                                : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300'
+                                                ? 'bg-foreground text-background border-foreground'
+                                                : 'bg-background text-muted-foreground border-border hover:border-foreground/50'
                                                 }`}
                                         >
                                             {mins < 60 ? `${mins}m` : `${mins / 60}h`}
@@ -227,20 +227,20 @@ export default function UrgentAdModal({ onClose, onSuccess }: UrgentAdModalProps
 
                             {/* Start Time (Optional) */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">Start Time (Optional)</label>
+                                <label className="block text-sm font-medium text-muted-foreground mb-2">Start Time (Optional)</label>
                                 <input
                                     type="datetime-local"
                                     value={startTime}
                                     onChange={(e) => setStartTime(e.target.value)}
-                                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none transition-all text-gray-900"
+                                    className="w-full bg-background border border-border rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-destructive/20 focus:border-destructive outline-none transition-all text-foreground"
                                 />
-                                <p className="text-xs text-gray-500 mt-1">Leave blank to start immediately.</p>
+                                <p className="text-xs text-muted-foreground mt-1">Leave blank to start immediately.</p>
                             </div>
 
                             <button
                                 onClick={() => setStep(2)}
                                 disabled={!message}
-                                className="w-full py-3 bg-red-600 text-white rounded-xl font-bold hover:bg-red-700 transition-all shadow-lg shadow-red-500/20 disabled:opacity-50 disabled:shadow-none flex items-center justify-center gap-2"
+                                className="w-full py-3 bg-destructive text-destructive-foreground rounded-xl font-bold hover:bg-destructive/90 transition-all shadow-lg shadow-destructive/20 disabled:opacity-50 disabled:shadow-none flex items-center justify-center gap-2"
                             >
                                 Next: Select Target
                                 <Clock size={18} />
@@ -250,17 +250,17 @@ export default function UrgentAdModal({ onClose, onSuccess }: UrgentAdModalProps
                         <>
                             {/* Target Selection */}
                             <div>
-                                <div className="flex bg-gray-100 p-1 rounded-xl mb-4">
+                                <div className="flex bg-muted p-1 rounded-xl mb-4">
                                     <button
                                         onClick={() => setTargetType('screen')}
-                                        className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${targetType === 'screen' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'
+                                        className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${targetType === 'screen' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'
                                             }`}
                                     >
                                         Individual Screens
                                     </button>
                                     <button
                                         onClick={() => setTargetType('group')}
-                                        className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${targetType === 'group' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'
+                                        className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${targetType === 'group' ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'
                                             }`}
                                     >
                                         Screen Groups
@@ -274,15 +274,15 @@ export default function UrgentAdModal({ onClose, onSuccess }: UrgentAdModalProps
                                                 key={screen.id}
                                                 onClick={() => setSelectedTargetId(screen.id)}
                                                 className={`w-full flex items-center justify-between p-3 rounded-xl border transition-all ${selectedTargetId === screen.id
-                                                    ? 'border-red-500 bg-red-50 text-red-900'
-                                                    : 'border-gray-200 hover:border-red-200 hover:bg-red-50/30'
+                                                    ? 'border-destructive bg-destructive/10 text-destructive'
+                                                    : 'border-border hover:border-destructive/30 hover:bg-destructive/5 text-foreground'
                                                     }`}
                                             >
                                                 <div className="flex items-center gap-3">
-                                                    <Monitor size={18} className={selectedTargetId === screen.id ? 'text-red-500' : 'text-gray-400'} />
+                                                    <Monitor size={18} className={selectedTargetId === screen.id ? 'text-destructive' : 'text-muted-foreground'} />
                                                     <span className="font-medium">{screen.name}</span>
                                                 </div>
-                                                {selectedTargetId === screen.id && <Check size={18} className="text-red-500" />}
+                                                {selectedTargetId === screen.id && <Check size={18} className="text-destructive" />}
                                             </button>
                                         ))
                                     ) : (
@@ -291,15 +291,15 @@ export default function UrgentAdModal({ onClose, onSuccess }: UrgentAdModalProps
                                                 key={group.id}
                                                 onClick={() => setSelectedTargetId(group.id)}
                                                 className={`w-full flex items-center justify-between p-3 rounded-xl border transition-all ${selectedTargetId === group.id
-                                                    ? 'border-red-500 bg-red-50 text-red-900'
-                                                    : 'border-gray-200 hover:border-red-200 hover:bg-red-50/30'
+                                                    ? 'border-destructive bg-destructive/10 text-destructive'
+                                                    : 'border-border hover:border-destructive/30 hover:bg-destructive/5 text-foreground'
                                                     }`}
                                             >
                                                 <div className="flex items-center gap-3">
-                                                    <Layers size={18} className={selectedTargetId === group.id ? 'text-red-500' : 'text-gray-400'} />
+                                                    <Layers size={18} className={selectedTargetId === group.id ? 'text-destructive' : 'text-muted-foreground'} />
                                                     <span className="font-medium">{group.name}</span>
                                                 </div>
-                                                {selectedTargetId === group.id && <Check size={18} className="text-red-500" />}
+                                                {selectedTargetId === group.id && <Check size={18} className="text-destructive" />}
                                             </button>
                                         ))
                                     )}
@@ -309,14 +309,14 @@ export default function UrgentAdModal({ onClose, onSuccess }: UrgentAdModalProps
                             <div className="flex gap-3 pt-4">
                                 <button
                                     onClick={() => setStep(1)}
-                                    className="px-5 py-3 text-gray-600 hover:bg-gray-100 rounded-xl font-medium transition-colors"
+                                    className="px-5 py-3 text-muted-foreground hover:bg-muted rounded-xl font-medium transition-colors"
                                 >
                                     Back
                                 </button>
                                 <button
                                     onClick={handleCreateAndDeploy}
                                     disabled={!selectedTargetId || loading}
-                                    className="flex-1 py-3 bg-red-600 text-white rounded-xl font-bold hover:bg-red-700 transition-all shadow-lg shadow-red-500/20 disabled:opacity-50 disabled:shadow-none flex items-center justify-center gap-2"
+                                    className="flex-1 py-3 bg-destructive text-destructive-foreground rounded-xl font-bold hover:bg-destructive/90 transition-all shadow-lg shadow-destructive/20 disabled:opacity-50 disabled:shadow-none flex items-center justify-center gap-2"
                                 >
                                     {loading ? (
                                         <div className="w-5 h-5 border-2 border-white/30 border-b-white rounded-full animate-spin" />

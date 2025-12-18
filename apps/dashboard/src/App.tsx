@@ -1,30 +1,39 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { useAuthStore } from './store/auth-store';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
-import Login from './pages/admin/Login';
+
 import Register from './pages/public/Register';
 
 import Suspended from './pages/public/Suspended';
 import Pricing from './pages/public/Pricing';
 
-import Dashboard from './pages/admin/Dashboard';
-import SlideEditor from './pages/admin/SlideEditor';
-import Settings from './pages/admin/Settings';
-import UpdatePassword from './pages/admin/UpdatePassword';
-import SlidesList from './pages/admin/SlidesList';
-import PlaylistEditor from './pages/admin/PlaylistEditor';
-import Billing from './pages/admin/Billing';
-import TenantsManager from './pages/admin/TenantsManager';
-import PlanManager from './pages/admin/PlanManager';
-import MarketingDashboard from './pages/admin/MarketingDashboard';
-import FinanceAnalytics from './pages/admin/FinanceAnalytics';
-import SystemStats from './pages/admin/SystemStats';
-import MediaLibrary from './pages/admin/MediaLibrary';
+// import Dashboard from './pages/admin/Dashboard';
+
+// import Settings from './pages/admin/Settings';
+// import UpdatePassword from './pages/admin/UpdatePassword';
+import { UpdatePasswordPage, LoginPage } from './features/auth';
+import { DashboardPage } from './features/dashboard';
+import { SettingsPage } from './features/settings';
+
+// Legacy Pages
+
+// Legacy Pages
+
+import { MarketingPage, FinancePage, SystemStatsPage } from './features/analytics';
+import { OnboardingPage } from './features/onboarding';
+
+import { MediaLibraryPage } from './features/media';
+import { SlidesListPage } from './features/slides';
+import { SlideEditorPage } from './features/editor';
+import { PlaylistEditorPage, PlaylistsListPage } from './features/playlists';
+import { BillingPage, PlanManagerPage, TenantsManagerPage } from './features/subscription';
 import SuperAdminDashboard from './components/admin/SuperAdminDashboard';
-import AdminLayout from './components/layout/AdminLayout';
+// import AdminLayout from './components/layout/AdminLayout';
+import { MainLayout } from './features/layout';
 
 import { useUserRole } from './hooks/useUserRole';
-import Onboarding from './pages/admin/Onboarding';
+
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { session, loading: authLoading } = useAuth();
@@ -56,6 +65,11 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 function App() {
   const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
   const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+  const initializeAuth = useAuthStore((state) => state.initialize);
+
+  useEffect(() => {
+    initializeAuth();
+  }, []);
 
 
 
@@ -73,19 +87,19 @@ function App() {
           {/* <Route path="/connect" element={<Connect />} /> */}
           <Route path="/suspended" element={<Suspended />} />
           <Route path="/pricing" element={<Pricing />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/admin/login" element={<Login />} />
+          <Route path="/admin/login" element={<LoginPage />} />
 
           {/* Onboarding Route (Verified User but No Org) */}
-          <Route path="/onboarding" element={<Onboarding />} />
+          <Route path="/onboarding" element={<OnboardingPage />} />
 
           {/* Admin Routes */}
           <Route
             path="/admin"
             element={
               <ProtectedRoute>
-                <Dashboard />
+                <DashboardPage />
               </ProtectedRoute>
             }
           />
@@ -93,7 +107,7 @@ function App() {
             path="/admin/editor"
             element={
               <ProtectedRoute>
-                <SlideEditor />
+                <SlideEditorPage />
               </ProtectedRoute>
             }
           />
@@ -101,9 +115,7 @@ function App() {
             path="/admin/billing"
             element={
               <ProtectedRoute>
-                <AdminLayout title="Billing & Subscription">
-                  <Billing />
-                </AdminLayout>
+                <BillingPage />
               </ProtectedRoute>
             }
           />
@@ -111,7 +123,9 @@ function App() {
             path="/admin/settings"
             element={
               <ProtectedRoute>
-                <Settings />
+                <MainLayout title="Settings">
+                  <SettingsPage />
+                </MainLayout>
               </ProtectedRoute>
             }
           />
@@ -119,7 +133,7 @@ function App() {
             path="/admin/slides"
             element={
               <ProtectedRoute>
-                <SlidesList />
+                <SlidesListPage />
               </ProtectedRoute>
             }
           />
@@ -127,7 +141,15 @@ function App() {
             path="/admin/media"
             element={
               <ProtectedRoute>
-                <MediaLibrary />
+                <MediaLibraryPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/playlists"
+            element={
+              <ProtectedRoute>
+                <PlaylistsListPage />
               </ProtectedRoute>
             }
           />
@@ -135,7 +157,7 @@ function App() {
             path="/admin/playlists/:id"
             element={
               <ProtectedRoute>
-                <PlaylistEditor />
+                <PlaylistEditorPage />
               </ProtectedRoute>
             }
           />
@@ -143,7 +165,7 @@ function App() {
             path="/update-password"
             element={
               <ProtectedRoute>
-                <UpdatePassword />
+                <UpdatePasswordPage />
               </ProtectedRoute>
             }
           />
@@ -151,9 +173,7 @@ function App() {
             path="/admin/tenants"
             element={
               <ProtectedRoute>
-                <AdminLayout title="Tenants Manager">
-                  <TenantsManager />
-                </AdminLayout>
+                <TenantsManagerPage />
               </ProtectedRoute>
             }
           />
@@ -161,9 +181,7 @@ function App() {
             path="/admin/plans"
             element={
               <ProtectedRoute>
-                <AdminLayout title="Subscription Plans">
-                  <PlanManager />
-                </AdminLayout>
+                <PlanManagerPage />
               </ProtectedRoute>
             }
           />
@@ -171,9 +189,7 @@ function App() {
             path="/admin/marketing"
             element={
               <ProtectedRoute>
-                <AdminLayout title="Marketing & Promotions">
-                  <MarketingDashboard />
-                </AdminLayout>
+                <MarketingPage />
               </ProtectedRoute>
             }
           />
@@ -181,9 +197,7 @@ function App() {
             path="/admin/finance"
             element={
               <ProtectedRoute>
-                <AdminLayout title="Financial Analytics">
-                  <FinanceAnalytics />
-                </AdminLayout>
+                <FinancePage />
               </ProtectedRoute>
             }
           />
@@ -191,9 +205,7 @@ function App() {
             path="/admin/stats"
             element={
               <ProtectedRoute>
-                <AdminLayout title="System Statistics">
-                  <SystemStats />
-                </AdminLayout>
+                <SystemStatsPage />
               </ProtectedRoute>
             }
           />
@@ -205,7 +217,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="/" element={<Login />} />
+          <Route path="/" element={<LoginPage />} />
         </Routes>
       </Router>
     </AuthProvider>

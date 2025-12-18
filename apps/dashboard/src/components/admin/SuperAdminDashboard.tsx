@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import { Building, Plus, Users, Activity, HardDrive, LogIn, AlertTriangle, CheckCircle, XCircle, X } from 'lucide-react';
-import AdminLayout from '../layout/AdminLayout';
+import { MainLayout } from '../../features/layout';
 import TeamManagement from './TeamManagement';
 import LoadingSpinner from '../ui/LoadingSpinner';
 import { ForceRefreshButton } from './ForceRefreshButton';
@@ -162,14 +162,14 @@ export default function SuperAdminDashboard() {
     };
 
     return (
-        <AdminLayout
+        <MainLayout
             title="Super Admin Dashboard"
             actions={
                 <div className="flex items-center gap-3">
                     <ForceRefreshButton />
                     <button
                         onClick={() => setShowCreateModal(true)}
-                        className="flex items-center bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 shadow-sm transition-all duration-200 font-medium text-sm"
+                        className="flex items-center bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 shadow-sm transition-all duration-200 font-medium text-sm"
                     >
                         <Plus size={18} className="mr-2" />
                         New Organization
@@ -187,62 +187,62 @@ export default function SuperAdminDashboard() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                         <div className="glass-panel p-6 rounded-xl relative overflow-hidden group">
                             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                                <Building size={64} className="text-white" />
+                                <Building size={64} className="text-foreground" />
                             </div>
                             <div className="flex items-center justify-between mb-4 relative z-10">
-                                <h3 className="text-sm font-medium text-gray-400">Total Tenants</h3>
-                                <div className="p-2 bg-blue-500/10 text-blue-400 rounded-lg border border-blue-500/20 shadow-[0_0_10px_rgba(59,130,246,0.2)]">
+                                <h3 className="text-sm font-medium text-muted-foreground">Total Tenants</h3>
+                                <div className="p-2 bg-blue-500/10 text-blue-500 rounded-lg border border-blue-500/20 shadow-[0_0_10px_rgba(59,130,246,0.2)]">
                                     <Building size={20} />
                                 </div>
                             </div>
-                            <div className="text-3xl font-bold text-white relative z-10 text-glow">{metrics.totalTenants}</div>
+                            <div className="text-3xl font-bold text-foreground relative z-10">{metrics.totalTenants}</div>
                             <div className="text-xs text-green-400 mt-1 flex items-center relative z-10">
                                 <Activity size={12} className="mr-1" /> +2 this week
                             </div>
                         </div>
                         <div className="glass-panel p-6 rounded-xl relative overflow-hidden group">
                             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                                <Activity size={64} className="text-white" />
+                                <Activity size={64} className="text-foreground" />
                             </div>
                             <div className="flex items-center justify-between mb-4 relative z-10">
-                                <h3 className="text-sm font-medium text-gray-400">Active Screens</h3>
-                                <div className="p-2 bg-violet-500/10 text-violet-400 rounded-lg border border-violet-500/20 shadow-[0_0_10px_rgba(139,92,246,0.2)]">
+                                <h3 className="text-sm font-medium text-muted-foreground">Active Screens</h3>
+                                <div className="p-2 bg-violet-500/10 text-violet-500 rounded-lg border border-violet-500/20 shadow-[0_0_10px_rgba(139,92,246,0.2)]">
                                     <Activity size={20} />
                                 </div>
                             </div>
-                            <div className="text-3xl font-bold text-white relative z-10 text-glow">{metrics.activeScreens}</div>
-                            <div className="text-xs text-gray-500 mt-1 relative z-10">Across all organizations</div>
+                            <div className="text-3xl font-bold text-foreground relative z-10">{metrics.activeScreens}</div>
+                            <div className="text-xs text-muted-foreground mt-1 relative z-10">Across all organizations</div>
                         </div>
                         <div className="glass-panel p-6 rounded-xl relative overflow-hidden group">
                             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                                <CheckCircle size={64} className="text-white" />
+                                <CheckCircle size={64} className="text-foreground" />
                             </div>
                             <div className="flex items-center justify-between mb-4 relative z-10">
-                                <h3 className="text-sm font-medium text-gray-400">System Status</h3>
-                                <div className="p-2 bg-emerald-500/10 text-emerald-400 rounded-lg border border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.2)]">
+                                <h3 className="text-sm font-medium text-muted-foreground">System Status</h3>
+                                <div className="p-2 bg-emerald-500/10 text-emerald-500 rounded-lg border border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.2)]">
                                     <CheckCircle size={20} />
                                 </div>
                             </div>
-                            <div className="text-3xl font-bold text-white flex items-center gap-2 relative z-10 text-glow">
+                            <div className="text-3xl font-bold text-foreground flex items-center gap-2 relative z-10">
                                 {metrics.systemStatus}
                                 <span className="relative flex h-3 w-3">
                                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                                     <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500 shadow-[0_0_10px_#10b981]"></span>
                                 </span>
                             </div>
-                            <div className="text-xs text-gray-500 mt-1 relative z-10">All systems operational</div>
+                            <div className="text-xs text-muted-foreground mt-1 relative z-10">All systems operational</div>
                         </div>
                     </div>
 
                     {/* System Configuration */}
                     <div className="glass-panel p-6 rounded-xl mb-8">
-                        <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                            <Activity size={20} className="text-violet-400" />
+                        <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
+                            <Activity size={20} className="text-primary" />
                             System Configuration
                         </h3>
                         <div className="flex items-end gap-4 max-w-md">
                             <div className="flex-1">
-                                <label className="block text-sm font-medium text-gray-300 mb-1.5">Default Trial Period (Days)</label>
+                                <label className="block text-sm font-medium text-muted-foreground mb-1.5">Default Trial Period (Days)</label>
                                 <input
                                     type="number"
                                     min="1"
@@ -254,7 +254,7 @@ export default function SuperAdminDashboard() {
                             <button
                                 onClick={handleUpdateSettings}
                                 disabled={settingsLoading}
-                                className="px-4 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 font-medium shadow-[0_0_15px_rgba(124,58,237,0.3)] hover:shadow-[0_0_20px_rgba(124,58,237,0.5)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 font-medium shadow-[0_0_15px_rgba(124,58,237,0.3)] hover:shadow-[0_0_20px_rgba(124,58,237,0.5)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {settingsLoading ? 'Saving...' : 'Save Settings'}
                             </button>
@@ -265,20 +265,20 @@ export default function SuperAdminDashboard() {
                     <div className="glass-panel rounded-xl overflow-hidden">
                         <div className="overflow-x-auto">
                             <table className="w-full text-left">
-                                <thead className="bg-white/5 border-b border-white/10">
+                                <thead className="bg-muted/50 border-b border-border">
                                     <tr>
-                                        <th className="px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Tenant</th>
-                                        <th className="px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Usage</th>
-                                        <th className="px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Status</th>
-                                        <th className="px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-wider text-right">Actions</th>
+                                        <th className="px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Tenant</th>
+                                        <th className="px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Usage</th>
+                                        <th className="px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Status</th>
+                                        <th className="px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider text-right">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-white/5">
+                                <tbody className="divide-y divide-border">
                                     {orgs.map((org) => (
-                                        <tr key={org.id} className="hover:bg-white/5 transition-colors group">
+                                        <tr key={org.id} className="hover:bg-muted/50 transition-colors group">
                                             <td className="px-6 py-4">
                                                 <div className="flex items-center gap-4">
-                                                    <div className="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center text-gray-400 font-bold text-lg border border-white/10">
+                                                    <div className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center text-muted-foreground font-bold text-lg border border-border">
                                                         {org.logo_url ? (
                                                             <img src={org.logo_url} alt={org.name} className="w-full h-full object-cover rounded-lg" />
                                                         ) : (
@@ -286,9 +286,9 @@ export default function SuperAdminDashboard() {
                                                         )}
                                                     </div>
                                                     <div>
-                                                        <div className="font-bold text-white">{org.name}</div>
-                                                        <div className="text-xs text-gray-500 flex items-center gap-1">
-                                                            <span className="px-1.5 py-0.5 rounded bg-white/10 text-gray-300 font-medium border border-white/5">{org.plan} Plan</span>
+                                                        <div className="font-bold text-foreground">{org.name}</div>
+                                                        <div className="text-xs text-muted-foreground flex items-center gap-1">
+                                                            <span className="px-1.5 py-0.5 rounded bg-muted text-muted-foreground font-medium border border-border">{org.plan} Plan</span>
                                                             <span>• {new Date(org.created_at).toLocaleDateString()}</span>
                                                         </div>
                                                     </div>
@@ -296,12 +296,12 @@ export default function SuperAdminDashboard() {
                                             </td>
                                             <td className="px-6 py-4">
                                                 <div className="space-y-1">
-                                                    <div className="flex items-center text-sm text-gray-300">
-                                                        <Activity size={14} className="mr-2 text-violet-400" />
+                                                    <div className="flex items-center text-sm text-muted-foreground">
+                                                        <Activity size={14} className="mr-2 text-primary" />
                                                         {org.screen_count} Screens
                                                     </div>
-                                                    <div className="flex items-center text-sm text-gray-300">
-                                                        <HardDrive size={14} className="mr-2 text-blue-400" />
+                                                    <div className="flex items-center text-sm text-muted-foreground">
+                                                        <HardDrive size={14} className="mr-2 text-blue-500" />
                                                         {org.storage_used} Used
                                                     </div>
                                                 </div>
@@ -319,21 +319,21 @@ export default function SuperAdminDashboard() {
                                                 <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                                     <button
                                                         onClick={() => handleImpersonate(org.id)}
-                                                        className="p-2 text-gray-400 hover:text-violet-400 hover:bg-violet-500/10 rounded-lg transition-colors border border-transparent hover:border-violet-500/20"
+                                                        className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-colors border border-transparent hover:border-primary/20"
                                                         title="Log in as User"
                                                     >
                                                         <LogIn size={18} />
                                                     </button>
                                                     <button
                                                         onClick={() => setSelectedOrgId(org.id)}
-                                                        className="p-2 text-gray-400 hover:text-blue-400 hover:bg-blue-500/10 rounded-lg transition-colors border border-transparent hover:border-blue-500/20"
+                                                        className="p-2 text-muted-foreground hover:text-blue-500 hover:bg-blue-500/10 rounded-lg transition-colors border border-transparent hover:border-blue-500/20"
                                                         title="Manage Users"
                                                     >
                                                         <Users size={18} />
                                                     </button>
                                                     <button
                                                         onClick={() => setEditingOrg(org)}
-                                                        className="p-2 text-gray-400 hover:text-emerald-400 hover:bg-emerald-500/10 rounded-lg transition-colors border border-transparent hover:border-emerald-500/20"
+                                                        className="p-2 text-muted-foreground hover:text-emerald-500 hover:bg-emerald-500/10 rounded-lg transition-colors border border-transparent hover:border-emerald-500/20"
                                                         title="Edit Organization"
                                                     >
                                                         <Activity size={18} />
@@ -341,8 +341,8 @@ export default function SuperAdminDashboard() {
                                                     <button
                                                         onClick={() => handleSuspend(org.id, org.status)}
                                                         className={`p-2 rounded-lg transition-colors border border-transparent ${org.status === 'active'
-                                                            ? 'text-gray-400 hover:text-red-400 hover:bg-red-500/10 hover:border-red-500/20'
-                                                            : 'text-red-400 bg-red-500/10 border-red-500/20'
+                                                            ? 'text-muted-foreground hover:text-red-500 hover:bg-red-500/10 hover:border-red-500/20'
+                                                            : 'text-red-500 bg-red-500/10 border-red-500/20'
                                                             }`}
                                                         title={org.status === 'active' ? "Suspend Organization" : "Activate Organization"}
                                                     >
@@ -359,25 +359,25 @@ export default function SuperAdminDashboard() {
 
                     {showCreateModal && (
                         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[60] p-4 animate-in fade-in duration-200">
-                            <div className="glass-panel p-6 w-full max-w-md transform transition-all scale-100 rounded-2xl relative">
-                                <div className="absolute inset-0 bg-violet-500/5 rounded-2xl pointer-events-none"></div>
+                            <div className="glass-panel p-6 w-full max-w-md transform transition-all scale-100 rounded-2xl relative border border-border bg-card">
+                                <div className="absolute inset-0 bg-primary/5 rounded-2xl pointer-events-none"></div>
                                 <div className="flex justify-between items-center mb-6 relative z-10">
                                     <div>
-                                        <h3 className="text-xl font-bold text-white text-glow">Create Organization</h3>
-                                        <p className="text-sm text-gray-400 mt-1">Add a new tenant to the system.</p>
+                                        <h3 className="text-xl font-bold text-foreground">Create Organization</h3>
+                                        <p className="text-sm text-muted-foreground mt-1">Add a new tenant to the system.</p>
                                     </div>
                                     <button
                                         onClick={() => setShowCreateModal(false)}
-                                        className="text-gray-400 hover:text-white p-1 hover:bg-white/10 rounded-lg transition-colors"
+                                        className="text-muted-foreground hover:text-foreground p-1 hover:bg-muted rounded-lg transition-colors"
                                     >
                                         <X size={20} />
                                     </button>
                                 </div>
                                 <form onSubmit={handleCreateOrg} className="space-y-4 relative z-10">
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-300 mb-1.5">Organization Name</label>
+                                        <label className="block text-sm font-medium text-foreground mb-1.5">Organization Name</label>
                                         <div className="relative">
-                                            <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" size={18} />
+                                            <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={18} />
                                             <input
                                                 type="text"
                                                 value={newOrgName}
@@ -392,13 +392,13 @@ export default function SuperAdminDashboard() {
                                         <button
                                             type="button"
                                             onClick={() => setShowCreateModal(false)}
-                                            className="px-4 py-2.5 text-gray-300 hover:bg-white/5 rounded-xl font-medium transition-colors border border-transparent hover:border-white/10"
+                                            className="px-4 py-2.5 text-muted-foreground hover:bg-muted rounded-xl font-medium transition-colors border border-transparent hover:border-border"
                                         >
                                             Cancel
                                         </button>
                                         <button
                                             type="submit"
-                                            className="px-4 py-2.5 bg-violet-600 text-white rounded-xl hover:bg-violet-700 font-medium shadow-[0_0_15px_rgba(124,58,237,0.4)] hover:shadow-[0_0_25px_rgba(124,58,237,0.6)] transition-all flex items-center gap-2"
+                                            className="px-4 py-2.5 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 font-medium shadow-[0_0_15px_rgba(124,58,237,0.4)] hover:shadow-[0_0_25px_rgba(124,58,237,0.6)] transition-all flex items-center gap-2"
                                         >
                                             <Plus size={18} />
                                             Create Organization
@@ -411,19 +411,19 @@ export default function SuperAdminDashboard() {
 
                     {selectedOrgId && (
                         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[60] p-4 animate-in fade-in duration-200">
-                            <div className="glass-panel w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col rounded-2xl">
-                                <div className="p-6 border-b border-white/10 flex justify-between items-center z-10">
+                            <div className="glass-panel w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col rounded-2xl border border-border bg-card">
+                                <div className="p-6 border-b border-border flex justify-between items-center z-10">
                                     <div>
-                                        <h3 className="text-xl font-bold text-white text-glow">
+                                        <h3 className="text-xl font-bold text-foreground">
                                             Manage Users
                                         </h3>
-                                        <p className="text-sm text-gray-400 mt-1">
-                                            Organization: <span className="font-medium text-violet-300">{orgs.find(o => o.id === selectedOrgId)?.name}</span>
+                                        <p className="text-sm text-muted-foreground mt-1">
+                                            Organization: <span className="font-medium text-primary">{orgs.find(o => o.id === selectedOrgId)?.name}</span>
                                         </p>
                                     </div>
                                     <button
                                         onClick={() => setSelectedOrgId(null)}
-                                        className="text-gray-400 hover:text-white p-1 hover:bg-white/10 rounded-lg transition-colors"
+                                        className="text-muted-foreground hover:text-foreground p-1 hover:bg-muted rounded-lg transition-colors"
                                     >
                                         <X size={24} />
                                     </button>
@@ -437,16 +437,16 @@ export default function SuperAdminDashboard() {
 
                     {editingOrg && (
                         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[60] p-4 animate-in fade-in duration-200">
-                            <div className="glass-panel p-6 w-full max-w-md transform transition-all scale-100 rounded-2xl relative">
-                                <div className="absolute inset-0 bg-violet-500/5 rounded-2xl pointer-events-none"></div>
+                            <div className="glass-panel p-6 w-full max-w-md transform transition-all scale-100 rounded-2xl relative border border-border bg-card">
+                                <div className="absolute inset-0 bg-primary/5 rounded-2xl pointer-events-none"></div>
                                 <div className="flex justify-between items-center mb-6 relative z-10">
                                     <div>
-                                        <h3 className="text-xl font-bold text-white text-glow">Edit Organization</h3>
-                                        <p className="text-sm text-gray-400 mt-1">Update details for {editingOrg.name}</p>
+                                        <h3 className="text-xl font-bold text-foreground">Edit Organization</h3>
+                                        <p className="text-sm text-muted-foreground mt-1">Update details for {editingOrg.name}</p>
                                     </div>
                                     <button
                                         onClick={() => setEditingOrg(null)}
-                                        className="text-gray-400 hover:text-white p-1 hover:bg-white/10 rounded-lg transition-colors"
+                                        className="text-muted-foreground hover:text-foreground p-1 hover:bg-muted rounded-lg transition-colors"
                                     >
                                         <X size={20} />
                                     </button>
@@ -472,22 +472,22 @@ export default function SuperAdminDashboard() {
                                     }
                                 }} className="space-y-4 relative z-10">
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-300 mb-1.5">Plan</label>
+                                        <label className="block text-sm font-medium text-foreground mb-1.5">Plan</label>
                                         <select
                                             value={editingOrg.plan_tier || 'free'}
                                             onChange={(e) => setEditingOrg({ ...editingOrg, plan_tier: e.target.value })}
                                             className="glass-input w-full px-4 py-2.5 rounded-xl outline-none"
                                         >
-                                            <option value="free" className="bg-gray-900 text-white">Free</option>
-                                            <option value="basic" className="bg-gray-900 text-white">Basic</option>
-                                            <option value="pro" className="bg-gray-900 text-white">Pro</option>
-                                            <option value="enterprise" className="bg-gray-900 text-white">Enterprise</option>
-                                            <option value="custom" className="bg-gray-900 text-white">Custom</option>
+                                            <option value="free" className="bg-background text-foreground">Free</option>
+                                            <option value="basic" className="bg-background text-foreground">Basic</option>
+                                            <option value="pro" className="bg-background text-foreground">Pro</option>
+                                            <option value="enterprise" className="bg-background text-foreground">Enterprise</option>
+                                            <option value="custom" className="bg-background text-foreground">Custom</option>
                                         </select>
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-300 mb-1.5">Trial Ends At</label>
+                                        <label className="block text-sm font-medium text-foreground mb-1.5">Trial Ends At</label>
                                         <input
                                             type="datetime-local"
                                             value={editingOrg.trial_ends_at ? (() => {
@@ -507,7 +507,7 @@ export default function SuperAdminDashboard() {
                                             }}
                                             className="glass-input w-full px-4 py-2.5 rounded-xl outline-none"
                                         />
-                                        <p className="text-xs text-gray-500 mt-1">Leave empty for no trial expiration.</p>
+                                        <p className="text-xs text-muted-foreground mt-1">Leave empty for no trial expiration.</p>
                                     </div>
 
                                     <div className="flex items-center">
@@ -516,26 +516,26 @@ export default function SuperAdminDashboard() {
                                             id="is_manual_override"
                                             checked={editingOrg.is_manual_override || false}
                                             onChange={(e) => setEditingOrg({ ...editingOrg, is_manual_override: e.target.checked })}
-                                            className="h-4 w-4 text-violet-600 focus:ring-violet-500 bg-white/10 border-white/20 rounded"
+                                            className="h-4 w-4 text-primary focus:ring-primary bg-muted border-border rounded"
                                         />
-                                        <label htmlFor="is_manual_override" className="ml-2 block text-sm text-gray-300">
+                                        <label htmlFor="is_manual_override" className="ml-2 block text-sm text-foreground">
                                             Manual Override (Custom Client)
                                         </label>
                                     </div>
-                                    <p className="text-xs text-gray-500 ml-6">
+                                    <p className="text-xs text-muted-foreground ml-6">
                                         If checked, this client will be treated as "Custom" regardless of plan tier (hides watermark, etc).
                                     </p>
                                     <div className="flex justify-end gap-3 pt-4">
                                         <button
                                             type="button"
                                             onClick={() => setEditingOrg(null)}
-                                            className="px-4 py-2.5 text-gray-300 hover:bg-white/5 rounded-xl font-medium transition-colors border border-transparent hover:border-white/10"
+                                            className="px-4 py-2.5 text-muted-foreground hover:bg-muted rounded-xl font-medium transition-colors border border-transparent hover:border-border"
                                         >
                                             Cancel
                                         </button>
                                         <button
                                             type="submit"
-                                            className="px-4 py-2.5 bg-violet-600 text-white rounded-xl hover:bg-violet-700 font-medium shadow-[0_0_15px_rgba(124,58,237,0.4)] hover:shadow-[0_0_25px_rgba(124,58,237,0.6)] transition-all"
+                                            className="px-4 py-2.5 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 font-medium shadow-[0_0_15px_rgba(124,58,237,0.4)] hover:shadow-[0_0_25px_rgba(124,58,237,0.6)] transition-all"
                                         >
                                             Save Changes
                                         </button>
@@ -546,6 +546,6 @@ export default function SuperAdminDashboard() {
                     )}
                 </>
             )}
-        </AdminLayout>
+        </MainLayout>
     );
 }

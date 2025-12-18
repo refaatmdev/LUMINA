@@ -153,13 +153,13 @@ export default function ScheduleManager({ targetType, targetId }: ScheduleManage
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
-                <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                    <Calendar size={20} className="text-indigo-600" />
+                <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
+                    <Calendar size={20} className="text-primary" />
                     Weekly Schedule
                 </h3>
                 <button
                     onClick={() => setShowAddForm(true)}
-                    className="flex items-center gap-1.5 text-sm font-medium text-indigo-600 hover:text-indigo-700 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition-colors"
+                    className="flex items-center gap-1.5 text-sm font-medium text-primary hover:text-primary/90 bg-primary/10 hover:bg-primary/20 px-3 py-1.5 rounded-lg transition-colors"
                 >
                     <Plus size={16} />
                     Add Rule
@@ -168,21 +168,21 @@ export default function ScheduleManager({ targetType, targetId }: ScheduleManage
 
             {/* Add Form */}
             {showAddForm && (
-                <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 animate-in fade-in slide-in-from-top-2">
+                <div className="bg-muted/30 border border-border rounded-xl p-4 animate-in fade-in slide-in-from-top-2">
                     <div className="flex justify-between items-start mb-4">
-                        <h4 className="font-medium text-gray-900">New Schedule Rule</h4>
-                        <button onClick={() => setShowAddForm(false)} className="text-gray-400 hover:text-gray-600">
+                        <h4 className="font-medium text-foreground">New Schedule Rule</h4>
+                        <button onClick={() => setShowAddForm(false)} className="text-muted-foreground hover:text-foreground">
                             <X size={18} />
                         </button>
                     </div>
 
                     <div className="space-y-4">
                         <div>
-                            <label className="block text-xs font-medium text-gray-500 mb-1">Playlist</label>
+                            <label className="block text-xs font-medium text-muted-foreground mb-1">Playlist</label>
                             <select
                                 value={selectedPlaylistId}
                                 onChange={(e) => setSelectedPlaylistId(e.target.value)}
-                                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none"
+                                className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none text-foreground"
                             >
                                 <option value="">Select a playlist...</option>
                                 {playlists.map(p => (
@@ -193,35 +193,35 @@ export default function ScheduleManager({ targetType, targetId }: ScheduleManage
 
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-xs font-medium text-gray-500 mb-1">Start Time</label>
+                                <label className="block text-xs font-medium text-muted-foreground mb-1">Start Time</label>
                                 <input
                                     type="time"
                                     value={startTime}
                                     onChange={(e) => setStartTime(e.target.value)}
-                                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm"
+                                    className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none [color-scheme:light] dark:[color-scheme:dark]"
                                 />
                             </div>
                             <div>
-                                <label className="block text-xs font-medium text-gray-500 mb-1">End Time</label>
+                                <label className="block text-xs font-medium text-muted-foreground mb-1">End Time</label>
                                 <input
                                     type="time"
                                     value={endTime}
                                     onChange={(e) => setEndTime(e.target.value)}
-                                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm"
+                                    className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none [color-scheme:light] dark:[color-scheme:dark]"
                                 />
                             </div>
                         </div>
 
                         <div>
-                            <label className="block text-xs font-medium text-gray-500 mb-2">Days Active</label>
+                            <label className="block text-xs font-medium text-muted-foreground mb-2">Days Active</label>
                             <div className="flex flex-wrap gap-2">
                                 {DAYS.map(day => (
                                     <button
                                         key={day.id}
                                         onClick={() => toggleDay(day.id)}
-                                        className={`w-8 h-8 rounded-full text-xs font-medium transition-all ${selectedDays.includes(day.id)
-                                            ? 'bg-indigo-600 text-white shadow-sm'
-                                            : 'bg-white border border-gray-200 text-gray-500 hover:border-gray-300'
+                                        className={`w-8 h-8 rounded-full text-xs font-bold transition-all border-2 ${selectedDays.includes(day.id)
+                                            ? 'bg-primary text-primary-foreground border-primary-foreground shadow-md scale-105'
+                                            : 'bg-background border-border text-muted-foreground hover:border-primary/50'
                                             }`}
                                     >
                                         {day.label[0]}
@@ -234,7 +234,7 @@ export default function ScheduleManager({ targetType, targetId }: ScheduleManage
                             <button
                                 onClick={handleAddSchedule}
                                 disabled={!selectedPlaylistId || selectedDays.length === 0}
-                                className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 <Save size={16} />
                                 Save Rule
@@ -247,18 +247,18 @@ export default function ScheduleManager({ targetType, targetId }: ScheduleManage
             {/* Schedule List */}
             <div className="space-y-3">
                 {schedules.length === 0 ? (
-                    <div className="text-center py-8 text-gray-500 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+                    <div className="text-center py-8 text-muted-foreground bg-muted/20 rounded-xl border border-dashed border-border">
                         <Clock size={24} className="mx-auto mb-2 opacity-50" />
                         <p className="text-sm">No schedule rules set.</p>
                         <p className="text-xs opacity-70 mt-1">Content will play from the default playlist.</p>
                     </div>
                 ) : (
                     schedules.map(schedule => (
-                        <div key={schedule.id} className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm flex items-center justify-between group">
+                        <div key={schedule.id} className="bg-card border border-border rounded-xl p-4 shadow-sm flex items-center justify-between group">
                             <div>
                                 <div className="flex items-center gap-2 mb-1">
-                                    <span className="font-semibold text-gray-900">{schedule.playlists?.name}</span>
-                                    <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">
+                                    <span className="font-semibold text-foreground">{schedule.playlists?.name}</span>
+                                    <span className="text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded-full">
                                         {schedule.start_time.slice(0, 5)} - {schedule.end_time.slice(0, 5)}
                                     </span>
                                 </div>
@@ -267,8 +267,8 @@ export default function ScheduleManager({ targetType, targetId }: ScheduleManage
                                         <span
                                             key={day.id}
                                             className={`text-[10px] uppercase font-bold ${schedule.days_of_week.includes(day.id)
-                                                ? 'text-indigo-600'
-                                                : 'text-gray-300'
+                                                ? 'text-primary'
+                                                : 'text-muted-foreground/30'
                                                 }`}
                                         >
                                             {day.label[0]}
@@ -278,7 +278,7 @@ export default function ScheduleManager({ targetType, targetId }: ScheduleManage
                             </div>
                             <button
                                 onClick={() => handleDelete(schedule.id)}
-                                className="text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all p-2 hover:bg-red-50 rounded-lg"
+                                className="text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-all p-2 hover:bg-destructive/10 rounded-lg"
                             >
                                 <Trash2 size={16} />
                             </button>

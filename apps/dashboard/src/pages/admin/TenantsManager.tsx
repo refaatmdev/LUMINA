@@ -218,12 +218,12 @@ export default function TenantsManager() {
         <div className="p-8 max-w-7xl mx-auto">
             <div className="flex justify-between items-center mb-8">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-900">Tenants Manager</h1>
-                    <p className="text-gray-500 mt-1">Super Admin Control Panel</p>
+                    <h1 className="text-3xl font-bold text-white text-glow">Tenants Manager</h1>
+                    <p className="text-gray-400 mt-1">Super Admin Control Panel</p>
                 </div>
                 <button
                     onClick={() => setShowCreateModal(true)}
-                    className="bg-indigo-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-indigo-700 transition-colors"
+                    className="bg-violet-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-violet-700 transition-all shadow-[0_0_15px_rgba(124,58,237,0.4)] hover:shadow-[0_0_25px_rgba(124,58,237,0.6)]"
                 >
                     <Plus size={18} />
                     Create Custom Client
@@ -236,32 +236,32 @@ export default function TenantsManager() {
                 <input
                     type="text"
                     placeholder="Search organizations..."
-                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-indigo-500 outline-none"
+                    className="glass-input w-full pl-10 pr-4 py-3 rounded-xl outline-none"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                 />
             </div>
 
             {/* Table */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <div className="glass-panel rounded-xl overflow-hidden">
                 <table className="w-full text-left">
-                    <thead className="bg-gray-50 border-b border-gray-200">
+                    <thead className="bg-white/5 border-b border-white/10">
                         <tr>
-                            <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Organization</th>
-                            <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Plan</th>
-                            <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Stats</th>
-                            <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Status</th>
-                            <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase">Created</th>
-                            <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase text-right">Actions</th>
+                            <th className="px-6 py-4 text-xs font-semibold text-gray-400 uppercase">Organization</th>
+                            <th className="px-6 py-4 text-xs font-semibold text-gray-400 uppercase">Plan</th>
+                            <th className="px-6 py-4 text-xs font-semibold text-gray-400 uppercase">Stats</th>
+                            <th className="px-6 py-4 text-xs font-semibold text-gray-400 uppercase">Status</th>
+                            <th className="px-6 py-4 text-xs font-semibold text-gray-400 uppercase">Created</th>
+                            <th className="px-6 py-4 text-xs font-semibold text-gray-400 uppercase text-right">Actions</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100">
+                    <tbody className="divide-y divide-white/5">
                         {filteredTenants.map(org => (
                             <React.Fragment key={org.id}>
-                                <tr className="hover:bg-gray-50 transition-colors group">
+                                <tr className="hover:bg-white/5 transition-colors group">
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center text-indigo-600 font-bold">
+                                            <div className="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center text-gray-400 font-bold border border-white/10">
                                                 {org.logo_url ? (
                                                     <img src={org.logo_url} alt={org.name} className="w-full h-full object-cover rounded-lg" />
                                                 ) : (
@@ -269,33 +269,33 @@ export default function TenantsManager() {
                                                 )}
                                             </div>
                                             <div>
-                                                <div className="font-medium text-gray-900">{org.name}</div>
+                                                <div className="font-medium text-white">{org.name}</div>
                                                 <div className="text-xs text-gray-500 font-mono">{org.id.substring(0, 8)}...</div>
                                             </div>
                                         </div>
                                     </td>
                                     <td className="px-6 py-4">
                                         {org.is_manual_override ? (
-                                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-700">
+                                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-violet-500/10 text-violet-300 border border-violet-500/20">
                                                 <Shield size={12} />
                                                 Custom
                                             </span>
                                         ) : (
-                                            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 uppercase">
+                                            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-white/10 text-gray-300 uppercase border border-white/5">
                                                 {org.plan_tier}
                                             </span>
                                         )}
                                     </td>
                                     <td className="px-6 py-4">
-                                        <div className="flex items-center gap-4 text-sm text-gray-600">
+                                        <div className="flex items-center gap-4 text-sm text-gray-400">
                                             <div className="flex items-center gap-1.5" title="Screens">
-                                                <Monitor size={16} />
+                                                <Monitor size={16} className="text-blue-400" />
                                                 <span>{org.screen_count} / {org.is_manual_override ? (org.manual_screen_limit === 0 ? '∞' : org.manual_screen_limit) : PLANS[org.plan_tier.toUpperCase() as keyof typeof PLANS]?.maxScreens || 1}</span>
                                             </div>
                                         </div>
                                     </td>
                                     <td className="px-6 py-4">
-                                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${org.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${org.status === 'active' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.2)]' : 'bg-red-500/10 text-red-400 border-red-500/20 shadow-[0_0_10px_rgba(239,68,68,0.2)]'
                                             }`}>
                                             {org.status === 'active' ? <CheckCircle size={12} /> : <Ban size={12} />}
                                             {org.status.charAt(0).toUpperCase() + org.status.slice(1)}
@@ -308,7 +308,7 @@ export default function TenantsManager() {
                                         <div className="flex items-center justify-end gap-2">
                                             <button
                                                 onClick={() => openLimitsModal(org)}
-                                                className="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                                                className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors border border-transparent hover:border-white/10"
                                                 title="Edit Limits"
                                             >
                                                 <Edit2 size={16} />
@@ -322,7 +322,7 @@ export default function TenantsManager() {
                                                         fetchOrgUsers(org.id);
                                                     }
                                                 }}
-                                                className={`p-2 rounded-lg transition-colors ${expandedRow === org.id ? 'text-indigo-600 bg-indigo-50' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'}`}
+                                                className={`p-2 rounded-lg transition-colors border border-transparent ${expandedRow === org.id ? 'text-violet-400 bg-violet-500/10 border-violet-500/20' : 'text-gray-400 hover:text-white hover:bg-white/10 hover:border-white/10'}`}
                                                 title="View Details"
                                             >
                                                 <MoreVertical size={16} />
@@ -331,24 +331,24 @@ export default function TenantsManager() {
                                     </td>
                                 </tr>
                                 {expandedRow === org.id && (
-                                    <tr className="bg-gray-50/50">
+                                    <tr className="bg-white/5">
                                         <td colSpan={6} className="px-6 py-6">
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                                 {/* Users List */}
                                                 <div>
-                                                    <h4 className="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
-                                                        <Users size={16} />
+                                                    <h4 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
+                                                        <Users size={16} className="text-violet-400" />
                                                         Users
                                                     </h4>
                                                     {loadingUsers[org.id] ? (
                                                         <div className="text-sm text-gray-500">Loading users...</div>
                                                     ) : (
-                                                        <div className="bg-white rounded-lg border border-gray-200 divide-y divide-gray-100">
+                                                        <div className="bg-black/30 rounded-lg border border-white/10 divide-y divide-white/5">
                                                             {orgUsers[org.id]?.length > 0 ? (
                                                                 orgUsers[org.id].map((user, idx) => (
                                                                     <div key={idx} className="px-4 py-3 flex justify-between items-center text-sm">
-                                                                        <span className="text-gray-900">{user.email}</span>
-                                                                        <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full capitalize">{user.role}</span>
+                                                                        <span className="text-gray-300">{user.email}</span>
+                                                                        <span className="text-xs bg-white/10 text-gray-400 px-2 py-0.5 rounded-full capitalize border border-white/5">{user.role}</span>
                                                                     </div>
                                                                 ))
                                                             ) : (
@@ -361,11 +361,11 @@ export default function TenantsManager() {
                                                 {/* Admin Actions & Notes */}
                                                 <div className="space-y-6">
                                                     <div>
-                                                        <h4 className="text-sm font-bold text-gray-900 mb-3">Quick Actions</h4>
+                                                        <h4 className="text-sm font-bold text-white mb-3">Quick Actions</h4>
                                                         <div className="flex gap-3 flex-wrap">
                                                             <button
                                                                 onClick={() => handleImpersonate(org.id)}
-                                                                className="px-4 py-2 rounded-lg text-sm font-medium border border-indigo-200 text-indigo-700 hover:bg-indigo-50 flex items-center gap-2"
+                                                                className="px-4 py-2 rounded-lg text-sm font-medium border border-violet-500/20 text-violet-400 hover:bg-violet-500/10 flex items-center gap-2 transition-colors"
                                                             >
                                                                 <Eye size={16} />
                                                                 Login as Admin
@@ -373,8 +373,8 @@ export default function TenantsManager() {
                                                             <button
                                                                 onClick={() => toggleStatus(org)}
                                                                 className={`px-4 py-2 rounded-lg text-sm font-medium border transition-colors ${org.status === 'active'
-                                                                        ? 'border-red-200 text-red-700 hover:bg-red-50'
-                                                                        : 'border-green-200 text-green-700 hover:bg-green-50'
+                                                                    ? 'border-red-500/20 text-red-400 hover:bg-red-500/10'
+                                                                    : 'border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/10'
                                                                     }`}
                                                             >
                                                                 {org.status === 'active' ? 'Suspend Organization' : 'Activate Organization'}
@@ -383,10 +383,10 @@ export default function TenantsManager() {
                                                     </div>
 
                                                     <div>
-                                                        <h4 className="text-sm font-bold text-gray-900 mb-3">Internal Notes</h4>
+                                                        <h4 className="text-sm font-bold text-white mb-3">Internal Notes</h4>
                                                         <div className="relative">
                                                             <textarea
-                                                                className="w-full h-24 rounded-lg border border-gray-200 p-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none resize-none"
+                                                                className="glass-input w-full h-24 rounded-lg p-3 text-sm outline-none resize-none"
                                                                 placeholder="Add internal notes about this client..."
                                                                 value={notesBuffer[org.id] !== undefined ? notesBuffer[org.id] : (org.admin_notes || '')}
                                                                 onChange={(e) => setNotesBuffer(prev => ({ ...prev, [org.id]: e.target.value }))}
@@ -394,7 +394,7 @@ export default function TenantsManager() {
                                                             {(notesBuffer[org.id] !== undefined && notesBuffer[org.id] !== org.admin_notes) && (
                                                                 <button
                                                                     onClick={() => saveNotes(org.id)}
-                                                                    className="absolute bottom-3 right-3 p-1.5 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 shadow-sm"
+                                                                    className="absolute bottom-3 right-3 p-1.5 bg-violet-600 text-white rounded-md hover:bg-violet-700 shadow-sm"
                                                                     title="Save Notes"
                                                                 >
                                                                     <Save size={14} />
@@ -415,44 +415,45 @@ export default function TenantsManager() {
 
             {/* Create Client Modal */}
             {showCreateModal && (
-                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-                    <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
-                        <div className="flex justify-between items-center mb-6">
-                            <h3 className="text-xl font-bold text-gray-900">Create Custom Client</h3>
-                            <button onClick={() => setShowCreateModal(false)} className="text-gray-400 hover:text-gray-600">
+                <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
+                    <div className="glass-panel p-6 w-full max-w-md transform transition-all scale-100 rounded-2xl relative">
+                        <div className="absolute inset-0 bg-violet-500/5 rounded-2xl pointer-events-none"></div>
+                        <div className="flex justify-between items-center mb-6 relative z-10">
+                            <h3 className="text-xl font-bold text-white text-glow">Create Custom Client</h3>
+                            <button onClick={() => setShowCreateModal(false)} className="text-gray-400 hover:text-white p-1 hover:bg-white/10 rounded-lg transition-colors">
                                 <X size={20} />
                             </button>
                         </div>
-                        <form onSubmit={handleCreateClient} className="space-y-4">
+                        <form onSubmit={handleCreateClient} className="space-y-4 relative z-10">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Organization Name</label>
+                                <label className="block text-sm font-medium text-gray-300 mb-1">Organization Name</label>
                                 <input
                                     type="text"
                                     required
-                                    className="w-full border border-gray-200 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none"
+                                    className="glass-input w-full px-4 py-2 rounded-lg outline-none"
                                     value={newClient.name}
                                     onChange={e => setNewClient({ ...newClient, name: e.target.value })}
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Admin Email</label>
+                                <label className="block text-sm font-medium text-gray-300 mb-1">Admin Email</label>
                                 <input
                                     type="email"
                                     required
-                                    className="w-full border border-gray-200 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none"
+                                    className="glass-input w-full px-4 py-2 rounded-lg outline-none"
                                     value={newClient.email}
                                     onChange={e => setNewClient({ ...newClient, email: e.target.value })}
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Initial Plan</label>
+                                <label className="block text-sm font-medium text-gray-300 mb-1">Initial Plan</label>
                                 <select
-                                    className="w-full border border-gray-200 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none"
+                                    className="glass-input w-full px-4 py-2 rounded-lg outline-none"
                                     value={newClient.plan}
                                     onChange={e => setNewClient({ ...newClient, plan: e.target.value })}
                                 >
                                     {Object.entries(PLANS).map(([key, plan]) => (
-                                        <option key={key} value={key.toLowerCase()}>{plan.name}</option>
+                                        <option key={key} value={key.toLowerCase()} className="bg-gray-900 text-white">{plan.name}</option>
                                     ))}
                                 </select>
                             </div>
@@ -460,13 +461,13 @@ export default function TenantsManager() {
                                 <button
                                     type="button"
                                     onClick={() => setShowCreateModal(false)}
-                                    className="px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg font-medium"
+                                    className="px-4 py-2 text-gray-300 hover:bg-white/5 rounded-lg font-medium transition-colors border border-transparent hover:border-white/10"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium"
+                                    className="px-6 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 font-medium shadow-[0_0_15px_rgba(124,58,237,0.4)] hover:shadow-[0_0_25px_rgba(124,58,237,0.6)] transition-all"
                                 >
                                     Create Client
                                 </button>
@@ -478,19 +479,20 @@ export default function TenantsManager() {
 
             {/* Limits Modal */}
             {showLimitsModal && selectedTenant && (
-                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-                    <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
-                        <div className="flex justify-between items-center mb-6">
-                            <h3 className="text-xl font-bold text-gray-900">Edit Limits: {selectedTenant.name}</h3>
-                            <button onClick={() => setShowLimitsModal(false)} className="text-gray-400 hover:text-gray-600">
+                <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
+                    <div className="glass-panel p-6 w-full max-w-md transform transition-all scale-100 rounded-2xl relative">
+                        <div className="absolute inset-0 bg-violet-500/5 rounded-2xl pointer-events-none"></div>
+                        <div className="flex justify-between items-center mb-6 relative z-10">
+                            <h3 className="text-xl font-bold text-white text-glow">Edit Limits: {selectedTenant.name}</h3>
+                            <button onClick={() => setShowLimitsModal(false)} className="text-gray-400 hover:text-white p-1 hover:bg-white/10 rounded-lg transition-colors">
                                 <X size={20} />
                             </button>
                         </div>
-                        <form onSubmit={handleUpdateLimits} className="space-y-6">
-                            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-200">
+                        <form onSubmit={handleUpdateLimits} className="space-y-6 relative z-10">
+                            <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10">
                                 <div>
-                                    <h4 className="font-medium text-gray-900">Manual Override</h4>
-                                    <p className="text-xs text-gray-500">Ignore standard plan limits</p>
+                                    <h4 className="font-medium text-white">Manual Override</h4>
+                                    <p className="text-xs text-gray-400">Ignore standard plan limits</p>
                                 </div>
                                 <label className="relative inline-flex items-center cursor-pointer">
                                     <input
@@ -499,18 +501,18 @@ export default function TenantsManager() {
                                         checked={limitsForm.is_manual_override}
                                         onChange={e => setLimitsForm({ ...limitsForm, is_manual_override: e.target.checked })}
                                     />
-                                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                                    <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-violet-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-violet-600"></div>
                                 </label>
                             </div>
 
                             <div className={`space-y-4 transition-opacity ${!limitsForm.is_manual_override ? 'opacity-50 pointer-events-none' : ''}`}>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Screen Limit</label>
+                                    <label className="block text-sm font-medium text-gray-300 mb-1">Screen Limit</label>
                                     <div className="relative">
-                                        <Monitor className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                                        <Monitor className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
                                         <input
                                             type="number"
-                                            className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                                            className="glass-input w-full pl-10 pr-4 py-2 rounded-lg outline-none"
                                             value={limitsForm.manual_screen_limit}
                                             onChange={e => setLimitsForm({ ...limitsForm, manual_screen_limit: parseInt(e.target.value) || 0 })}
                                         />
@@ -518,12 +520,12 @@ export default function TenantsManager() {
                                     <p className="text-xs text-gray-500 mt-1">Set to 0 for unlimited.</p>
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Storage Limit (GB)</label>
+                                    <label className="block text-sm font-medium text-gray-300 mb-1">Storage Limit (GB)</label>
                                     <div className="relative">
-                                        <Database className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                                        <Database className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
                                         <input
                                             type="number"
-                                            className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+                                            className="glass-input w-full pl-10 pr-4 py-2 rounded-lg outline-none"
                                             value={limitsForm.manual_storage_limit_gb}
                                             onChange={e => setLimitsForm({ ...limitsForm, manual_storage_limit_gb: parseFloat(e.target.value) || 0 })}
                                         />
@@ -535,13 +537,13 @@ export default function TenantsManager() {
                                 <button
                                     type="button"
                                     onClick={() => setShowLimitsModal(false)}
-                                    className="px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg font-medium"
+                                    className="px-4 py-2 text-gray-300 hover:bg-white/5 rounded-lg font-medium transition-colors border border-transparent hover:border-white/10"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium"
+                                    className="px-6 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 font-medium shadow-[0_0_15px_rgba(124,58,237,0.4)] hover:shadow-[0_0_25px_rgba(124,58,237,0.6)] transition-all"
                                 >
                                     Save Limits
                                 </button>

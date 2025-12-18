@@ -138,89 +138,97 @@ export default function SystemStats() {
     return (
         <div className="max-w-7xl mx-auto space-y-8">
             <div>
-                <h1 className="text-2xl font-bold text-gray-900">System Usage Statistics</h1>
-                <p className="text-gray-500 mt-1">Real-time insights into system performance and usage.</p>
+                <h1 className="text-2xl font-bold text-white text-glow">System Usage Statistics</h1>
+                <p className="text-gray-400 mt-1">Real-time insights into system performance and usage.</p>
             </div>
 
             {/* Key Metrics Row */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Active Screens */}
-                <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+                <div className="glass-panel p-6 rounded-2xl">
                     <div className="flex items-center justify-between mb-4">
-                        <div className="p-2 bg-indigo-100 text-indigo-600 rounded-lg">
+                        <div className="p-2 bg-violet-500/10 text-violet-300 rounded-lg border border-violet-500/20">
                             <Monitor size={24} />
                         </div>
-                        <span className="flex items-center text-green-600 text-sm font-medium bg-green-50 px-2 py-1 rounded-full">
+                        <span className="flex items-center text-emerald-400 text-sm font-medium bg-emerald-500/10 px-2 py-1 rounded-full border border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.3)]">
                             <Activity size={16} className="mr-1" />
                             Live
                         </span>
                     </div>
-                    <p className="text-gray-500 text-sm">Total Active Screens</p>
-                    <h3 className="text-4xl font-bold text-gray-900 mt-2">{activeScreens}</h3>
+                    <p className="text-gray-400 text-sm">Total Active Screens</p>
+                    <h3 className="text-4xl font-bold text-white text-glow mt-2">{activeScreens}</h3>
                 </div>
 
                 {/* Storage Usage */}
-                <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+                <div className="glass-panel p-6 rounded-2xl">
                     <div className="flex items-center justify-between mb-4">
-                        <div className="p-2 bg-purple-100 text-purple-600 rounded-lg">
+                        <div className="p-2 bg-pink-500/10 text-pink-300 rounded-lg border border-pink-500/20">
                             <HardDrive size={24} />
                         </div>
-                        <span className="text-gray-500 text-sm">
+                        <span className="text-gray-300 text-sm">
                             {storageStats.used.toFixed(1)} GB / {storageStats.total} GB
                         </span>
                     </div>
-                    <p className="text-gray-500 text-sm">Storage Usage</p>
-                    <div className="mt-4 w-full bg-gray-100 rounded-full h-2.5">
+                    <p className="text-gray-400 text-sm">Storage Usage</p>
+                    <div className="mt-4 w-full bg-white/5 rounded-full h-2.5">
                         <div
-                            className="bg-purple-600 h-2.5 rounded-full transition-all duration-500"
+                            className="bg-pink-600 h-2.5 rounded-full transition-all duration-500 shadow-[0_0_10px_#db2777]"
                             style={{ width: `${Math.min((storageStats.used / storageStats.total) * 100, 100)}%` }}
                         ></div>
                     </div>
-                    <p className="text-xs text-gray-400 mt-2 text-right">
+                    <p className="text-xs text-gray-500 mt-2 text-right">
                         {((storageStats.used / storageStats.total) * 100).toFixed(1)}% Used
                     </p>
                 </div>
 
                 {/* Top Device OS */}
-                <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+                <div className="glass-panel p-6 rounded-2xl">
                     <div className="flex items-center justify-between mb-4">
-                        <div className="p-2 bg-blue-100 text-blue-600 rounded-lg">
+                        <div className="p-2 bg-blue-500/10 text-blue-300 rounded-lg border border-blue-500/20">
                             <Smartphone size={24} />
                         </div>
                     </div>
-                    <p className="text-gray-500 text-sm">Top Device OS</p>
-                    <h3 className="text-2xl font-bold text-gray-900 mt-1">
+                    <p className="text-gray-400 text-sm">Top Device OS</p>
+                    <h3 className="text-2xl font-bold text-white text-glow mt-1">
                         {deviceStats.length > 0 ? deviceStats.sort((a, b) => b.value - a.value)[0].name : 'N/A'}
                     </h3>
-                    <p className="text-xs text-gray-400">Most popular platform</p>
+                    <p className="text-xs text-gray-500">Most popular platform</p>
                 </div>
             </div>
 
             {/* Charts & Tables */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Device Distribution Chart */}
-                <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
-                    <h3 className="text-lg font-bold text-gray-900 mb-6">Device OS Distribution</h3>
+                <div className="glass-panel p-6 rounded-2xl">
+                    <h3 className="text-lg font-bold text-white text-glow mb-6">Device OS Distribution</h3>
                     <div className="h-80">
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={deviceStats} layout="vertical" margin={{ left: 20 }}>
-                                <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#E5E7EB" />
+                                <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="rgba(255,255,255,0.1)" />
                                 <XAxis type="number" hide />
                                 <YAxis
                                     dataKey="name"
                                     type="category"
                                     axisLine={false}
                                     tickLine={false}
-                                    tick={{ fill: '#4B5563', fontSize: 14, fontWeight: 500 }}
+                                    tick={{ fill: '#9ca3af', fontSize: 14, fontWeight: 500 }}
                                     width={80}
                                 />
                                 <Tooltip
-                                    cursor={{ fill: '#F3F4F6' }}
-                                    contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
+                                    cursor={{ fill: 'rgba(255,255,255,0.05)' }}
+                                    contentStyle={{
+                                        backgroundColor: 'rgba(20, 20, 30, 0.9)',
+                                        backdropFilter: 'blur(10px)',
+                                        borderRadius: '12px',
+                                        border: '1px solid rgba(255,255,255,0.1)',
+                                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.5)',
+                                        color: '#fff'
+                                    }}
+                                    itemStyle={{ color: '#fff' }}
                                 />
                                 <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={32}>
                                     {deviceStats.map((_, index) => (
-                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} stroke="rgba(255,255,255,0.1)" />
                                     ))}
                                 </Bar>
                             </BarChart>
@@ -229,19 +237,19 @@ export default function SystemStats() {
                 </div>
 
                 {/* Most Active Tenants */}
-                <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-                    <div className="p-6 border-b border-gray-200">
-                        <h3 className="text-lg font-bold text-gray-900">Most Active Tenants (24h)</h3>
+                <div className="glass-panel rounded-2xl overflow-hidden">
+                    <div className="p-6 border-b border-white/10">
+                        <h3 className="text-lg font-bold text-white text-glow">Most Active Tenants (24h)</h3>
                     </div>
                     <div className="overflow-x-auto">
                         <table className="w-full text-left text-sm">
-                            <thead className="bg-gray-50 text-gray-500 font-medium">
+                            <thead className="bg-white/5 text-gray-400 font-medium">
                                 <tr>
                                     <th className="px-6 py-3">Organization</th>
                                     <th className="px-6 py-3 text-right">Updates/Plays</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gray-100">
+                            <tbody className="divide-y divide-white/5">
                                 {activeTenants.length === 0 ? (
                                     <tr>
                                         <td colSpan={2} className="px-6 py-8 text-center text-gray-500">
@@ -250,14 +258,14 @@ export default function SystemStats() {
                                     </tr>
                                 ) : (
                                     activeTenants.map((tenant, index) => (
-                                        <tr key={index} className="hover:bg-gray-50 transition-colors">
-                                            <td className="px-6 py-4 font-medium text-gray-900 flex items-center gap-2">
-                                                <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-xs">
+                                        <tr key={index} className="hover:bg-white/5 transition-colors">
+                                            <td className="px-6 py-4 font-medium text-white flex items-center gap-2">
+                                                <div className="w-8 h-8 rounded-full bg-violet-600/20 flex items-center justify-center text-violet-300 border border-violet-500/30 font-bold text-xs">
                                                     {tenant.name.substring(0, 2).toUpperCase()}
                                                 </div>
                                                 {tenant.name}
                                             </td>
-                                            <td className="px-6 py-4 text-right text-gray-600 font-mono">
+                                            <td className="px-6 py-4 text-right text-gray-400 font-mono">
                                                 {tenant.updates.toLocaleString()}
                                             </td>
                                         </tr>

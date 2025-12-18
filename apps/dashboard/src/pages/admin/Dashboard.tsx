@@ -347,9 +347,9 @@ export default function Dashboard() {
                             </button>
                         </div>
                     ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ">
                             {screens.map((screen) => (
-                                <div className="relative bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200 p-6 group">
+                                <div className="relative glass-panel rounded-xl padding-6 group hover:border-violet-500/30 transition-all duration-300 p-2">
                                     {/* Delete Button - Top Right */}
                                     <button
                                         onClick={async (e) => {
@@ -369,34 +369,34 @@ export default function Dashboard() {
                                                 }
                                             }
                                         }}
-                                        className="absolute -right-3 -top-3 bg-white text-gray-400 hover:text-red-600 hover:bg-red-50 p-2 rounded-full shadow-sm border border-gray-200 z-10 transition-all duration-200"
+                                        className="absolute -right-3 -top-3 glass-panel text-gray-400 hover:text-red-400 hover:bg-red-500/10 p-2 rounded-full shadow-lg z-10 transition-all duration-200"
                                         title="Delete Screen"
                                     >
                                         <Trash2 size={16} />
                                     </button>
 
                                     <div className="flex items-center justify-between mb-4">
-                                        <div className="p-3 bg-indigo-500/10 rounded-xl">
-                                            <Monitor className="w-6 h-6 text-indigo-400" />
+                                        <div className="p-3 bg-violet-600/20 rounded-xl shadow-[0_0_15px_rgba(124,58,237,0.2)]">
+                                            <Monitor className="w-6 h-6 text-violet-400" />
                                         </div>
                                         <div className="flex items-center gap-2">
                                             {screen.urgent_slide_id && (
-                                                <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-red-600/10 border border-red-600/20">
-                                                    <AlertTriangle className="w-3 h-3 text-red-600 animate-pulse" />
-                                                    <span className="text-xs font-bold text-red-600">URGENT AD</span>
+                                                <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-red-500/10 border border-red-500/20 shadow-[0_0_10px_rgba(239,68,68,0.2)]">
+                                                    <AlertTriangle className="w-3 h-3 text-red-500 animate-pulse" />
+                                                    <span className="text-xs font-bold text-red-500 text-glow">URGENT AD</span>
                                                 </div>
                                             )}
                                             {screen.active_slide_id && !screen.urgent_slide_id && (
-                                                <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20">
-                                                    <div className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
-                                                    <span className="text-xs font-medium text-indigo-500">Manual Override</span>
+                                                <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-violet-500/10 border border-violet-500/20 shadow-[0_0_10px_rgba(139,92,246,0.2)]">
+                                                    <div className="w-1.5 h-1.5 rounded-full bg-violet-500 shadow-[0_0_5px_#8b5cf6]" />
+                                                    <span className="text-xs font-medium text-violet-400">Manual Override</span>
                                                 </div>
                                             )}
                                             {(() => {
                                                 const isOnline = screen.last_ping && (new Date().getTime() - new Date(screen.last_ping).getTime() < 120000); // 2 minutes
                                                 return (
                                                     <div className={`flex items-center gap-1.5 px-2 py-1 rounded-full ${isOnline
-                                                        ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400'
+                                                        ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.2)]'
                                                         : 'bg-zinc-500/10 border border-zinc-500/20 text-zinc-400'
                                                         }`}>
                                                         {isOnline ? <Wifi className="w-3 h-3" /> : <WifiOff className="w-3 h-3" />}
@@ -407,27 +407,27 @@ export default function Dashboard() {
                                         </div>
                                     </div>
 
-                                    <h3 className="text-lg font-semibold text-gray-900 mb-1">{screen.name}</h3>
+                                    <h3 className="text-lg font-bold text-white mb-1 tracking-tight text-glow">{screen.name}</h3>
                                     <div className="flex items-center gap-2 mb-4">
                                         {screen.screen_groups ? (
-                                            <span className="text-sm text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded flex items-center gap-1">
+                                            <span className="text-sm text-violet-300 bg-violet-500/10 px-2 py-0.5 rounded flex items-center gap-1 border border-violet-500/20">
                                                 <Layers className="w-3 h-3" />
                                                 {screen.screen_groups.name}
                                             </span>
                                         ) : (
-                                            <span className="text-sm text-zinc-500">Not Paired</span>
+                                            <span className="text-sm text-gray-500">Not Paired</span>
                                         )}
                                         {screen.active_slide_id && (
-                                            <span className="text-sm text-zinc-500 flex items-center gap-1">
+                                            <span className="text-sm text-gray-400 flex items-center gap-1">
                                                 <Layout className="w-3 h-3" />
                                                 {screen.slides?.name || 'Unknown Slide'}
                                             </span>
                                         )}
                                     </div>
 
-                                    <div className="flex flex-col gap-3 pt-4 border-t border-gray-100">
-                                        <div className="text-xs font-mono text-zinc-600 uppercase tracking-wider">
-                                            ID: {screen.pairing_code}
+                                    <div className="flex flex-col gap-3 pt-4 border-t border-white/5">
+                                        <div className="text-xs font-mono text-gray-500 uppercase tracking-wider">
+                                            ID: <span className="text-gray-300">{screen.pairing_code}</span>
                                         </div>
                                         <div className="flex flex-wrap items-center gap-2">
                                             {screen.urgent_slide_id && (
@@ -449,7 +449,7 @@ export default function Dashboard() {
                                                             console.error('Error stopping urgent ad:', err);
                                                         }
                                                     }}
-                                                    className="flex-1 text-xs font-bold text-white bg-red-600 hover:bg-red-700 transition-colors px-3 py-2 rounded-lg shadow-sm flex items-center justify-center gap-1.5"
+                                                    className="flex-1 text-xs font-bold text-white bg-red-600 hover:bg-red-700 transition-colors px-3 py-2 rounded-lg shadow-[0_0_10px_rgba(220,38,38,0.4)] flex items-center justify-center gap-1.5"
                                                     title="Stop Urgent Ad"
                                                 >
                                                     <AlertTriangle size={12} />
@@ -462,7 +462,7 @@ export default function Dashboard() {
                                                         e.stopPropagation();
                                                         handleAssignSlide(screen.id, null, 'screen');
                                                     }}
-                                                    className="flex-1 text-xs font-medium text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 transition-colors px-3 py-2 rounded-lg flex items-center justify-center gap-1.5"
+                                                    className="flex-1 text-xs font-medium text-violet-300 bg-violet-500/10 hover:bg-violet-500/20 border border-violet-500/30 transition-colors px-3 py-2 rounded-lg flex items-center justify-center gap-1.5"
                                                     title="Stop Manual Override"
                                                 >
                                                     Stop Override
@@ -473,7 +473,7 @@ export default function Dashboard() {
                                                     e.stopPropagation();
                                                     openScheduleModal(screen.id, screen.name, 'screen');
                                                 }}
-                                                className="flex-1 flex items-center justify-center gap-1.5 text-xs font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 transition-colors px-3 py-2 rounded-lg"
+                                                className="flex-1 flex items-center justify-center gap-1.5 text-xs font-medium text-blue-300 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 transition-colors px-3 py-2 rounded-lg"
                                             >
                                                 <Calendar size={14} />
                                                 Schedule
@@ -483,7 +483,7 @@ export default function Dashboard() {
                                                     e.stopPropagation();
                                                     openMoveModal(screen.id, screen.group_id);
                                                 }}
-                                                className="flex-1 flex items-center justify-center gap-1.5 text-xs font-medium text-orange-700 bg-orange-50 hover:bg-orange-100 border border-orange-200 transition-colors px-3 py-2 rounded-lg"
+                                                className="flex-1 flex items-center justify-center gap-1.5 text-xs font-medium text-orange-300 bg-orange-500/10 hover:bg-orange-500/20 border border-orange-500/30 transition-colors px-3 py-2 rounded-lg"
                                             >
                                                 <FolderInput className="w-3 h-3" />
                                                 Move
@@ -493,7 +493,7 @@ export default function Dashboard() {
                                                     e.stopPropagation();
                                                     window.open(`/player/${screen.id}`, '_blank');
                                                 }}
-                                                className="flex-1 flex items-center justify-center gap-1.5 text-xs font-medium text-gray-700 bg-gray-50 hover:bg-gray-100 border border-gray-200 transition-colors px-3 py-2 rounded-lg"
+                                                className="flex-1 flex items-center justify-center gap-1.5 text-xs font-medium text-gray-300 bg-white/5 hover:bg-white/10 border border-white/10 transition-colors px-3 py-2 rounded-lg"
                                             >
                                                 Manage
                                             </button>

@@ -167,55 +167,55 @@ export default function MediaLibrary() {
             }
         >
             {/* Storage Quota Progress Bar */}
-            <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm mb-8">
+            <div className="glass-panel p-6 rounded-xl mb-8">
                 <div className="flex justify-between items-center mb-2">
-                    <h3 className="text-sm font-medium text-gray-700 flex items-center gap-2">
-                        <HardDrive size={16} />
+                    <h3 className="text-sm font-medium text-white flex items-center gap-2">
+                        <HardDrive size={16} className="text-violet-400" />
                         Storage Usage
                     </h3>
-                    <span className="text-sm font-medium text-gray-900">
+                    <span className="text-sm font-medium text-gray-300">
                         {usedMB} MB / {limitMB} MB
                     </span>
                 </div>
-                <div className="h-2.5 bg-gray-100 rounded-full overflow-hidden">
+                <div className="h-2.5 bg-white/5 rounded-full overflow-hidden">
                     <div
-                        className={`h-full rounded-full transition-all duration-500 ${usagePercent > 90 ? 'bg-red-500' : 'bg-indigo-600'}`}
+                        className={`h-full rounded-full transition-all duration-500 ${usagePercent > 90 ? 'bg-red-500 shadow-[0_0_10px_#ef4444]' : 'bg-violet-600 shadow-[0_0_10px_#7c3aed]'}`}
                         style={{ width: `${usagePercent}%` }}
                     />
                 </div>
                 {uploadError && (
-                    <p className="text-sm text-red-600 mt-2">{uploadError}</p>
+                    <p className="text-sm text-red-400 mt-2">{uploadError}</p>
                 )}
             </div>
 
             {loading || roleLoading ? (
                 <LoadingSpinner />
             ) : assets.length === 0 ? (
-                <div className="text-center py-16 bg-white rounded-xl border border-gray-200 shadow-sm">
-                    <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="text-center py-16 glass-panel rounded-xl">
+                    <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4 border border-white/10">
                         <ImageIcon size={32} className="text-gray-400" />
                     </div>
-                    <h3 className="text-lg font-medium text-gray-900">No media assets</h3>
-                    <p className="text-gray-500 mt-1">Upload images or videos to use in your slides.</p>
+                    <h3 className="text-lg font-medium text-white">No media assets</h3>
+                    <p className="text-gray-400 mt-1">Upload images or videos to use in your slides.</p>
                 </div>
             ) : (
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
                     {assets.map((asset) => (
-                        <div key={asset.id} className="group relative bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden aspect-square">
+                        <div key={asset.id} className="group relative glass-panel rounded-xl overflow-hidden aspect-square">
                             {asset.type === 'image' ? (
-                                <img src={asset.url} alt={asset.file_name} className="w-full h-full object-cover" />
+                                <img src={asset.url} alt={asset.file_name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                             ) : (
-                                <div className="w-full h-full bg-gray-900 flex items-center justify-center">
-                                    <Film className="text-white opacity-50" size={32} />
+                                <div className="w-full h-full bg-black/40 flex items-center justify-center">
+                                    <Film className="text-white opacity-50 group-hover:opacity-100 transition-opacity" size={32} />
                                 </div>
                             )}
 
                             {/* Overlay */}
-                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex flex-col justify-end p-4 opacity-0 group-hover:opacity-100">
+                            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-between p-4 transform translate-y-2 group-hover:translate-y-0">
                                 <p className="text-white text-xs truncate mb-2">{asset.file_name}</p>
                                 <button
                                     onClick={() => handleDelete(asset.id)}
-                                    className="self-end p-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                                    className="self-end p-2 bg-red-600/80 text-white rounded-lg hover:bg-red-600 transition-colors shadow-lg backdrop-blur-sm"
                                     title="Delete"
                                 >
                                     <Trash2 size={16} />
@@ -228,45 +228,52 @@ export default function MediaLibrary() {
 
             {/* External URL Modal */}
             {showUrlModal && (
-                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-                    <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
-                        <h3 className="text-lg font-bold text-gray-900 mb-4">Add External URL</h3>
-                        <form onSubmit={handleAddExternalUrl} className="space-y-4">
+                <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
+                    <div className="glass-panel rounded-2xl shadow-2xl w-full max-w-md p-6 relative">
+                        <div className="absolute inset-0 bg-violet-500/5 rounded-2xl pointer-events-none"></div>
+                        <h3 className="text-lg font-bold text-white mb-4 relative z-10 text-glow">Add External URL</h3>
+                        <form onSubmit={handleAddExternalUrl} className="space-y-4 relative z-10">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">URL</label>
+                                <label className="block text-sm font-medium text-gray-300 mb-1">URL</label>
                                 <input
                                     type="url"
                                     required
-                                    className="w-full border border-gray-200 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none"
+                                    className="glass-input w-full px-4 py-2 rounded-lg outline-none"
                                     value={externalUrl}
                                     onChange={e => setExternalUrl(e.target.value)}
                                     placeholder="https://example.com/image.jpg"
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                                <label className="block text-sm font-medium text-gray-300 mb-1">Type</label>
                                 <div className="flex gap-4">
-                                    <label className="flex items-center gap-2 cursor-pointer">
+                                    <label className="flex items-center gap-2 cursor-pointer group">
+                                        <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${externalType === 'image' ? 'border-violet-500' : 'border-gray-500'}`}>
+                                            {externalType === 'image' && <div className="w-2 h-2 rounded-full bg-violet-500" />}
+                                        </div>
                                         <input
                                             type="radio"
                                             name="type"
                                             value="image"
                                             checked={externalType === 'image'}
                                             onChange={() => setExternalType('image')}
-                                            className="text-indigo-600 focus:ring-indigo-500"
+                                            className="hidden"
                                         />
-                                        Image
+                                        <span className={`text-sm ${externalType === 'image' ? 'text-violet-400' : 'text-gray-400 group-hover:text-gray-300'}`}>Image</span>
                                     </label>
-                                    <label className="flex items-center gap-2 cursor-pointer">
+                                    <label className="flex items-center gap-2 cursor-pointer group">
+                                        <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${externalType === 'video' ? 'border-violet-500' : 'border-gray-500'}`}>
+                                            {externalType === 'video' && <div className="w-2 h-2 rounded-full bg-violet-500" />}
+                                        </div>
                                         <input
                                             type="radio"
                                             name="type"
                                             value="video"
                                             checked={externalType === 'video'}
                                             onChange={() => setExternalType('video')}
-                                            className="text-indigo-600 focus:ring-indigo-500"
+                                            className="hidden"
                                         />
-                                        Video
+                                        <span className={`text-sm ${externalType === 'video' ? 'text-violet-400' : 'text-gray-400 group-hover:text-gray-300'}`}>Video</span>
                                     </label>
                                 </div>
                             </div>
@@ -274,13 +281,13 @@ export default function MediaLibrary() {
                                 <button
                                     type="button"
                                     onClick={() => setShowUrlModal(false)}
-                                    className="px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg font-medium"
+                                    className="px-4 py-2 text-gray-300 hover:bg-white/5 rounded-lg font-medium transition-colors border border-transparent hover:border-white/10"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium"
+                                    className="px-6 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 font-medium shadow-[0_0_15px_rgba(124,58,237,0.4)] hover:shadow-[0_0_20px_rgba(124,58,237,0.6)] transition-all"
                                 >
                                     Add URL
                                 </button>

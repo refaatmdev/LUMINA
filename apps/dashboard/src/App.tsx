@@ -24,11 +24,11 @@ import SuperAdminDashboard from './components/admin/SuperAdminDashboard';
 import AdminLayout from './components/layout/AdminLayout';
 
 import { useUserRole } from './hooks/useUserRole';
-
+import Onboarding from './pages/admin/Onboarding';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { session, loading: authLoading } = useAuth();
-  const { orgStatus, loading: roleLoading } = useUserRole();
+  const { orgStatus, orgId, loading: roleLoading } = useUserRole();
 
   if (authLoading || roleLoading) {
     return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
@@ -36,6 +36,14 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
   if (!session) {
     return <Navigate to="/admin/login" replace />;
+  }
+
+  // If user has no organization, force them to onboarding
+  // We check window.location.pathname to avoid infinite loop if we are already trying to access a restricted page
+  if (!orgId) {
+    // Identify if we are already handling this case or if the user is a super admin who might not need one (though typicaly they do)
+    // For now, strict enforcement: No org -> Onboarding
+    return <Navigate to="/onboarding" replace />;
   }
 
   if (orgStatus === 'suspended') {
@@ -48,6 +56,8 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 function App() {
   const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
   const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+
 
   if (!supabaseUrl || !supabaseAnonKey) {
     return (
@@ -66,6 +76,9 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/admin/login" element={<Login />} />
+
+          {/* Onboarding Route (Verified User but No Org) */}
+          <Route path="/onboarding" element={<Onboarding />} />
 
           {/* Admin Routes */}
           <Route

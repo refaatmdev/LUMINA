@@ -226,21 +226,21 @@ export default function Billing() {
     return (
         <div className="max-w-6xl mx-auto space-y-8">
             <div>
-                <h1 className="text-2xl font-bold text-gray-900">Billing & Subscription</h1>
-                <p className="text-gray-500 mt-1">Manage your plan and payment details.</p>
+                <h1 className="text-2xl font-bold text-white text-glow">Billing & Subscription</h1>
+                <p className="text-gray-400 mt-1">Manage your plan and payment details.</p>
             </div>
 
             {/* Current Plan Usage */}
-            <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+            <div className="glass-panel rounded-2xl p-6">
                 <div className="flex items-start justify-between mb-6">
                     <div>
-                        <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                            Current Plan: <span className="text-indigo-600">{isCustomPlan ? 'Custom' : (currentPlan?.name || 'Unknown')}</span>
+                        <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+                            Current Plan: <span className="text-violet-400">{isCustomPlan ? 'Custom' : (currentPlan?.name || 'Unknown')}</span>
                             {organization.subscription_status === 'active' && (
-                                <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded-full font-bold">ACTIVE</span>
+                                <span className="px-2 py-0.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs rounded-full font-bold shadow-[0_0_10px_rgba(16,185,129,0.3)]">ACTIVE</span>
                             )}
                         </h2>
-                        <p className="text-sm text-gray-500 mt-1">
+                        <p className="text-sm text-gray-400 mt-1">
                             {isCustomPlan
                                 ? 'You are on a custom plan tailored to your needs.'
                                 : organization.subscription_status === 'active'
@@ -252,7 +252,7 @@ export default function Billing() {
                         <button
                             onClick={handleManageSubscription}
                             disabled={!!checkoutLoading}
-                            className="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors disabled:opacity-50"
+                            className="px-4 py-2 bg-white/5 border border-white/10 text-white rounded-lg hover:bg-white/10 font-medium transition-colors disabled:opacity-50"
                         >
                             {checkoutLoading === 'portal' ? 'Loading...' : 'Manage Subscription'}
                         </button>
@@ -266,20 +266,20 @@ export default function Billing() {
 
                 <div className="space-y-2">
                     <div className="flex justify-between text-sm font-medium">
-                        <span className="text-gray-700">Screen Usage</span>
-                        <span className="text-gray-900">
+                        <span className="text-gray-300">Screen Usage</span>
+                        <span className="text-white">
                             {screenCount} / {isUnlimited ? 'Unlimited' : maxScreens} Screens
                         </span>
                     </div>
-                    <div className="h-2.5 bg-gray-100 rounded-full overflow-hidden">
+                    <div className="h-2.5 bg-white/5 rounded-full overflow-hidden">
                         <div
-                            className={`h-full rounded-full transition-all duration-500 ${screenCount >= maxScreens ? 'bg-red-500' : 'bg-indigo-600'
+                            className={`h-full rounded-full transition-all duration-500 ${screenCount >= maxScreens ? 'bg-red-500 shadow-[0_0_10px_#ef4444]' : 'bg-violet-600 shadow-[0_0_10px_#7c3aed]'
                                 }`}
                             style={{ width: isUnlimited ? '0%' : `${usagePercentage}%` }} // Don't show bar for unlimited
                         />
                     </div>
                     {!isUnlimited && screenCount >= maxScreens && !isCustomPlan && (
-                        <p className="text-xs text-red-600 font-medium mt-1 flex items-center gap-1">
+                        <p className="text-xs text-red-400 font-medium mt-1 flex items-center gap-1">
                             <Shield size={12} />
                             You have reached your screen limit. Upgrade to add more screens.
                         </p>
@@ -291,8 +291,6 @@ export default function Billing() {
             <div className="grid md:grid-cols-3 gap-6">
                 {plans.map((plan) => {
                     // Determine if this card is the "current" plan
-                    // If we are in "Custom" mode (override or explicit custom plan), ONLY the Custom plan card should be active.
-                    // Otherwise, match by ID.
                     let isCurrent = false;
 
                     if (isCustomPlan) {
@@ -307,52 +305,52 @@ export default function Billing() {
                     return (
                         <div
                             key={plan.id}
-                            className={`rounded-2xl border p-6 relative flex flex-col ${isCurrent
-                                ? 'bg-indigo-50 border-indigo-200'
+                            className={`rounded-2xl border p-6 relative flex flex-col backdrop-blur-md transition-all duration-300 ${isCurrent
+                                ? 'bg-violet-500/10 border-violet-500/30 shadow-[0_0_30px_rgba(124,58,237,0.15)]'
                                 : plan.is_featured
-                                    ? 'bg-white border-indigo-600 shadow-xl transform scale-105 z-10'
-                                    : 'bg-white border-gray-200'
+                                    ? 'glass-panel border-violet-500/50 shadow-[0_0_30px_rgba(124,58,237,0.2)] transform scale-105 z-10'
+                                    : 'glass-panel border-white/10'
                                 }`}
                         >
                             {plan.is_featured && !isCurrent && (
-                                <div className="absolute top-0 right-0 bg-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-bl-xl rounded-tr-xl">
+                                <div className="absolute top-0 right-0 bg-violet-600 text-white text-xs font-bold px-3 py-1 rounded-bl-xl rounded-tr-xl shadow-[0_0_15px_rgba(124,58,237,0.5)]">
                                     POPULAR
                                 </div>
                             )}
 
                             <div className="flex items-center gap-3 mb-4">
-                                <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${isCurrent ? 'bg-indigo-200' : 'bg-gray-100'
+                                <div className={`w-10 h-10 rounded-lg flex items-center justify-center border ${isCurrent ? 'bg-violet-500/20 border-violet-500/30' : 'bg-white/5 border-white/10'
                                     }`}>
                                     {plan.name.toLowerCase().includes('pro') ? (
-                                        <Zap className={isCurrent ? 'text-indigo-700' : 'text-gray-500'} size={20} />
+                                        <Zap className={isCurrent ? 'text-violet-400' : 'text-gray-400'} size={20} />
                                     ) : plan.name.toLowerCase().includes('enterprise') ? (
-                                        <Star className={isCurrent ? 'text-indigo-700' : 'text-gray-500'} size={20} />
+                                        <Star className={isCurrent ? 'text-violet-400' : 'text-gray-400'} size={20} />
                                     ) : (
-                                        <Monitor className={isCurrent ? 'text-indigo-700' : 'text-gray-500'} size={20} />
+                                        <Monitor className={isCurrent ? 'text-violet-400' : 'text-gray-400'} size={20} />
                                     )}
                                 </div>
                                 <div>
-                                    <h3 className="font-bold text-gray-900">{plan.name}</h3>
+                                    <h3 className="font-bold text-white">{plan.name}</h3>
                                     <div className="flex items-baseline gap-1">
-                                        <span className="text-2xl font-bold text-gray-900">${plan.price_monthly}</span>
-                                        <span className="text-sm text-gray-500">/mo</span>
+                                        <span className="text-2xl font-bold text-white text-glow">${plan.price_monthly}</span>
+                                        <span className="text-sm text-gray-400">/mo</span>
                                     </div>
                                 </div>
                             </div>
 
                             <ul className="space-y-3 mb-8 flex-1">
-                                <li className="flex items-center gap-2 text-sm text-gray-700">
-                                    <Check size={16} className="text-green-500" />
-                                    <strong>
+                                <li className="flex items-center gap-2 text-sm text-gray-300">
+                                    <Check size={16} className="text-emerald-400" />
+                                    <strong className="text-white">
                                         {isCurrent && isCustomPlan
                                             ? (maxScreens >= 999999 ? 'Unlimited' : maxScreens)
                                             : (plan.limits_config.max_screens >= 999999 ? 'Unlimited' : plan.limits_config.max_screens)
                                         }
                                     </strong> Screens
                                 </li>
-                                <li className="flex items-center gap-2 text-sm text-gray-700">
-                                    <Check size={16} className="text-green-500" />
-                                    <strong>
+                                <li className="flex items-center gap-2 text-sm text-gray-300">
+                                    <Check size={16} className="text-emerald-400" />
+                                    <strong className="text-white">
                                         {isCurrent && isCustomPlan
                                             ? (organization.manual_storage_limit ? `${Math.round(organization.manual_storage_limit / (1024 * 1024 * 1024))} GB` : 'Custom')
                                             : (plan.limits_config.storage_gb >= 999999 ? 'Unlimited' : `${plan.limits_config.storage_gb} GB`)
@@ -362,16 +360,16 @@ export default function Billing() {
                             </ul>
 
                             {isCurrent ? (
-                                <button disabled className="w-full py-2.5 bg-indigo-100 text-indigo-700 rounded-xl font-medium cursor-not-allowed border border-indigo-200">
+                                <button disabled className="w-full py-2.5 bg-violet-500/10 text-violet-300 rounded-xl font-medium cursor-not-allowed border border-violet-500/20">
                                     Current Plan
                                 </button>
                             ) : (
                                 <button
                                     onClick={() => handleSubscriptionChange(plan)}
                                     disabled={!!checkoutLoading}
-                                    className={`w-full py-2.5 rounded-xl font-medium transition-colors shadow-sm flex items-center justify-center gap-2 ${plan.is_featured
-                                        ? 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-indigo-200'
-                                        : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
+                                    className={`w-full py-2.5 rounded-xl font-medium transition-all shadow-sm flex items-center justify-center gap-2 ${plan.is_featured
+                                        ? 'bg-violet-600 text-white hover:bg-violet-700 shadow-[0_0_20px_rgba(124,58,237,0.3)] hover:shadow-[0_0_30px_rgba(124,58,237,0.5)]'
+                                        : 'bg-white/5 border border-white/10 text-white hover:bg-white/10 hover:border-white/20'
                                         } ${!plan.stripe_price_id ? 'opacity-50 cursor-not-allowed' : ''}`}
                                 >
                                     {checkoutLoading === plan.id ? (

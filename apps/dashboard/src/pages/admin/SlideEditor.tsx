@@ -219,7 +219,13 @@ export default function SlideEditor() {
     // ...
 
     return (
-        <div className="h-screen w-screen bg-white relative flex flex-col">
+        <div className="h-screen w-screen bg-gray-900 relative flex flex-col overflow-hidden">
+            {/* Background Gradient */}
+            <div className="absolute inset-0 z-0 pointer-events-none">
+                <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-violet-600/20 rounded-full blur-[120px]" />
+                <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[100px]" />
+            </div>
+
             {showTemplateGallery && (
                 <TemplateGallery
                     onSelect={(data) => {
@@ -242,11 +248,11 @@ export default function SlideEditor() {
 
             {/* Editor Toolbar / Header */}
             {!isPreview && (
-                <div className="absolute top-3 left-1/2 transform -translate-x-1/2 z-[100] flex gap-2 items-center bg-white/90 backdrop-blur-sm p-2 rounded-xl shadow-lg border border-gray-200">
+                <div className="absolute top-6 left-1/2 transform -translate-x-1/2 z-[100] flex gap-2 items-center glass-panel px-3 py-2 rounded-2xl shadow-xl">
                     {role === 'super_admin' && (
                         <button
                             onClick={saveTemplateToDB}
-                            className="bg-purple-100 text-purple-700 px-3 py-1.5 rounded-lg hover:bg-purple-200 text-sm font-medium transition-colors"
+                            className="bg-violet-500/10 text-violet-300 border border-violet-500/20 px-3 py-1.5 rounded-lg hover:bg-violet-500/20 text-sm font-medium transition-colors"
                             title="Save as Template"
                         >
                             Save Tpl
@@ -258,14 +264,14 @@ export default function SlideEditor() {
                             const id = await handlePublish(currentData, 'draft');
                             if (id) alert('Saved as Draft!');
                         }}
-                        className="bg-gray-100 text-gray-700 px-3 py-1.5 rounded-lg hover:bg-gray-200 text-sm font-medium transition-colors"
+                        className="bg-white/5 text-gray-300 border border-white/10 px-3 py-1.5 rounded-lg hover:bg-white/10 text-sm font-medium transition-colors"
                     >
                         Save Draft
                     </button>
 
                     <button
                         onClick={() => setIsPreview(true)}
-                        className="bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg hover:bg-blue-100 text-sm font-medium transition-colors flex items-center gap-2"
+                        className="bg-blue-500/10 text-blue-300 border border-blue-500/20 px-3 py-1.5 rounded-lg hover:bg-blue-500/20 text-sm font-medium transition-colors flex items-center gap-2"
                     >
                         <span>👁️ Preview</span>
                     </button>
@@ -275,16 +281,16 @@ export default function SlideEditor() {
                             const id = await handlePublish(currentData, 'published');
                             if (id) alert('Published successfully!');
                         }}
-                        className="bg-green-600 text-white px-3 py-1.5 rounded-lg hover:bg-green-700 text-sm font-medium transition-colors shadow-sm"
+                        className="bg-emerald-600 text-white px-3 py-1.5 rounded-lg hover:bg-emerald-700 text-sm font-medium transition-all shadow-[0_0_15px_rgba(16,185,129,0.4)] hover:shadow-[0_0_20px_rgba(16,185,129,0.6)]"
                     >
                         Publish
                     </button>
 
-                    <div className="h-5 w-px bg-gray-300 mx-1"></div>
+                    <div className="h-5 w-px bg-white/10 mx-1"></div>
 
                     <button
                         onClick={() => setOrientation(prev => prev === 'landscape' ? 'portrait' : 'landscape')}
-                        className="bg-gray-50 text-gray-700 border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-100 text-sm font-medium transition-colors flex items-center gap-2"
+                        className="bg-white/5 text-gray-300 border border-white/10 px-3 py-1.5 rounded-lg hover:bg-white/10 text-sm font-medium transition-colors flex items-center gap-2"
                     >
                         <span>{orientation === 'landscape' ? '⬒ Landscape' : '⬓ Portrait'}</span>
                     </button>
@@ -305,37 +311,44 @@ export default function SlideEditor() {
                                     alert('Could not find the slide canvas. Please click on the background manually.');
                                 }
                             }}
-                            className="bg-gray-800 text-white px-3 py-1.5 rounded-lg hover:bg-gray-700 text-sm font-medium flex items-center gap-2 transition-colors"
+                            className="bg-gray-800 text-white border border-gray-700 px-3 py-1.5 rounded-lg hover:bg-gray-700 text-sm font-medium flex items-center gap-2 transition-colors"
                         >
                             <span>⚙️ Settings</span>
                         </button>
                     </div>
+
+                    <button
+                        onClick={() => navigate('/admin/slides')}
+                        className="ml-2 bg-red-500/10 text-red-400 border border-red-500/20 px-3 py-1.5 rounded-lg hover:bg-red-500/20 text-sm font-medium transition-colors flex items-center gap-2"
+                    >
+                        <span>✕ Close</span>
+                    </button>
                 </div>
             )}
 
             {/* Preview Mode UI */}
             {isPreview ? (
-                <div className="flex-1 bg-gray-100 flex flex-col relative overflow-hidden">
+                <div className="flex-1 bg-gray-900 flex flex-col relative overflow-hidden">
                     {/* Preview Toolbar */}
-                    <div className="bg-white border-b border-gray-200 px-6 py-3 flex justify-between items-center shadow-sm z-10">
+                    <div className="glass-panel border-b border-white/10 px-6 py-3 flex justify-between items-center shadow-lg z-10 rounded-none relative">
                         <div className="flex items-center gap-4">
-                            <h2 className="text-lg font-bold text-gray-800">Preview Mode</h2>
-                            <div className="flex bg-gray-100 p-1 rounded-lg">
+                            <h2 className="text-lg font-bold text-white text-glow">Preview Mode</h2>
+                            <div className="flex bg-black/30 p-1 rounded-lg border border-white/10">
                                 <button
                                     onClick={() => setViewMode('desktop')}
-                                    className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${viewMode === 'desktop' ? 'bg-white shadow text-indigo-600' : 'text-gray-500 hover:text-gray-700'}`}
+                                    className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${viewMode === 'desktop' ? 'bg-violet-600 text-white shadow-lg' : 'text-gray-400 hover:text-white'}`}
                                 >
                                     Desktop
                                 </button>
                                 <button
                                     onClick={() => setViewMode('tablet')}
-                                    className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${viewMode === 'tablet' ? 'bg-white shadow text-indigo-600' : 'text-gray-500 hover:text-gray-700'}`}
+                                    className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${viewMode === 'tablet' ? 'bg-violet-600 text-white shadow-lg' : 'text-gray-400 hover:text-white'}`}
                                 >
                                     Tablet
                                 </button>
                                 <button
                                     onClick={() => setViewMode('mobile')}
-                                    className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${viewMode === 'mobile' ? 'bg-white shadow text-indigo-600' : 'text-gray-500 hover:text-gray-700'}`}
+                                    className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${viewMode === 'mobile' ? 'bg-violet-600 text-white shadow-lg' : 'text-gray-400 hover:text-white'}`}
                                 >
                                     Mobile
                                 </button>
@@ -343,23 +356,23 @@ export default function SlideEditor() {
                         </div>
                         <button
                             onClick={() => setIsPreview(false)}
-                            className="text-gray-600 hover:text-gray-900 font-medium px-4 py-2 hover:bg-gray-100 rounded-lg transition-colors"
+                            className="text-gray-300 hover:text-white font-medium px-4 py-2 hover:bg-white/10 rounded-lg transition-colors border border-transparent hover:border-white/10"
                         >
                             Exit Preview
                         </button>
                     </div>
 
                     {/* Preview Canvas */}
-                    <div className="flex-1 overflow-auto flex items-center justify-center p-8">
+                    <div className="flex-1 overflow-auto flex items-center justify-center p-8 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-gray-800/50 to-gray-900">
                         <div
-                            className="bg-white shadow-2xl transition-all duration-300 overflow-hidden relative"
+                            className="bg-black shadow-[0_0_50px_rgba(0,0,0,0.5)] transition-all duration-300 overflow-hidden relative border border-white/10 ring-1 ring-white/5"
                             style={{
                                 width: viewMode === 'mobile' ? '375px' : viewMode === 'tablet' ? '768px' : '100%',
                                 height: viewMode === 'mobile' ? '667px' : viewMode === 'tablet' ? '1024px' : '100%',
                                 maxWidth: '100%',
                                 maxHeight: '100%',
                                 aspectRatio: orientation === 'portrait' ? '9/16' : '16/9',
-                                transform: viewMode === 'desktop' ? 'scale(0.9)' : 'none'
+                                transform: viewMode === 'desktop' ? 'scale(0.95)' : 'none'
                             }}
                         >
                             <Render config={config} data={currentData} />
@@ -367,7 +380,7 @@ export default function SlideEditor() {
                     </div>
                 </div>
             ) : (
-                <div className="flex-1 relative">
+                <div className="flex-1 relative z-10">
                     <Puck
                         key={puckKey}
                         config={config}

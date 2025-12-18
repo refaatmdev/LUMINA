@@ -137,12 +137,12 @@ export default function PlanManager() {
         <div className="p-8 max-w-7xl mx-auto">
             <div className="flex justify-between items-center mb-8">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-900">Subscription Plans</h1>
-                    <p className="text-gray-500 mt-1">Manage pricing tiers and limits</p>
+                    <h1 className="text-3xl font-bold text-white text-glow">Subscription Plans</h1>
+                    <p className="text-gray-400 mt-1">Manage pricing tiers and limits</p>
                 </div>
                 <button
                     onClick={() => openModal()}
-                    className="bg-indigo-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-indigo-700 transition-colors"
+                    className="bg-violet-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-violet-700 transition-all shadow-[0_0_15px_rgba(124,58,237,0.4)] hover:shadow-[0_0_25px_rgba(124,58,237,0.6)]"
                 >
                     <Plus size={18} />
                     Create Plan
@@ -151,9 +151,9 @@ export default function PlanManager() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {plans.map(plan => (
-                    <div key={plan.id} className={`bg-white rounded-xl shadow-sm border p-6 relative ${plan.is_active ? 'border-gray-200' : 'border-gray-100 opacity-75'}`}>
+                    <div key={plan.id} className={`glass-panel rounded-xl shadow-lg border p-6 relative transition-all duration-300 ${plan.is_active ? 'border-white/10 hover:border-violet-500/30' : 'border-white/5 opacity-75 grayscale'}`}>
                         {plan.is_featured && (
-                            <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-400 text-white text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 shadow-sm">
+                            <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 shadow-[0_0_10px_rgba(245,158,11,0.5)]">
                                 <Star size={12} fill="currentColor" />
                                 FEATURED
                             </div>
@@ -161,41 +161,41 @@ export default function PlanManager() {
 
                         <div className="flex justify-between items-start mb-4">
                             <div>
-                                <h3 className="text-xl font-bold text-gray-900">{plan.name}</h3>
-                                <div className="text-2xl font-bold text-indigo-600 mt-1">
-                                    ${plan.price_monthly}<span className="text-sm text-gray-500 font-normal">/mo</span>
+                                <h3 className="text-xl font-bold text-white">{plan.name}</h3>
+                                <div className="text-2xl font-bold text-violet-400 mt-1 text-glow">
+                                    ${plan.price_monthly}<span className="text-sm text-gray-400 font-normal">/mo</span>
                                 </div>
                             </div>
                             <div className="flex gap-2">
-                                <button onClick={() => openModal(plan)} className="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors">
+                                <button onClick={() => openModal(plan)} className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors border border-transparent hover:border-white/10 text-shadow-sm">
                                     <Edit2 size={18} />
                                 </button>
-                                <button onClick={() => handleDelete(plan.id)} className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                                <button onClick={() => handleDelete(plan.id)} className="p-2 text-gray-400 hover:text-red-400 hover:bg-white/10 rounded-lg transition-colors border border-transparent hover:border-white/10">
                                     <Trash2 size={18} />
                                 </button>
                             </div>
                         </div>
 
-                        <div className="space-y-3 border-t border-gray-100 pt-4 mb-4">
+                        <div className="space-y-3 border-t border-white/10 pt-4 mb-4">
                             <div className="flex items-center justify-between text-sm">
-                                <span className="text-gray-500 flex items-center gap-2"><Monitor size={16} /> Max Screens</span>
-                                <span className="font-medium text-gray-900">{plan.limits_config.max_screens}</span>
+                                <span className="text-gray-400 flex items-center gap-2"><Monitor size={16} className="text-blue-400" /> Max Screens</span>
+                                <span className="font-medium text-white">{plan.limits_config.max_screens}</span>
                             </div>
                             <div className="flex items-center justify-between text-sm">
-                                <span className="text-gray-500 flex items-center gap-2"><Database size={16} /> Storage</span>
-                                <span className="font-medium text-gray-900">{plan.limits_config.storage_gb} GB</span>
+                                <span className="text-gray-400 flex items-center gap-2"><Database size={16} className="text-pink-400" /> Storage</span>
+                                <span className="font-medium text-white">{plan.limits_config.storage_gb} GB</span>
                             </div>
                             <div className="flex items-center justify-between text-sm">
-                                <span className="text-gray-500 flex items-center gap-2"><DollarSign size={16} /> Stripe ID</span>
-                                <span className="font-mono text-xs text-gray-400 truncate max-w-[120px]" title={plan.stripe_price_id}>{plan.stripe_price_id || '-'}</span>
+                                <span className="text-gray-400 flex items-center gap-2"><DollarSign size={16} className="text-emerald-400" /> Stripe ID</span>
+                                <span className="font-mono text-xs text-gray-500 truncate max-w-[120px]" title={plan.stripe_price_id}>{plan.stripe_price_id || '-'}</span>
                             </div>
                         </div>
 
                         <div className="flex items-center gap-2">
-                            <span className={`px-2 py-1 rounded text-xs font-medium ${plan.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
+                            <span className={`px-2 py-1 rounded text-xs font-medium border ${plan.is_active ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 shadow-[0_0_5px_rgba(16,185,129,0.2)]' : 'bg-gray-800 text-gray-500 border-gray-700'}`}>
                                 {plan.is_active ? 'Active' : 'Inactive'}
                             </span>
-                            <span className="text-xs text-gray-400">Order: {plan.display_order}</span>
+                            <span className="text-xs text-gray-500">Order: {plan.display_order}</span>
                         </div>
                     </div>
                 ))}
@@ -203,34 +203,35 @@ export default function PlanManager() {
 
             {/* Modal */}
             {showModal && (
-                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-                    <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto">
-                        <div className="flex justify-between items-center mb-6">
-                            <h3 className="text-xl font-bold text-gray-900">{editingPlan ? 'Edit Plan' : 'Create New Plan'}</h3>
-                            <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600">
+                <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
+                    <div className="glass-panel p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl relative shadow-2xl">
+                        <div className="absolute inset-0 bg-violet-500/5 rounded-2xl pointer-events-none"></div>
+                        <div className="flex justify-between items-center mb-6 relative z-10">
+                            <h3 className="text-xl font-bold text-white text-glow">{editingPlan ? 'Edit Plan' : 'Create New Plan'}</h3>
+                            <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-white p-1 hover:bg-white/10 rounded-lg transition-colors">
                                 <X size={20} />
                             </button>
                         </div>
-                        <form onSubmit={handleSave} className="space-y-4">
+                        <form onSubmit={handleSave} className="space-y-4 relative z-10">
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Plan Name</label>
+                                    <label className="block text-sm font-medium text-gray-300 mb-1">Plan Name</label>
                                     <input
                                         type="text"
                                         required
-                                        className="w-full border border-gray-200 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none"
+                                        className="glass-input w-full px-4 py-2 rounded-lg outline-none"
                                         value={formData.name}
                                         onChange={e => setFormData({ ...formData, name: e.target.value })}
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Monthly Price ($)</label>
+                                    <label className="block text-sm font-medium text-gray-300 mb-1">Monthly Price ($)</label>
                                     <input
                                         type="number"
                                         required
                                         min="0"
                                         step="0.01"
-                                        className="w-full border border-gray-200 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none"
+                                        className="glass-input w-full px-4 py-2 rounded-lg outline-none"
                                         value={formData.price_monthly}
                                         onChange={e => setFormData({ ...formData, price_monthly: parseFloat(e.target.value) })}
                                     />
@@ -238,26 +239,27 @@ export default function PlanManager() {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Stripe Price ID</label>
+                                <label className="block text-sm font-medium text-gray-300 mb-1">Stripe Price ID</label>
                                 <input
                                     type="text"
-                                    className="w-full border border-gray-200 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none font-mono text-sm"
+                                    className="glass-input w-full px-4 py-2 rounded-lg outline-none font-mono text-sm"
                                     placeholder="price_..."
                                     value={formData.stripe_price_id}
                                     onChange={e => setFormData({ ...formData, stripe_price_id: e.target.value })}
+                                    spellCheck={false}
                                 />
                             </div>
 
-                            <div className="p-4 bg-gray-50 rounded-xl border border-gray-200 space-y-4">
-                                <h4 className="font-medium text-gray-900 text-sm">Limits Configuration</h4>
+                            <div className="p-4 bg-white/5 rounded-xl border border-white/10 space-y-4">
+                                <h4 className="font-medium text-white text-sm">Limits Configuration</h4>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-xs font-medium text-gray-500 mb-1">Max Screens</label>
+                                        <label className="block text-xs font-medium text-gray-400 mb-1">Max Screens</label>
                                         <input
                                             type="number"
                                             required
                                             min="1"
-                                            className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 outline-none"
+                                            className="glass-input w-full px-3 py-2 rounded-lg outline-none"
                                             value={formData.limits_config?.max_screens}
                                             onChange={e => setFormData({
                                                 ...formData,
@@ -266,13 +268,13 @@ export default function PlanManager() {
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-xs font-medium text-gray-500 mb-1">Storage (GB)</label>
+                                        <label className="block text-xs font-medium text-gray-400 mb-1">Storage (GB)</label>
                                         <input
                                             type="number"
                                             required
                                             min="0.1"
                                             step="0.1"
-                                            className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 outline-none"
+                                            className="glass-input w-full px-3 py-2 rounded-lg outline-none"
                                             value={formData.limits_config?.storage_gb}
                                             onChange={e => setFormData({
                                                 ...formData,
@@ -284,47 +286,53 @@ export default function PlanManager() {
                             </div>
 
                             <div className="flex gap-6 pt-2">
-                                <label className="flex items-center gap-2 cursor-pointer">
-                                    <input
-                                        type="checkbox"
-                                        className="w-4 h-4 text-indigo-600 rounded focus:ring-indigo-500"
-                                        checked={formData.is_active}
-                                        onChange={e => setFormData({ ...formData, is_active: e.target.checked })}
-                                    />
-                                    <span className="text-sm text-gray-700">Active Plan</span>
+                                <label className="flex items-center gap-2 cursor-pointer group">
+                                    <div className="relative">
+                                        <input
+                                            type="checkbox"
+                                            className="sr-only peer"
+                                            checked={formData.is_active}
+                                            onChange={e => setFormData({ ...formData, is_active: e.target.checked })}
+                                        />
+                                        <div className="w-5 h-5 border-2 border-gray-500 rounded peer-checked:bg-emerald-500 peer-checked:border-emerald-500 transition-colors"></div>
+                                    </div>
+                                    <span className="text-sm text-gray-300 group-hover:text-white transition-colors">Active Plan</span>
                                 </label>
-                                <label className="flex items-center gap-2 cursor-pointer">
-                                    <input
-                                        type="checkbox"
-                                        className="w-4 h-4 text-amber-500 rounded focus:ring-amber-500"
-                                        checked={formData.is_featured}
-                                        onChange={e => setFormData({ ...formData, is_featured: e.target.checked })}
-                                    />
-                                    <span className="text-sm text-gray-700">Featured</span>
+                                <label className="flex items-center gap-2 cursor-pointer group">
+                                    <div className="relative">
+                                        <input
+                                            type="checkbox"
+                                            className="sr-only peer"
+                                            checked={formData.is_featured}
+                                            onChange={e => setFormData({ ...formData, is_featured: e.target.checked })}
+                                        />
+                                        <div className="w-5 h-5 border-2 border-gray-500 rounded peer-checked:bg-amber-500 peer-checked:border-amber-500 transition-colors"></div>
+                                    </div>
+                                    <span className="text-sm text-gray-300 group-hover:text-white transition-colors">Featured</span>
                                 </label>
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Display Order</label>
+                                <label className="block text-sm font-medium text-gray-300 mb-1">Display Order</label>
                                 <input
                                     type="number"
-                                    className="w-24 border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 outline-none"
+                                    className="glass-input w-24 px-3 py-2 rounded-lg outline-none"
                                     value={formData.display_order}
                                     onChange={e => setFormData({ ...formData, display_order: parseInt(e.target.value) })}
                                 />
                             </div>
 
-                            <div className="pt-4 flex justify-end gap-3 border-t border-gray-100 mt-4">
+                            <div className="pt-4 flex justify-end gap-3 border-t border-white/10 mt-4">
                                 <button
                                     type="button"
                                     onClick={() => setShowModal(false)}
-                                    className="px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg font-medium"
+                                    className="px-4 py-2 text-gray-300 hover:bg-white/5 rounded-lg font-medium transition-colors border border-transparent hover:border-white/10"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium flex items-center gap-2"
+                                    className="px-6 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 font-medium flex items-center gap-2 shadow-[0_0_15px_rgba(124,58,237,0.4)] hover:shadow-[0_0_25px_rgba(124,58,237,0.6)] transition-all"
                                 >
                                     <Save size={18} />
                                     Save Plan

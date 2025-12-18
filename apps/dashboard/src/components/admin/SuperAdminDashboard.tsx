@@ -185,67 +185,76 @@ export default function SuperAdminDashboard() {
                 <>
                     {/* Top Metrics Section */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                            <div className="flex items-center justify-between mb-4">
-                                <h3 className="text-sm font-medium text-gray-500">Total Tenants</h3>
-                                <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
+                        <div className="glass-panel p-6 rounded-xl relative overflow-hidden group">
+                            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                <Building size={64} className="text-white" />
+                            </div>
+                            <div className="flex items-center justify-between mb-4 relative z-10">
+                                <h3 className="text-sm font-medium text-gray-400">Total Tenants</h3>
+                                <div className="p-2 bg-blue-500/10 text-blue-400 rounded-lg border border-blue-500/20 shadow-[0_0_10px_rgba(59,130,246,0.2)]">
                                     <Building size={20} />
                                 </div>
                             </div>
-                            <div className="text-3xl font-bold text-gray-900">{metrics.totalTenants}</div>
-                            <div className="text-xs text-green-600 mt-1 flex items-center">
+                            <div className="text-3xl font-bold text-white relative z-10 text-glow">{metrics.totalTenants}</div>
+                            <div className="text-xs text-green-400 mt-1 flex items-center relative z-10">
                                 <Activity size={12} className="mr-1" /> +2 this week
                             </div>
                         </div>
-                        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                            <div className="flex items-center justify-between mb-4">
-                                <h3 className="text-sm font-medium text-gray-500">Active Screens</h3>
-                                <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg">
+                        <div className="glass-panel p-6 rounded-xl relative overflow-hidden group">
+                            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                <Activity size={64} className="text-white" />
+                            </div>
+                            <div className="flex items-center justify-between mb-4 relative z-10">
+                                <h3 className="text-sm font-medium text-gray-400">Active Screens</h3>
+                                <div className="p-2 bg-violet-500/10 text-violet-400 rounded-lg border border-violet-500/20 shadow-[0_0_10px_rgba(139,92,246,0.2)]">
                                     <Activity size={20} />
                                 </div>
                             </div>
-                            <div className="text-3xl font-bold text-gray-900">{metrics.activeScreens}</div>
-                            <div className="text-xs text-gray-500 mt-1">Across all organizations</div>
+                            <div className="text-3xl font-bold text-white relative z-10 text-glow">{metrics.activeScreens}</div>
+                            <div className="text-xs text-gray-500 mt-1 relative z-10">Across all organizations</div>
                         </div>
-                        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                            <div className="flex items-center justify-between mb-4">
-                                <h3 className="text-sm font-medium text-gray-500">System Status</h3>
-                                <div className="p-2 bg-green-50 text-green-600 rounded-lg">
+                        <div className="glass-panel p-6 rounded-xl relative overflow-hidden group">
+                            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                <CheckCircle size={64} className="text-white" />
+                            </div>
+                            <div className="flex items-center justify-between mb-4 relative z-10">
+                                <h3 className="text-sm font-medium text-gray-400">System Status</h3>
+                                <div className="p-2 bg-emerald-500/10 text-emerald-400 rounded-lg border border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.2)]">
                                     <CheckCircle size={20} />
                                 </div>
                             </div>
-                            <div className="text-3xl font-bold text-gray-900 flex items-center gap-2">
+                            <div className="text-3xl font-bold text-white flex items-center gap-2 relative z-10 text-glow">
                                 {metrics.systemStatus}
                                 <span className="relative flex h-3 w-3">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                                    <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500 shadow-[0_0_10px_#10b981]"></span>
                                 </span>
                             </div>
-                            <div className="text-xs text-gray-500 mt-1">All systems operational</div>
+                            <div className="text-xs text-gray-500 mt-1 relative z-10">All systems operational</div>
                         </div>
                     </div>
 
                     {/* System Configuration */}
-                    <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm mb-8">
-                        <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                            <Activity size={20} className="text-indigo-600" />
+                    <div className="glass-panel p-6 rounded-xl mb-8">
+                        <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                            <Activity size={20} className="text-violet-400" />
                             System Configuration
                         </h3>
                         <div className="flex items-end gap-4 max-w-md">
                             <div className="flex-1">
-                                <label className="block text-sm font-medium text-gray-700 mb-1.5">Default Trial Period (Days)</label>
+                                <label className="block text-sm font-medium text-gray-300 mb-1.5">Default Trial Period (Days)</label>
                                 <input
                                     type="number"
                                     min="1"
                                     value={trialPeriodDays}
                                     onChange={(e) => setTrialPeriodDays(parseInt(e.target.value) || 0)}
-                                    className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-gray-900"
+                                    className="glass-input w-full rounded-lg px-3 py-2 outline-none"
                                 />
                             </div>
                             <button
                                 onClick={handleUpdateSettings}
                                 disabled={settingsLoading}
-                                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium shadow-sm hover:shadow transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="px-4 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 font-medium shadow-[0_0_15px_rgba(124,58,237,0.3)] hover:shadow-[0_0_20px_rgba(124,58,237,0.5)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {settingsLoading ? 'Saving...' : 'Save Settings'}
                             </button>
@@ -253,23 +262,23 @@ export default function SuperAdminDashboard() {
                     </div>
 
                     {/* Organizations Table */}
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div className="glass-panel rounded-xl overflow-hidden">
                         <div className="overflow-x-auto">
                             <table className="w-full text-left">
-                                <thead className="bg-gray-50 border-b border-gray-200">
+                                <thead className="bg-white/5 border-b border-white/10">
                                     <tr>
-                                        <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Tenant</th>
-                                        <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Usage</th>
-                                        <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
-                                        <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">Actions</th>
+                                        <th className="px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Tenant</th>
+                                        <th className="px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Usage</th>
+                                        <th className="px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Status</th>
+                                        <th className="px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-wider text-right">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-gray-100">
+                                <tbody className="divide-y divide-white/5">
                                     {orgs.map((org) => (
-                                        <tr key={org.id} className="hover:bg-gray-50 transition-colors group">
+                                        <tr key={org.id} className="hover:bg-white/5 transition-colors group">
                                             <td className="px-6 py-4">
                                                 <div className="flex items-center gap-4">
-                                                    <div className="w-10 h-10 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center text-gray-500 font-bold text-lg border border-gray-200">
+                                                    <div className="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center text-gray-400 font-bold text-lg border border-white/10">
                                                         {org.logo_url ? (
                                                             <img src={org.logo_url} alt={org.name} className="w-full h-full object-cover rounded-lg" />
                                                         ) : (
@@ -277,9 +286,9 @@ export default function SuperAdminDashboard() {
                                                         )}
                                                     </div>
                                                     <div>
-                                                        <div className="font-semibold text-gray-900">{org.name}</div>
+                                                        <div className="font-bold text-white">{org.name}</div>
                                                         <div className="text-xs text-gray-500 flex items-center gap-1">
-                                                            <span className="px-1.5 py-0.5 rounded bg-gray-100 text-gray-600 font-medium">{org.plan} Plan</span>
+                                                            <span className="px-1.5 py-0.5 rounded bg-white/10 text-gray-300 font-medium border border-white/5">{org.plan} Plan</span>
                                                             <span>• {new Date(org.created_at).toLocaleDateString()}</span>
                                                         </div>
                                                     </div>
@@ -287,20 +296,20 @@ export default function SuperAdminDashboard() {
                                             </td>
                                             <td className="px-6 py-4">
                                                 <div className="space-y-1">
-                                                    <div className="flex items-center text-sm text-gray-600">
-                                                        <Activity size={14} className="mr-2 text-gray-400" />
+                                                    <div className="flex items-center text-sm text-gray-300">
+                                                        <Activity size={14} className="mr-2 text-violet-400" />
                                                         {org.screen_count} Screens
                                                     </div>
-                                                    <div className="flex items-center text-sm text-gray-600">
-                                                        <HardDrive size={14} className="mr-2 text-gray-400" />
+                                                    <div className="flex items-center text-sm text-gray-300">
+                                                        <HardDrive size={14} className="mr-2 text-blue-400" />
                                                         {org.storage_used} Used
                                                     </div>
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4">
-                                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${org.status === 'active'
-                                                    ? 'bg-green-50 text-green-700 border border-green-100'
-                                                    : 'bg-red-50 text-red-700 border border-red-100'
+                                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${org.status === 'active'
+                                                    ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.2)]'
+                                                    : 'bg-red-500/10 text-red-400 border-red-500/20 shadow-[0_0_10px_rgba(239,68,68,0.2)]'
                                                     }`}>
                                                     {org.status === 'active' ? <CheckCircle size={12} className="mr-1" /> : <XCircle size={12} className="mr-1" />}
                                                     {org.status.charAt(0).toUpperCase() + org.status.slice(1)}
@@ -310,30 +319,30 @@ export default function SuperAdminDashboard() {
                                                 <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                                     <button
                                                         onClick={() => handleImpersonate(org.id)}
-                                                        className="p-2 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                                                        className="p-2 text-gray-400 hover:text-violet-400 hover:bg-violet-500/10 rounded-lg transition-colors border border-transparent hover:border-violet-500/20"
                                                         title="Log in as User"
                                                     >
                                                         <LogIn size={18} />
                                                     </button>
                                                     <button
                                                         onClick={() => setSelectedOrgId(org.id)}
-                                                        className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                                        className="p-2 text-gray-400 hover:text-blue-400 hover:bg-blue-500/10 rounded-lg transition-colors border border-transparent hover:border-blue-500/20"
                                                         title="Manage Users"
                                                     >
                                                         <Users size={18} />
                                                     </button>
                                                     <button
                                                         onClick={() => setEditingOrg(org)}
-                                                        className="p-2 text-gray-500 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                                                        className="p-2 text-gray-400 hover:text-emerald-400 hover:bg-emerald-500/10 rounded-lg transition-colors border border-transparent hover:border-emerald-500/20"
                                                         title="Edit Organization"
                                                     >
                                                         <Activity size={18} />
                                                     </button>
                                                     <button
                                                         onClick={() => handleSuspend(org.id, org.status)}
-                                                        className={`p-2 rounded-lg transition-colors ${org.status === 'active'
-                                                            ? 'text-gray-500 hover:text-red-600 hover:bg-red-50'
-                                                            : 'text-red-600 bg-red-50 hover:bg-red-100'
+                                                        className={`p-2 rounded-lg transition-colors border border-transparent ${org.status === 'active'
+                                                            ? 'text-gray-400 hover:text-red-400 hover:bg-red-500/10 hover:border-red-500/20'
+                                                            : 'text-red-400 bg-red-500/10 border-red-500/20'
                                                             }`}
                                                         title={org.status === 'active' ? "Suspend Organization" : "Activate Organization"}
                                                     >
@@ -349,30 +358,31 @@ export default function SuperAdminDashboard() {
                     </div>
 
                     {showCreateModal && (
-                        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-[60] p-4 animate-in fade-in duration-200">
-                            <div className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md transform transition-all scale-100 border border-gray-100">
-                                <div className="flex justify-between items-center mb-6">
+                        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[60] p-4 animate-in fade-in duration-200">
+                            <div className="glass-panel p-6 w-full max-w-md transform transition-all scale-100 rounded-2xl relative">
+                                <div className="absolute inset-0 bg-violet-500/5 rounded-2xl pointer-events-none"></div>
+                                <div className="flex justify-between items-center mb-6 relative z-10">
                                     <div>
-                                        <h3 className="text-xl font-bold text-gray-900">Create Organization</h3>
-                                        <p className="text-sm text-gray-500 mt-1">Add a new tenant to the system.</p>
+                                        <h3 className="text-xl font-bold text-white text-glow">Create Organization</h3>
+                                        <p className="text-sm text-gray-400 mt-1">Add a new tenant to the system.</p>
                                     </div>
                                     <button
                                         onClick={() => setShowCreateModal(false)}
-                                        className="text-gray-400 hover:text-gray-600 p-1 hover:bg-gray-100 rounded-lg transition-colors"
+                                        className="text-gray-400 hover:text-white p-1 hover:bg-white/10 rounded-lg transition-colors"
                                     >
                                         <X size={20} />
                                     </button>
                                 </div>
-                                <form onSubmit={handleCreateOrg} className="space-y-4">
+                                <form onSubmit={handleCreateOrg} className="space-y-4 relative z-10">
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1.5">Organization Name</label>
+                                        <label className="block text-sm font-medium text-gray-300 mb-1.5">Organization Name</label>
                                         <div className="relative">
-                                            <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                                            <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" size={18} />
                                             <input
                                                 type="text"
                                                 value={newOrgName}
                                                 onChange={(e) => setNewOrgName(e.target.value)}
-                                                className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-gray-900 placeholder-gray-400"
+                                                className="glass-input w-full pl-10 pr-4 py-2.5 rounded-xl outline-none"
                                                 placeholder="Acme Corp"
                                                 required
                                             />
@@ -382,13 +392,13 @@ export default function SuperAdminDashboard() {
                                         <button
                                             type="button"
                                             onClick={() => setShowCreateModal(false)}
-                                            className="px-4 py-2.5 text-gray-600 hover:bg-gray-50 rounded-xl font-medium transition-colors"
+                                            className="px-4 py-2.5 text-gray-300 hover:bg-white/5 rounded-xl font-medium transition-colors border border-transparent hover:border-white/10"
                                         >
                                             Cancel
                                         </button>
                                         <button
                                             type="submit"
-                                            className="px-4 py-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 font-medium shadow-sm hover:shadow transition-all flex items-center gap-2"
+                                            className="px-4 py-2.5 bg-violet-600 text-white rounded-xl hover:bg-violet-700 font-medium shadow-[0_0_15px_rgba(124,58,237,0.4)] hover:shadow-[0_0_25px_rgba(124,58,237,0.6)] transition-all flex items-center gap-2"
                                         >
                                             <Plus size={18} />
                                             Create Organization
@@ -400,25 +410,25 @@ export default function SuperAdminDashboard() {
                     )}
 
                     {selectedOrgId && (
-                        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-[60] p-4 animate-in fade-in duration-200">
-                            <div className="bg-white rounded-2xl w-full max-w-4xl shadow-2xl max-h-[90vh] overflow-hidden flex flex-col border border-gray-100">
-                                <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-white z-10">
+                        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[60] p-4 animate-in fade-in duration-200">
+                            <div className="glass-panel w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col rounded-2xl">
+                                <div className="p-6 border-b border-white/10 flex justify-between items-center z-10">
                                     <div>
-                                        <h3 className="text-xl font-bold text-gray-900">
+                                        <h3 className="text-xl font-bold text-white text-glow">
                                             Manage Users
                                         </h3>
-                                        <p className="text-sm text-gray-500 mt-1">
-                                            Organization: <span className="font-medium text-gray-900">{orgs.find(o => o.id === selectedOrgId)?.name}</span>
+                                        <p className="text-sm text-gray-400 mt-1">
+                                            Organization: <span className="font-medium text-violet-300">{orgs.find(o => o.id === selectedOrgId)?.name}</span>
                                         </p>
                                     </div>
                                     <button
                                         onClick={() => setSelectedOrgId(null)}
-                                        className="text-gray-400 hover:text-gray-600 p-1 hover:bg-gray-100 rounded-lg transition-colors"
+                                        className="text-gray-400 hover:text-white p-1 hover:bg-white/10 rounded-lg transition-colors"
                                     >
                                         <X size={24} />
                                     </button>
                                 </div>
-                                <div className="p-6 overflow-y-auto bg-gray-50/30 flex-1">
+                                <div className="p-6 overflow-y-auto flex-1 custom-scrollbar">
                                     <TeamManagement orgId={selectedOrgId} />
                                 </div>
                             </div>
@@ -426,16 +436,17 @@ export default function SuperAdminDashboard() {
                     )}
 
                     {editingOrg && (
-                        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-[60] p-4 animate-in fade-in duration-200">
-                            <div className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md transform transition-all scale-100 border border-gray-100">
-                                <div className="flex justify-between items-center mb-6">
+                        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[60] p-4 animate-in fade-in duration-200">
+                            <div className="glass-panel p-6 w-full max-w-md transform transition-all scale-100 rounded-2xl relative">
+                                <div className="absolute inset-0 bg-violet-500/5 rounded-2xl pointer-events-none"></div>
+                                <div className="flex justify-between items-center mb-6 relative z-10">
                                     <div>
-                                        <h3 className="text-xl font-bold text-gray-900">Edit Organization</h3>
-                                        <p className="text-sm text-gray-500 mt-1">Update details for {editingOrg.name}</p>
+                                        <h3 className="text-xl font-bold text-white text-glow">Edit Organization</h3>
+                                        <p className="text-sm text-gray-400 mt-1">Update details for {editingOrg.name}</p>
                                     </div>
                                     <button
                                         onClick={() => setEditingOrg(null)}
-                                        className="text-gray-400 hover:text-gray-600 p-1 hover:bg-gray-100 rounded-lg transition-colors"
+                                        className="text-gray-400 hover:text-white p-1 hover:bg-white/10 rounded-lg transition-colors"
                                     >
                                         <X size={20} />
                                     </button>
@@ -459,24 +470,24 @@ export default function SuperAdminDashboard() {
                                         console.error(err);
                                         alert('Error updating organization');
                                     }
-                                }} className="space-y-4">
+                                }} className="space-y-4 relative z-10">
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1.5">Plan</label>
+                                        <label className="block text-sm font-medium text-gray-300 mb-1.5">Plan</label>
                                         <select
                                             value={editingOrg.plan_tier || 'free'}
                                             onChange={(e) => setEditingOrg({ ...editingOrg, plan_tier: e.target.value })}
-                                            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-gray-900 bg-white"
+                                            className="glass-input w-full px-4 py-2.5 rounded-xl outline-none"
                                         >
-                                            <option value="free">Free</option>
-                                            <option value="basic">Basic</option>
-                                            <option value="pro">Pro</option>
-                                            <option value="enterprise">Enterprise</option>
-                                            <option value="custom">Custom</option>
+                                            <option value="free" className="bg-gray-900 text-white">Free</option>
+                                            <option value="basic" className="bg-gray-900 text-white">Basic</option>
+                                            <option value="pro" className="bg-gray-900 text-white">Pro</option>
+                                            <option value="enterprise" className="bg-gray-900 text-white">Enterprise</option>
+                                            <option value="custom" className="bg-gray-900 text-white">Custom</option>
                                         </select>
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1.5">Trial Ends At</label>
+                                        <label className="block text-sm font-medium text-gray-300 mb-1.5">Trial Ends At</label>
                                         <input
                                             type="datetime-local"
                                             value={editingOrg.trial_ends_at ? (() => {
@@ -494,7 +505,7 @@ export default function SuperAdminDashboard() {
                                                     setEditingOrg({ ...editingOrg, trial_ends_at: date.toISOString() });
                                                 }
                                             }}
-                                            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-gray-900"
+                                            className="glass-input w-full px-4 py-2.5 rounded-xl outline-none"
                                         />
                                         <p className="text-xs text-gray-500 mt-1">Leave empty for no trial expiration.</p>
                                     </div>
@@ -505,9 +516,9 @@ export default function SuperAdminDashboard() {
                                             id="is_manual_override"
                                             checked={editingOrg.is_manual_override || false}
                                             onChange={(e) => setEditingOrg({ ...editingOrg, is_manual_override: e.target.checked })}
-                                            className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                                            className="h-4 w-4 text-violet-600 focus:ring-violet-500 bg-white/10 border-white/20 rounded"
                                         />
-                                        <label htmlFor="is_manual_override" className="ml-2 block text-sm text-gray-900">
+                                        <label htmlFor="is_manual_override" className="ml-2 block text-sm text-gray-300">
                                             Manual Override (Custom Client)
                                         </label>
                                     </div>
@@ -518,13 +529,13 @@ export default function SuperAdminDashboard() {
                                         <button
                                             type="button"
                                             onClick={() => setEditingOrg(null)}
-                                            className="px-4 py-2.5 text-gray-600 hover:bg-gray-50 rounded-xl font-medium transition-colors"
+                                            className="px-4 py-2.5 text-gray-300 hover:bg-white/5 rounded-xl font-medium transition-colors border border-transparent hover:border-white/10"
                                         >
                                             Cancel
                                         </button>
                                         <button
                                             type="submit"
-                                            className="px-4 py-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 font-medium shadow-sm hover:shadow transition-all"
+                                            className="px-4 py-2.5 bg-violet-600 text-white rounded-xl hover:bg-violet-700 font-medium shadow-[0_0_15px_rgba(124,58,237,0.4)] hover:shadow-[0_0_25px_rgba(124,58,237,0.6)] transition-all"
                                         >
                                             Save Changes
                                         </button>

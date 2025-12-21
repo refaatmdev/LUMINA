@@ -9,7 +9,7 @@ interface ViralOverlayProps {
 export default function ViralOverlay({ orgId, screenId }: ViralOverlayProps) {
     // Construct referral URL
     // Fallback to current URL if screenId is missing (though it should be there)
-    const referralUrl = `https://lumina.app/start?ref_org=${orgId}${screenId ? `&ref_screen=${screenId}` : ''}`;
+    const referralUrl = `https://luminapp.io/start?ref_org=${orgId}${screenId ? `&ref_screen=${screenId}` : ''}`;
 
     return (
         <motion.div

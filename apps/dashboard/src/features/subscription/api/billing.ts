@@ -5,7 +5,7 @@ import type { Plan } from './plans';
 export interface BillingOrganization {
     id: string;
     name: string;
-    subscription_status: 'active' | 'past_due' | 'canceled' | 'incomplete' | 'trialing';
+    subscription_status: 'active' | 'past_due' | 'canceled' | 'incomplete' | 'trialing' | 'suspended';
     max_screens: number;
     stripe_customer_id: string | null;
     current_plan_id: string | null;
@@ -14,6 +14,12 @@ export interface BillingOrganization {
     manual_screen_limit?: number;
     manual_storage_limit?: number;
     current_period_end?: string;
+    internal_notes?: string;
+    plan_tier?: string;
+    trial_ends_at?: string;
+    created_at?: string;
+    screen_count?: number;
+    storage_used?: number; // bytes
 }
 
 export const useBillingInfo = (orgId: string | undefined) => {
@@ -25,7 +31,9 @@ export const useBillingInfo = (orgId: string | undefined) => {
                 .from('organizations')
                 .select(`
                     *,
-                    subscription_plans (*)
+                    subscription_plans (*),
+                    screens: screens(count),
+                    media_assets (file_size_bytes)
                 `)
                 .eq('id', orgId)
                 .single();
@@ -33,7 +41,24 @@ export const useBillingInfo = (orgId: string | undefined) => {
             if (error) throw error;
 
             // Map legacy plan structure if needed, or return as is
-            return data;
+            const orgData = data as any;
+
+            // Handle case where subscription_plans might be returned as an array (even if singular expected)
+            const plan = Array.isArray(orgData.subscription_plans)
+                ? orgData.subscription_plans[0]
+                : orgData.subscription_plans;
+
+            // Calculate real-time storage usage from assets
+            const calculatedStorage = orgData.media_assets?.reduce((acc: number, curr: { file_size_bytes: number }) => {
+                return acc + (curr.file_size_bytes || 0);
+            }, 0) || 0;
+
+            return {
+                ...orgData,
+                subscription_plans: plan,
+                screen_count: orgData.screens?.[0]?.count || 0,
+                storage_used: calculatedStorage // Use calculated value
+            };
         },
         enabled: !!orgId
     });

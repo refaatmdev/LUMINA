@@ -22,6 +22,8 @@ interface UsePlaylistEngineProps {
 }
 
 export function usePlaylistEngine({ playlistId }: UsePlaylistEngineProps) {
+    if (playlistId) console.log(`[PlaylistEngine] Hook Initialized | ID: ${playlistId}`);
+
     const [currentSlide, setCurrentSlide] = useState<any | null>(null);
     const [currentSlideId, setCurrentSlideId] = useState<string | null>(null);
     const [nextSlide, setNextSlide] = useState<any | null>(null);
@@ -34,21 +36,43 @@ export function usePlaylistEngine({ playlistId }: UsePlaylistEngineProps) {
 
     // Helper to check if an item is scheduled to play right now
     const isItemScheduledNow = useCallback((item: PlaylistItem) => {
-        if (!item.schedule_rules) return true; // No rules = always play
+        // If no schedule rules, it plays 24/7
+        if (!item.schedule_rules) {
+            // console.log(`[Schedule Check] Slide: ${item.slide_id} | No Rules -> PASSED`);
+            return true;
+        }
 
         const now = new Date();
         const currentDay = now.getDay(); // 0-6
-        const currentTime = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
+
+        // Robust time formatting: HH:MM 
+        // Using getHours/getMinutes is safe from locale variations
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        const currentTime = `${hours}:${minutes}`;
 
         const { startTime, endTime, days } = item.schedule_rules;
 
+        // Debug Log (Visible in Console)
+        console.log(`[Schedule Check] Slide: ${item.slide_id.substring(0, 6)}... | Now: Day=${currentDay} Time=${currentTime} | Rule: Days=[${days}] ${startTime}-${endTime}`);
+
         // Check Day
-        if (days && !days.includes(currentDay)) return false;
+        if (days && days.length > 0 && !days.includes(currentDay)) {
+            console.log(` -> Failed Day Check (Current Day ${currentDay} not in [${days}])`);
+            return false;
+        }
 
         // Check Time
-        if (startTime && currentTime < startTime) return false;
-        if (endTime && currentTime > endTime) return false;
+        if (startTime && currentTime < startTime) {
+            console.log(` -> Failed Start Time (${currentTime} < ${startTime})`);
+            return false;
+        }
+        if (endTime && currentTime > endTime) {
+            console.log(` -> Failed End Time (${currentTime} > ${endTime})`);
+            return false;
+        }
 
+        console.log(` -> PASSED`);
         return true;
     }, []);
 
@@ -145,6 +169,11 @@ export function usePlaylistEngine({ playlistId }: UsePlaylistEngineProps) {
                     .order('order', { ascending: true });
 
                 if (error) throw error;
+
+                console.log(`[PlaylistEngine] Fetched ${data?.length || 0} items for playlist ${playlistId}`);
+                data?.forEach((item, idx) => {
+                    console.log(`[Item ${idx}] ID: ${item.id} | Slide: ${item.slide_id} | Order: ${item.order}`);
+                });
 
                 itemsRef.current = data || [];
                 currentIndexRef.current = -1; // Reset index

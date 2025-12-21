@@ -217,7 +217,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="/" element={<LoginPage />} />
+          <Route path="/" element={<Navigate to="/admin" replace />} />
         </Routes>
       </Router>
     </AuthProvider>

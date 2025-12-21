@@ -45,14 +45,31 @@ export const useSystemStats = () => {
             })).filter(d => d.value > 0);
 
             // 3. Storage Usage
-            const { data: mediaItems, error: mediaError } = await supabase
-                .from('media_items')
-                .select('size_bytes');
+            const { data: mediaAssets, error: mediaError } = await supabase
+                .from('media_assets')
+                .select('file_size_bytes');
 
-            let storageUsed = 12.5; // Default fallback
-            if (!mediaError && mediaItems) {
-                const totalBytes = mediaItems.reduce((acc, item) => acc + (item.size_bytes || 0), 0);
+            let storageUsed = 0;
+            if (!mediaError && mediaAssets) {
+                const totalBytes = mediaAssets.reduce((acc, item) => acc + (item.file_size_bytes || 0), 0);
                 storageUsed = totalBytes / (1024 * 1024 * 1024); // GB
+            }
+
+            // Calculate Total Allocated Storage from all tenants
+            const { data: orgsStorage } = await supabase
+                .from('organizations')
+                .select('storage_limit_bytes, manual_storage_limit');
+
+            let totalAllocated = 100; // Default fallback if no orgs (unlikely)
+            if (orgsStorage && orgsStorage.length > 0) {
+                const totalAllocatedBytes = orgsStorage.reduce((acc, org) => {
+                    // Use manual limit (GB->Bytes) if set, otherwise plan limit (Bytes)
+                    const limit = org.manual_storage_limit
+                        ? org.manual_storage_limit * 1024 * 1024 * 1024
+                        : (org.storage_limit_bytes || 524288000);
+                    return acc + limit;
+                }, 0);
+                totalAllocated = totalAllocatedBytes / (1024 * 1024 * 1024); // GB
             }
 
             // 4. Most Active Tenants (by daily updates/plays)
@@ -93,7 +110,7 @@ export const useSystemStats = () => {
             return {
                 activeScreens: activeScreens || 0,
                 deviceStats,
-                storage: { used: storageUsed, total: 100 },
+                storage: { used: storageUsed, total: totalAllocated },
                 activeTenants
             };
         }

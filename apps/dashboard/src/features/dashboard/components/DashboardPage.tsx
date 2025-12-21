@@ -16,7 +16,7 @@ import ScheduleManager from '../../../components/admin/ScheduleManager';
 
 export const DashboardPage = () => {
     const { orgId } = useAuthStore();
-    const { planTier } = usePlanLimits();
+    const { planTier, currentScreenCount, maxScreens } = usePlanLimits();
 
     const [activeTab, setActiveTab] = useState<'screens' | 'groups'>('screens');
     const [showPairModal, setShowPairModal] = useState(false);
@@ -69,23 +69,33 @@ export const DashboardPage = () => {
         <MainLayout
             title="Screens"
             actions={
-                <div className="flex gap-2">
-                    <Button
-                        onClick={() => setShowUrgentAdModal(true)}
-                        variant="danger"
-                        className="flex items-center gap-1.5"
-                    >
-                        <AlertTriangle size={16} />
-                        <span className="text-sm font-medium">Urgent Ad</span>
-                    </Button>
-                    <Button
-                        onClick={() => setShowPairModal(true)}
-                        variant="primary"
-                        className="flex items-center gap-1.5"
-                    >
-                        <Plus size={16} />
-                        <span className="text-sm font-medium">Add Screen</span>
-                    </Button>
+                <div className="flex items-center gap-4">
+                    <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-muted/50 rounded-lg border border-border">
+                        <Monitor size={14} className="text-muted-foreground" />
+                        <span className="text-sm font-medium text-foreground">
+                            {currentScreenCount} / {maxScreens} Screens
+                        </span>
+                    </div>
+                    <div className="flex gap-2">
+                        <Button
+                            onClick={() => setShowUrgentAdModal(true)}
+                            variant="danger"
+                            className="flex items-center gap-1.5"
+                        >
+                            <AlertTriangle size={16} />
+                            <span className="text-sm font-medium">Urgent Ad</span>
+                        </Button>
+                        <Button
+                            onClick={() => setShowPairModal(true)}
+                            disabled={currentScreenCount >= maxScreens}
+                            variant="primary"
+                            className="flex items-center gap-1.5"
+                            title={currentScreenCount >= maxScreens ? "Screen limit reached" : "Add a new screen"}
+                        >
+                            <Plus size={16} />
+                            <span className="text-sm font-medium">Add Screen</span>
+                        </Button>
+                    </div>
                 </div>
             }
         >

@@ -46,14 +46,16 @@ export default function ScheduleManager({ targetType, targetId }: ScheduleManage
     // Form State
     const [selectedPlaylistId, setSelectedPlaylistId] = useState('');
     const [startTime, setStartTime] = useState('08:00');
-    const [endTime, setEndTime] = useState('17:00');
-    const [selectedDays, setSelectedDays] = useState<number[]>([1, 2, 3, 4, 5]); // Mon-Fri default
+    const [endTime, setEndTime] = useState('22:00'); // Extended default hours
+    const [selectedDays, setSelectedDays] = useState<number[]>([0, 1, 2, 3, 4, 5, 6]); // All days default
 
     useEffect(() => {
         if (orgId && targetId) {
             fetchData();
         }
     }, [orgId, targetId]);
+    // ... (skip to rendering)
+
 
     const fetchData = async () => {
         setLoading(true);
@@ -268,7 +270,7 @@ export default function ScheduleManager({ targetType, targetId }: ScheduleManage
                                             key={day.id}
                                             className={`text-[10px] uppercase font-bold ${schedule.days_of_week.includes(day.id)
                                                 ? 'text-primary'
-                                                : 'text-muted-foreground/30'
+                                                : 'text-muted-foreground/20 opacity-30' // Lower opacity for better contrast
                                                 }`}
                                         >
                                             {day.label[0]}

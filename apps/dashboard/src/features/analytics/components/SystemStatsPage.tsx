@@ -40,7 +40,17 @@ export const SystemStatsPage = () => {
                                 <HardDrive size={24} />
                             </div>
                             <span className="text-muted-foreground text-sm">
-                                {stats?.storage.used.toFixed(1)} GB / {stats?.storage.total} GB
+                                {(() => {
+                                    const usedGB = stats?.storage.used || 0;
+                                    const totalGB = stats?.storage.total || 0;
+
+                                    const formatValue = (gb: number) => {
+                                        if (gb < 1) return `${Math.round(gb * 1024)} MB`;
+                                        return `${gb.toFixed(1)} GB`;
+                                    };
+
+                                    return `${formatValue(usedGB)} / ${formatValue(totalGB)}`;
+                                })()}
                             </span>
                         </div>
                         <p className="text-muted-foreground text-sm">Storage Usage</p>
@@ -150,7 +160,7 @@ export const SystemStatsPage = () => {
                         </div>
                     </Card>
                 </div>
-            </div>
-        </MainLayout>
+            </div >
+        </MainLayout >
     );
 };

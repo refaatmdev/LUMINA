@@ -16,12 +16,20 @@ export const useTenants = () => {
                 .from('organizations')
                 .select(`
                     *,
-                    subscription_plans (*)
+                    subscription_plans (*),
+                    screens: screens(count)
                 `)
                 .order('created_at', { ascending: false });
 
             if (error) throw error;
-            return data;
+
+            // Transform to include screen_count and simpler storage_used if needed
+            // But supabase types return { screens: [{ count: 5 }] } structure usually
+            return data.map((org: any) => ({
+                ...org,
+                screen_count: org.screens?.[0]?.count || 0,
+                storage_used: org.storage_used_bytes || 0 // Correct column name
+            }));
         }
     });
 };

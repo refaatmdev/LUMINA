@@ -42,14 +42,20 @@ export const useStorageQuota = (orgId: string | null) => {
             if (!orgId) return { used_bytes: 0, limit_bytes: 524288000 };
             const { data, error } = await supabase
                 .from('organizations')
-                .select('storage_used_bytes, storage_limit_bytes')
+                .select('storage_used_bytes, storage_limit_bytes, manual_storage_limit')
                 .eq('id', orgId)
                 .single();
 
             if (error) throw error;
+
+            // Limit strategy: Manual (GB->Bytes) > DB Limit > Default (500MB)
+            const effectiveLimit = data.manual_storage_limit
+                ? data.manual_storage_limit * 1024 * 1024 * 1024
+                : (data.storage_limit_bytes || 524288000);
+
             return {
                 used_bytes: data.storage_used_bytes || 0,
-                limit_bytes: data.storage_limit_bytes || 524288000 // 500MB Default
+                limit_bytes: effectiveLimit
             };
         },
         enabled: !!orgId
@@ -75,12 +81,16 @@ export const useUploadMedia = () => {
             // 2. Check Quota (Optimistic check, server might also enforce)
             const { data: org } = await supabase
                 .from('organizations')
-                .select('storage_used_bytes, storage_limit_bytes')
+                .select('storage_used_bytes, storage_limit_bytes, manual_storage_limit')
                 .eq('id', orgId)
                 .single();
 
             const used = org?.storage_used_bytes || 0;
-            const limit = org?.storage_limit_bytes || 524288000;
+            // Limit strategy: Manual (GB->Bytes) > DB Limit > Default (500MB)
+            const limit = org?.manual_storage_limit
+                ? org.manual_storage_limit * 1024 * 1024 * 1024
+                : (org?.storage_limit_bytes || 524288000);
+
             if (used + file.size > limit) throw new Error('Storage quota exceeded');
 
             // 3. Upload to Storage

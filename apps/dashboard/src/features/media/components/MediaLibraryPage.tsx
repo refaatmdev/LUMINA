@@ -59,6 +59,8 @@ export const MediaLibraryPage = () => {
             alert('Failed to add URL');
         }
     };
+    console.log('assets', assets)
+    console.log('quota', quota)
 
     return (
         <MainLayout

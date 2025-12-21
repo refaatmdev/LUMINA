@@ -42,11 +42,19 @@ export function usePlayerState(screenId: string | undefined) {
         if (!screenId) return;
 
         try {
-            console.log('Fetching player content for:', screenId);
+            // Calculate Client Time for Timezone-Aware Scheduling
+            const now = new Date();
+            const localTimeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+            const localDayIdx = now.getDay();
+
+            console.log('Fetching player content for:', screenId, '| Local Time:', localTimeStr, '| Day:', localDayIdx);
+
             const { data: rpcData, error } = await supabase.rpc('get_player_slide_content', {
-                screen_id: screenId
+                screen_id: screenId,
+                local_time_str: localTimeStr,
+                local_day_idx: localDayIdx
             });
-            console.log('RPC Response:', { rpcData, error });
+            console.log('RPC Response:', JSON.stringify({ rpcData, error }, null, 2));
 
             if (error) throw error;
 
@@ -95,6 +103,9 @@ export function usePlayerState(screenId: string | undefined) {
                     newState.mode = 'playlist';
                     newState.playlistId = rpcData.playlist_id;
                 }
+
+                // Debug Mode Resolution
+                console.log(`[PlayerState] Resolved Mode: ${newState.mode} | PlaylistID: ${newState.playlistId} | SlideID: ${newState.slideId}`);
 
                 // Cache the successful state
                 localStorage.setItem('cached_slide_data', JSON.stringify(newState));

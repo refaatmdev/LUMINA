@@ -78,7 +78,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
             if (error) throw error;
 
             if (data) {
-                set({ role: data.role as UserRole, orgId: data.org_id });
+                const impersonatedOrgId = sessionStorage.getItem('impersonated_org_id');
+                if (data.role === 'super_admin' && impersonatedOrgId) {
+                    set({ role: 'org_admin', orgId: impersonatedOrgId });
+                } else {
+                    set({ role: data.role as UserRole, orgId: data.org_id });
+                }
             } else {
                 // Fallback or handle missing profile
                 set({ role: null, orgId: null });

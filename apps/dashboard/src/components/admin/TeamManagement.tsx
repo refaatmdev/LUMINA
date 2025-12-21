@@ -201,7 +201,7 @@ export default function TeamManagement({ orgId }: TeamManagementProps) {
 
             {/* Invite Modal */}
             {showInviteModal && (
-                <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
+                <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[110] p-4 animate-in fade-in duration-200">
                     <div className="glass-panel p-6 w-full max-w-md shadow-2xl rounded-2xl relative">
                         <div className="absolute inset-0 bg-violet-500/5 rounded-2xl pointer-events-none"></div>
                         <div className="flex justify-between items-center mb-6 relative z-10">
@@ -271,7 +271,7 @@ export default function TeamManagement({ orgId }: TeamManagementProps) {
 
             {/* Edit Role Modal */}
             {showEditModal && editingMember && (
-                <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
+                <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[110] p-4 animate-in fade-in duration-200">
                     <div className="glass-panel p-6 w-full max-w-md shadow-2xl rounded-2xl relative">
                         <div className="absolute inset-0 bg-violet-500/5 rounded-2xl pointer-events-none"></div>
                         <div className="flex justify-between items-center mb-6 relative z-10">

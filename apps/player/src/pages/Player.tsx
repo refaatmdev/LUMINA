@@ -96,29 +96,10 @@ export default function Player() {
     // 5. Automatic Version Check
     const updateAvailable = useVersionCheck();
 
-    // Trial Check Logic
+    // Trial Check Logic (Redundant / Failing due to RLS)
+    // Removed to fix 406 error. Trial status should be handled via RPC if needed.
     const [isTrialExpired, setIsTrialExpired] = useState(false);
-
-    useEffect(() => {
-        if (orgId) {
-            checkTrial(orgId);
-        }
-    }, [orgId]);
-
-    const checkTrial = async (organizationId: string) => {
-        const { data } = await supabase
-            .from('organizations')
-            .select('plan_tier, trial_ends_at')
-            .eq('id', organizationId)
-            .single();
-
-        if (data && data.plan_tier === 'free' && data.trial_ends_at) {
-            const trialEnd = new Date(data.trial_ends_at);
-            if (new Date() > trialEnd) {
-                setIsTrialExpired(true);
-            }
-        }
-    };
+    // TODO: restore trial check using safe RPC data if needed
 
     // 4. Loading & Error States (Deferred Return)
     const renderContent = () => {

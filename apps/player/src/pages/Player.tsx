@@ -114,6 +114,11 @@ export default function Player() {
         }
 
         if (stateError) {
+            if (stateError === 'SCREEN_NOT_FOUND') {
+                // Redirect back to connection screen if screen is deleted
+                window.location.href = '/connect';
+                return null;
+            }
             return <div className="min-h-screen bg-black flex items-center justify-center text-red-500">Error: {stateError}</div>;
         }
 
@@ -150,11 +155,23 @@ export default function Player() {
 
         if (!dataToRender) {
             return (
-                <div className="min-h-screen bg-black flex items-center justify-center flex-col gap-4">
-                    <div className="w-24 h-24 bg-white/10 rounded-full flex items-center justify-center animate-pulse">
-                        <img src="/logo.svg" alt="Logo" className="w-12 h-12 opacity-50" onError={(e) => e.currentTarget.style.display = 'none'} />
+                <div className="min-h-screen bg-[#0B0F19] flex items-center justify-center p-4 relative overflow-hidden">
+                    {/* Background Gradients */}
+                    <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] bg-violet-600/10 blur-[100px] rounded-full mix-blend-screen animate-pulse" />
+                    <div className="absolute bottom-[-20%] right-[-10%] w-[500px] h-[500px] bg-cyan-500/10 blur-[100px] rounded-full mix-blend-screen animate-pulse" style={{ animationDelay: '2s' }} />
+
+                    <div className="relative z-10 flex flex-col items-center">
+                        <div className="w-16 h-16 bg-gradient-to-br from-violet-600 to-cyan-500 rounded-2xl shadow-[0_0_30px_rgba(139,92,246,0.5)] mb-8 flex items-center justify-center">
+                            <span className="text-3xl font-bold text-white">L</span>
+                        </div>
+
+                        <h1 className="text-3xl font-bold text-white mb-2 tracking-tight">System Ready</h1>
+                        <p className="text-white/40 text-lg mb-8">Waiting for scheduled content...</p>
+
+                        <div className="px-4 py-2 bg-white/5 rounded-full border border-white/10 text-xs text-white/30 font-mono">
+                            ID: {id?.substring(0, 8)}...
+                        </div>
                     </div>
-                    <p className="text-gray-500 font-medium">No content scheduled</p>
                 </div>
             );
         }

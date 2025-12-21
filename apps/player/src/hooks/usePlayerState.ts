@@ -54,6 +54,7 @@ export function usePlayerState(screenId: string | undefined) {
                 local_time_str: localTimeStr,
                 local_day_idx: localDayIdx
             });
+            console.log('RPC test productionn');
             console.log('RPC Response:', JSON.stringify({ rpcData, error }, null, 2));
 
             if (error) throw error;

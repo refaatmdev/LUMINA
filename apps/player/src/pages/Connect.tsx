@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
+import BackgroundWaves from '../components/ui/BackgroundWaves';
 
 export default function Connect() {
+    // ... state code remains same ...
     const [pairingCode, setPairingCode] = useState('');
     const navigate = useNavigate();
 
@@ -49,9 +51,7 @@ export default function Connect() {
 
     return (
         <div className="min-h-screen bg-[#0B0F19] text-white flex items-center justify-center p-4 relative overflow-hidden">
-            {/* Background Gradients */}
-            <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] bg-violet-600/20 blur-[120px] rounded-full mix-blend-screen animate-pulse" />
-            <div className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] bg-cyan-500/20 blur-[120px] rounded-full mix-blend-screen animate-pulse" style={{ animationDelay: '2s' }} />
+            <BackgroundWaves />
 
             <div className="relative z-10 max-w-md w-full">
                 {/* Logo Area */}

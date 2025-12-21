@@ -1,4 +1,5 @@
 import { useParams, useSearchParams } from 'react-router-dom';
+import BackgroundWaves from '../components/ui/BackgroundWaves';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 import { WifiOff } from 'lucide-react';
 import { Render } from "@measured/puck";
@@ -156,9 +157,7 @@ export default function Player() {
         if (!dataToRender) {
             return (
                 <div className="min-h-screen bg-[#0B0F19] flex items-center justify-center p-4 relative overflow-hidden">
-                    {/* Background Gradients */}
-                    <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] bg-violet-600/10 blur-[100px] rounded-full mix-blend-screen animate-pulse" />
-                    <div className="absolute bottom-[-20%] right-[-10%] w-[500px] h-[500px] bg-cyan-500/10 blur-[100px] rounded-full mix-blend-screen animate-pulse" style={{ animationDelay: '2s' }} />
+                    <BackgroundWaves />
 
                     <div className="relative z-10 flex flex-col items-center">
                         <div className="w-16 h-16 bg-gradient-to-br from-violet-600 to-cyan-500 rounded-2xl shadow-[0_0_30px_rgba(139,92,246,0.5)] mb-8 flex items-center justify-center">

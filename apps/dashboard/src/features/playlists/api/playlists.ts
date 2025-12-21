@@ -188,7 +188,7 @@ export const useDeletePlaylist = () => {
             if (error) throw error;
             return id;
         },
-        onSuccess: (id, variables, context) => {
+        onSuccess: () => {
             // We need to invalidate the playlists list
             queryClient.invalidateQueries({ queryKey: ['playlists'] });
         }

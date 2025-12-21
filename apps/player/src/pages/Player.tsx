@@ -98,7 +98,9 @@ export default function Player() {
 
     // Trial Check Logic (Redundant / Failing due to RLS)
     // Removed to fix 406 error. Trial status should be handled via RPC if needed.
-    const [isTrialExpired, setIsTrialExpired] = useState(false);
+    // Trial Check Logic (Redundant / Failing due to RLS)
+    // Removed to fix 406 error. Trial status should be handled via RPC if needed.
+    const [isTrialExpired] = useState(false); // Removed setter to fix unused var warning
     // TODO: restore trial check using safe RPC data if needed
 
     // 4. Loading & Error States (Deferred Return)
